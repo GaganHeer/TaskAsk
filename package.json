@@ -14,6 +14,7 @@
   "author": "Team B",
   "license": "ISC",
   "dependencies": {
+    "@slack/interactive-messages": "^0.2.0",
     "body-parser": "^1.18.2",
     "express": "^4.15.5",
     "express-session": "^1.15.6",
