@@ -1,0 +1,24 @@
+{
+  "name": "taskask",
+  "version": "1.0.0",
+  "description": "Slack App for Ayogo made by Team B of BCIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --use_strict index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://BrettDixonBCIT@bitbucket.org/ayogobcitslackteam/taskask.git"
+  },
+  "author": "Team B",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/interactive-messages": "^0.2.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.15.5",
+    "express-session": "^1.15.6",
+    "jquery": "^3.2.1",
+    "socket.io": "^2.0.3"
+  }
+}
