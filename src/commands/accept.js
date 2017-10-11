@@ -28,7 +28,7 @@ const handler = (payload, res) => {
 			console.log(err);
 		}
         
-        acceptingUserID = payload.user_id;
+        acceptingUserID = "<@" + payload.user_id + ">";
         var acceptID = parseInt(payload.text);
         
         client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [acceptID], function(error, response){
