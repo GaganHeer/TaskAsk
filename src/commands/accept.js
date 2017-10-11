@@ -39,7 +39,7 @@ const handler = (payload, res) => {
             var findRecieverID = response.rows;
             if(findRecieverID[0].receiver_id != acceptingUserID){
                 
-                var invalidAcceptMsg = "You can't accept a task that isn't assigned to you! Reciever: " + findRecieverID[0].receiver_id + " Accepter: " + acceptingUserID;
+                var invalidAcceptMsg = "You can't accept a task that isn't assigned to you! Reciever: " + findRecieverID[0].receiver_id + " Accepter: " + acceptingUserID + " " + findRecieverID[0].sender_id;
                 
                 let attachments3 = [
                     {
