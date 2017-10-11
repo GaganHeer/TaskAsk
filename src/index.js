@@ -9,6 +9,7 @@ const config = require('./config')
 const commands = require('./commands')
 const askCommand = require('./commands/ask')
 const sumCommand = require('./commands/summary')
+const accCommand = require('./commands/accept')
 
 let bot = require('./bot')
 
@@ -57,6 +58,24 @@ app.post('/commands/boneypants/summary', (req, res) => {
   let cmd = _.reduce(commands, (a, cmd) => {
     return payload.text.match(cmd.pattern) ? cmd : a
   }, sumCommand)
+
+  cmd.handler(payload, res)
+})
+
+app.post('/commands/boneypants/accept', (req, res) => {
+  let payload = req.body
+
+  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
+    let err = '✋  Star—what? An invalid slash token was provided\n' +
+              '   Is your Slack slash token correctly configured?'
+    console.log(err)
+    res.status(401).end(err)
+    return
+  }
+
+  let cmd = _.reduce(commands, (a, cmd) => {
+    return payload.text.match(cmd.pattern) ? cmd : a
+  }, accCommand)
 
   cmd.handler(payload, res)
 })
