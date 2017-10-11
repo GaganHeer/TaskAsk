@@ -13,7 +13,7 @@ var acceptingUserID = ""
 const msgDefaults = {
   response_type: 'in_channel',
   username: 'MrBoneyPantsGuy',
-  icon_emoji: config('ICON_EMOJI')
+  //icon_emoji: config('ICON_EMOJI')
 }
 
 let attachments = [
@@ -58,35 +58,37 @@ const handler = (payload, res) => {
                 res.set('content-type', 'application/json')
 		  		res.status(200).json(noMatch)	
 		  		return
+                
+            } else {
+                client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2", ["ACCEPTED", acceptID], function(err, result) {
+                    client.query("SELECT * FROM ASK_TABlE WHERE SERIAL_ID = $1", [acceptID], function(errSend, resultSend){
+                        var resp = "temp";
+                        var sendResp = "temp";
+                        done();
+                        if(err) {
+                            console.log(err);
+                        }
+                        if(errSend) {
+                            console.log(errSend);
+                        }
+        //				console.log(result.rows.REQ_DESC);
+                        resp = result.rows;
+                        sendResp = resultSend.rows;
+
+                        var temp = send(sendResp);	
+
+                        var z = util.inspect(temp, {showHidden: false, depth: null});
+
+
+                        console.log("TEMP: " + z);
+
+                        res.set('content-type', 'application/json')
+                        res.status(200).json(temp)	
+                        return
+			         });
+		        });
             }
         });
-		client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2", ["ACCEPTED", acceptID], function(err, result) {
-			client.query("SELECT * FROM ASK_TABlE WHERE SERIAL_ID = $1", [acceptID], function(errSend, resultSend){
-				var resp = "temp";
-				var sendResp = "temp";
-				done();
-				if(err) {
-					console.log(err);
-				}
-				if(errSend) {
-					console.log(errSend);
-				}
-//				console.log(result.rows.REQ_DESC);
-				resp = result.rows;
-				sendResp = resultSend.rows;
-				
-  				var temp = send(sendResp);	
-				
-				var z = util.inspect(temp, {showHidden: false, depth: null});
-	
-				
-				console.log("TEMP: " + z);
-				
-		  		res.set('content-type', 'application/json')
-		  		res.status(200).json(temp)	
-		  		return
-			});
-		});
 		
 	});
 	
