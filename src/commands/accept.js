@@ -39,13 +39,15 @@ const handler = (payload, res) => {
             var findRecieverID = response.rows;
             if(findRecieverID[0].receiver_id != acceptingUserID){
                 
+                var invalidAcceptMsg = "You can't accept a task that isn't assigned to you! Reciever: " + findRecieverID[0].receiver_id + " Accepter: " + acceptingUserID;
+                
                 let attachments3 = [
                     {
                         title: attachments[0].title
                     },
                     {
                         title: "Invalid Accept:",
-                        text: "You can't accept a task that isn't assigned to you!"
+                        text: invalidAcceptMsg
                     }
 		        ]
                 var noMatch =_.defaults({
