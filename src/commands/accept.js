@@ -56,6 +56,26 @@ const handler = (payload, res) => {
                 res.set('content-type', 'application/json')
 		  		res.status(200).json(noMatch)	
 		  		return
+            
+            } else if (findRecieverID[0].status === "ACCEPTED") {
+                
+                let attachments3 = [
+                    {
+                        title: attachments[0].title
+                    },
+                    {
+                        title: "Invalid Accept:",
+                        text: "This task has already been accepted"
+                    }
+		        ]
+                var alreadyAccepted =_.defaults({
+                channel: payload.channel_name,
+                attachments: attachments3
+	  	        }, msgDefaults)
+                
+                res.set('content-type', 'application/json')
+		  		res.status(200).json(alreadyAccepted)	
+		  		return
                 
             } else {
                 client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2", ["ACCEPTED", acceptID], function(err, result) {
