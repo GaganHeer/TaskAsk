@@ -8,8 +8,6 @@ const pg = require('pg')
 
 var dbURL = process.env.ELEPHANTSQL_URL || "postgres://jxdszhdu:HhgxHHy4W-JTlNcQsOi9TWUzEJA0kcod@elmer.db.elephantsql.com:5432/jxdszhdu";
 
-var acceptingUserID = ""
-
 const msgDefaults = {
   response_type: 'in_channel',
   username: 'MrBoneyPantsGuy',
@@ -28,7 +26,7 @@ const handler = (payload, res) => {
 			console.log(err);
 		}
         
-        acceptingUserID = "<@" + payload.user_id + ">";
+        var acceptingUserID = "<@" + payload.user_id + ">";
         var acceptID = parseInt(payload.text);
         
         client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [acceptID], function(error, response){
@@ -39,7 +37,7 @@ const handler = (payload, res) => {
             var findRecieverID = response.rows;
             if(findRecieverID[0].receiver_id != acceptingUserID){
                 
-                var invalidAcceptMsg = "You can't accept a task that isn't assigned to you! Reciever: " + findRecieverID[0].receiver_id + " Accepter: " + acceptingUserID;
+                var invalidAcceptMsg = "Hold on " + acceptingUserID + " that task is assigned to " + findRecieverID[0].receiver_id + " not you";
                 
                 let attachments3 = [
                     {
