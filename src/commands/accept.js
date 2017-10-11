@@ -8,6 +8,8 @@ const pg = require('pg')
 
 var dbURL = process.env.ELEPHANTSQL_URL || "postgres://jxdszhdu:HhgxHHy4W-JTlNcQsOi9TWUzEJA0kcod@elmer.db.elephantsql.com:5432/jxdszhdu";
 
+var acceptingUserID = ""
+
 const msgDefaults = {
   response_type: 'in_channel',
   username: 'MrBoneyPantsGuy',
@@ -26,8 +28,36 @@ const handler = (payload, res) => {
 			console.log(err);
 		}
         
+        acceptingUserID = payload.user_id;
         var acceptID = parseInt(payload.text);
         
+        client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [acceptID], function(error, response){
+            done();
+            if(error){
+                console.log(error);
+            }
+            var findRecieverID = response.rows;
+            if(findRecieverID[0].receiver_id != acceptingUserID){
+                
+                let attachments3 = [
+                    {
+                        title: attachments[0].title
+                    },
+                    {
+                        title: "Invalid Accept:",
+                        text: "You can't accept a task that isn't assigned to you!"
+                    }
+		        ]
+                var noMatch =_.defaults({
+                channel: payload.channel_name,
+                attachments: attachments3
+	  	        }, msgDefaults)
+                
+                res.set('content-type', 'application/json')
+		  		res.status(200).json(noMatch)	
+		  		return
+            }
+        });
 		client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2", ["ACCEPTED", acceptID], function(err, result) {
 			client.query("SELECT * FROM ASK_TABlE WHERE SERIAL_ID = $1", [acceptID], function(errSend, resultSend){
 				var resp = "temp";
@@ -65,8 +95,8 @@ const handler = (payload, res) => {
 		var unpackedSend = util.inspect(sendData, {showHidden: false, depth: null});
 //		console.log("DATA: " + x);
 		
-		//var build = "";
-		var buildSend = "Hey " + sendData[0].sender_id + "! " + sendData[0].receiver_id + " has accepted task#" + sendData[0].serial_id + " '" + sendData[0].req_desc + "'";
+		//var build = ""; 
+        var buildSend = "Hey " + sendData[0].sender_id + "! " + sendData[0].receiver_id + " has accepted task#" + sendData[0].serial_id + " '" + sendData[0].req_desc + "'";
 
 		/*for (var i = 0; i < sendData.length; i++) {
 			buildSend = buildSend + "You have asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + " \n";
