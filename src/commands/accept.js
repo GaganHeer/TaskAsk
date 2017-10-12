@@ -118,7 +118,7 @@ const handler = (payload, res) => {
 //		console.log("DATA: " + x);
 		
 		//var build = ""; 
-        var buildSend = "Hey " + sendData[0].sender_id + "! " + sendData[0].receiver_id + " has accepted task#" + sendData[0].serial_id + " '" + sendData[0].req_desc + "'";
+        var buildSend = "Hey " + sendData[0].sender_id + "! " + sendData[0].receiver_id + " has accepted task#" + sendData[0].serial_id + "'" + sendData[0].req_desc + "'";
 
 		/*for (var i = 0; i < sendData.length; i++) {
 			buildSend = buildSend + "You have asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + " \n";

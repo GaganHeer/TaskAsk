@@ -52,7 +52,7 @@ const handler = (payload, res) => {
 			console.log(err);
 		}
 		var receiverSplit = params[0].split("|");
-		var receiver = receiverSplit[0] + ">";
+		var receiver = "<@" + receiverSplit[0] + ">";
 		client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC) VALUES ($1, $2, $3)", [receiver, "<@" + payload.user_id + ">", request], function(err, result) {
 			done();
 			if(err) {
