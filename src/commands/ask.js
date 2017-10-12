@@ -51,8 +51,11 @@ const handler = (payload, res) => {
 		if(err) {
 			console.log(err);
 		}
+        console.log("##### PARAMS ###### : " + params[0]);
+        console.log("##### PARAMS ###### : " + params[0]);
+        console.log("##### PARAMS ###### : " + params[0]);
 		var receiverSplit = params[0].split("|");
-		var receiver = "<" + receiverSplit[0] + ">";
+		var receiver = receiverSplit[0] + ">";
 		client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC) VALUES ($1, $2, $3)", [receiver, "<@" + payload.user_id + ">", request], function(err, result) {
 			done();
 			if(err) {
