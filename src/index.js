@@ -75,6 +75,7 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     if(payload.callback_id === 'askDialog'){
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
+        payload.original_message.text = payload.actions[0].value;
         var cmd = buttonHandler
         console.log("ASK DIALOG -----------------------")
         console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
