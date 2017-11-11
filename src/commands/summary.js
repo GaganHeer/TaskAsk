@@ -14,91 +14,130 @@ const msgDefaults = {
   icon_emoji: config('ICON_EMOJI')
 }
 
-let attachments = [
-	{
-		title: 'Bones here!'
-	}
-]
-
 const handler = (payload, res) => {
-	pg.connect(dbURL, function(err, client, done) {		
-		if(err) {
-			console.log(err);
-		}
-		client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1", ["<@" + payload.user_id + ">"], function(err, result) {
-			client.query("SELECT * FROM ASK_TABlE WHERE SENDER_ID = $1", ["<@" + payload.user_id + ">"], function(errSend, resultSend){
-				var resp = "temp";
-				var sendResp = "temp";
-				done();
-				if(err) {
-					console.log(err);
-				}
-				if(errSend) {
-					console.log(errSend);
-				}
-//				console.log(result.rows.REQ_DESC);
-				resp = result.rows;
-				sendResp = resultSend.rows;
-				
-  				var temp = send(resp, sendResp);	
-				
-				var z = util.inspect(temp, {showHidden: false, depth: null});
 	
-				
-				console.log("TEMP: " + z);
-				
-		  		res.set('content-type', 'application/json')
-		  		res.status(200).json(temp)	
-		  		return
-			});
-		});
-		
-	});
+//	console.log("*****************");
+//	console.log("USER: " + payload.user_id);
+//	console.log("*****************");
+
+	let attachments2 = [
+		{
+			title: "Bones here!",
+		},
+		{
+			pretext: "Current Pending Requests sent by your peers:"
+		},
+		{
+			title: "PENDING TASKS",
+			color: "#ffcc00",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "pend",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			title: "ACCEPTED TASKS",
+			color: "#33cc33",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "acc",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			title: "REJECTED TASKS",
+			color: "#ff0000",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "rej",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			title: "FINISHED TASKS",
+			color: "#33ccff",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "done",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			pretext: "Current Pending Requests that you have made:"
+		},
+		{
+			title: "PENDING TASKS",
+			color: "#ffcc00",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "sendPend",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			title: "ACCEPTED TASKS",
+			color: "#33cc33",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "sendAcc",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			title: "REJECTED TASKS",
+			color: "#ff0000",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "sendRej",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		},
+		{
+			title: "FINISHED TASKS",
+			color: "#33ccff",
+			callback_id: "ask_buttons",
+			actions: [
+				{
+					name: "sendDone",
+					text: "Expand",
+					type: "button"
+				}
+			]
+		}
+	]
 	
-
-
-	function send(data, sendData) {
-		var unpacked = util.inspect(data, {showHidden: false, depth: null});
-		var unpackedSend = util.inspect(sendData, {showHidden: false, depth: null});
-//		console.log("DATA: " + x);
-		
-		var build = "";
-		var buildSend = "";
-		for (var i = 0; i < data.length; i++) {
-			build = build + data[i].sender_id + " asked you to: " + data[i].req_desc + " on " + data[i].req_date + " (ID: " + data[i].serial_id + ") \n";
-		}
-		for (var i = 0; i < sendData.length; i++) {
-			buildSend = buildSend + "You have asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + " \n";
-		}
-		
-		
-		let attachments2 = [
-			{
-				title: attachments[0].title
-			},
-			{
-				title: "Current Pending Requests sent by your peers:",
-				text: build
-			},
-			{
-				title: "Current Pending Requests that you have made:",
-				text: buildSend
-			}
-		]
-		
-//		console.log("ATTACHMENTS: " + attachments2);
-		
-		var msg = _.defaults({
-	  	  channel: payload.channel_name,
-	  	  attachments: attachments2
-	  	}, msgDefaults)
-	  	
-//		var y = util.inspect(msg, {showHidden: false, depth: null});
-		
-//		console.log("MESSAGE: " + y)
-		
-		return(msg);
-	}
+	//		console.log("ATTACHMENTS: " + attachments2);
+	
+	var msg = _.defaults({
+		channel: payload.channel_name,
+		attachments: attachments2
+	}, msgDefaults)
+	
+	res.set('content-type', 'application/json')
+	res.status(200).json(msg)
+	return
 }
 
 module.exports = { pattern: /summary/ig, handler: handler }
