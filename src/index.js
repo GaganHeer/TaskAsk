@@ -38,6 +38,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => { res.send('\n 👋 🌍 \n') });
 
+/* All of this is handled in the interactiveComponent post
+
 app.post('/commands/boneypants/button_handler', (req, res) => {
     var payload = JSON.parse(req.body.payload);
 	
@@ -61,35 +63,24 @@ app.post('/commands/boneypants/button_handler', (req, res) => {
 
 	let cmd = buttonHandler;
 	cmd.handler(payload, res)	
-});
+});*/
 
 app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     let payload = JSON.parse(req.body.payload);
-    
-    // Slack know the command was received
-    console.log(payload.callback_id)
-    console.log("----------------------------------------")
-    console.log("----------------------------------------")
-    console.log(payload);
     
     if(payload.callback_id === 'askDialog'){
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
         payload.original_message.text = payload.actions[0].value;
         var cmd = buttonHandler
-        console.log("ASK DIALOG -----------------------")
-        console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
-        //console.log(payload.original_message.attachments[0].title);
-        //console.log(payload.original_message.attachments[0].text);
+        //console.log("ASK DIALOG HANDLER-----------------------")
+        //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
     } else if (payload.callback_id === 'ask_buttons') {
        payload.original_message.text = payload.actions[0].value;
        var cmd = buttonHandler
-       console.log("BUTTONS ------------------")
-       console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
-       //console.log(payload.original_message.attachments[0].title);
-        //console.log(payload.original_message.attachments[0].text);
+       //console.log("BUTTONS ------------------")
+       //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
     }
-    
     cmd.handler(payload, res)
 }); 
 

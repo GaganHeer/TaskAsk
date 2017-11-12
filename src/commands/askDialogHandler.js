@@ -8,6 +8,7 @@ const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
+const dateValidator = require('date-and-time')
 const RED = "ff0000"
 const GREEN = "33cc33"
 
@@ -28,7 +29,7 @@ const handler = (payload, res) => {
             console.log(err);
         }
         
-        if(!payload.submission.due){
+        if(payload.submission.due){
             text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
         }
 
@@ -48,7 +49,7 @@ const handler = (payload, res) => {
                     title: title,
                     //need to replace after validation completed
                     color: "#ffcc00",
-                    text: "Hey " + receiver + "! <@" + payload.user.id + "> " + " asked you to: \n" + payload.submission.description,
+                    text: text,
                     fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
                     actions: [
