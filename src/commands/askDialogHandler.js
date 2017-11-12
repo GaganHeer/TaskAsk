@@ -19,8 +19,8 @@ const handler = (payload, res) => {
     let attachments = [
 			{
 				title: "Bones Here!",
-				color: color,
-				text: text,
+				color: RED,
+				text: "hi",
 			}
 		]
     
