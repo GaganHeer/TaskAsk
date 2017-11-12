@@ -45,6 +45,7 @@ const handler = (payload, res) => {
                             console.log(err);
                         }
                         sid =  result.rows[0].serial_id;
+                        console.log("SID---------------------")
                         sendMessage();
                     })
                 } else {
@@ -64,6 +65,7 @@ const handler = (payload, res) => {
                         console.log(err);
                     }
                     sid =  result.rows[0].serial_id;
+                    console.log("SID---------------------")
                     sendMessage();
                 })
             }
