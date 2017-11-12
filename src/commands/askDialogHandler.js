@@ -70,7 +70,7 @@ const handler = (payload, res) => {
             color = RED
         }
         
-        console.log(sid);
+        console.log("SID: " + sid);
         if(color === YELLOW) {
             setButtons();
         }
