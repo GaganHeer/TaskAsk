@@ -37,30 +37,34 @@ const handler = (payload, res) => {
                 let dueDate = new Date(payload.submission.due);
                 if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                     text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
-                    color = YELLOW  
+                    color = YELLOW
+                    setButtons();
                     client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
                         done();
                         if(err) {
                             console.log(err);
                         }
                         sid =  result.rows[0].serial_id;
+                        sendMessage();
                     })
                 } else {
                     title = "*** ERROR ***"
                     text = "Invalid Date!"
                     buttons = ""
                     color = RED
+                    sendMessage();
                 }
             } else {
                 text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
                 color = YELLOW
-                
+                setButtons();
                 client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
                     done();
                     if(err) {
                         console.log(err);
                     }
                     sid =  result.rows[0].serial_id;
+                    sendMessage();
                 })
             }
         } else {
@@ -68,55 +72,9 @@ const handler = (payload, res) => {
             text = "Invalid User ID"
             buttons = ""
             color = RED
-        }.then((result) => {
-            console.log("SID: " + sid);
-            if(color === YELLOW) {
-                setButtons();
-            }
-            //console.log('sendConfirmation: ', result.data);
-            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-            token: config('OAUTH_TOKEN'),
-            channel: payload.channel.id,
-            //text: 'Request sent!',
-            attachments: JSON.stringify([{
-                title: title,
-                color: color,
-                text: text,
-                fallback: "Something went wrong :/",
-                callback_id: "askDialogHandler",
-                actions: buttons,
-            }]),
-            })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
-            }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
-                console.error(err);
-            });
-        });
-        }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
-            console.error(err);
-        });
-        
-        /*axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-            token: config('OAUTH_TOKEN'),
-            channel: payload.channel.id,
-            //text: 'Request sent!',
-            attachments: JSON.stringify([{
-                title: title,
-                color: color,
-                text: text,
-                fallback: "Something went wrong :/",
-                callback_id: "askDialogHandler",
-                actions: buttons,
-            }]),
-        })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
-        }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
-            console.error(err);
-        });
-    });*/
+            sendMessage();
+        }
+    });
     
     function setButtons(){
         buttons = [
@@ -147,6 +105,27 @@ const handler = (payload, res) => {
                         }
                     }
                   ];
+    }
+    
+    function sendMessage(){
+        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+            token: config('OAUTH_TOKEN'),
+            channel: payload.channel.id,
+            //text: 'Request sent!',
+            attachments: JSON.stringify([{
+                title: title,
+                color: color,
+                text: text,
+                fallback: "Something went wrong :/",
+                callback_id: "askDialogHandler",
+                actions: buttons,
+            }]),
+        })).then((result) => {
+            console.log('sendConfirmation: ', result.data);
+        }).catch((err) => {
+            console.log('sendConfirmation error: ', err);
+            console.error(err);
+        });
     }
 }
 module.exports = { pattern: /askDialogHandler/ig, handler: handler }
