@@ -68,14 +68,37 @@ const handler = (payload, res) => {
             text = "Invalid User ID"
             buttons = ""
             color = RED
-        }
+        }.then((result) => {
+            console.log("SID: " + sid);
+            if(color === YELLOW) {
+                setButtons();
+            }
+            //console.log('sendConfirmation: ', result.data);
+            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+            token: config('OAUTH_TOKEN'),
+            channel: payload.channel.id,
+            //text: 'Request sent!',
+            attachments: JSON.stringify([{
+                title: title,
+                color: color,
+                text: text,
+                fallback: "Something went wrong :/",
+                callback_id: "askDialogHandler",
+                actions: buttons,
+            }]),
+            })).then((result) => {
+                console.log('sendConfirmation: ', result.data);
+            }).catch((err) => {
+                console.log('sendConfirmation error: ', err);
+                console.error(err);
+            });
+        });
+        }).catch((err) => {
+            console.log('sendConfirmation error: ', err);
+            console.error(err);
+        });
         
-        console.log("SID: " + sid);
-        if(color === YELLOW) {
-            setButtons();
-        }
-        
-        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+        /*axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
             token: config('OAUTH_TOKEN'),
             channel: payload.channel.id,
             //text: 'Request sent!',
@@ -93,7 +116,7 @@ const handler = (payload, res) => {
             console.log('sendConfirmation error: ', err);
             console.error(err);
         });
-    });
+    });*/
     
     function setButtons(){
         buttons = [
