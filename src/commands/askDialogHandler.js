@@ -32,7 +32,7 @@ const handler = (payload, res) => {
         
         if(payload.submission.due){
             console.log(payload.submission.due);
-            console.log(dateValidator.isValid(payload.submission.due, 'MMM d YYYY HH:mm'));
+            console.log(dateValidator.isValid(payload.submission.due, 'MMM d YYYY H:mm'));
             if(dateValidator.isValid(payload.submission.due, 'MMM d YYYY H:mm')) {
                 text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
             } else {
