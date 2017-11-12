@@ -32,7 +32,7 @@ const handler = (payload, res) => {
         }
         
         if(due){
-            if(dateValidator.isValid(due 'MMM d YYYY HH:mm')) {
+            if(dateValidator.isValid(due, 'MMM d YYYY HH:mm')) {
                 text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + due
             } else {
                 text = "Invalid Date!"
