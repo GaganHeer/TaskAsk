@@ -30,7 +30,10 @@ const handler = (payload, res) => {
         }
         
         if(payload.submission.due){
+            console.log(dateValidator.isValid(payload.submission.due, 'MMM d HH:mm'));
             text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
+        } else {
+            text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
         }
 
         client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
