@@ -40,7 +40,7 @@ const handler = (payload, res) => {
             text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
         }
 
-        client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, due], function(err, result) {
+        client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
             done();
 
             if(err) {
