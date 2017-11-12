@@ -36,7 +36,7 @@ const handler = (payload, res) => {
 	  }, msgDefaults)
     
     res.send('')
-	  res.set('content-type', 'application/json')
+	  //res.set('content-type', 'application/json')
 	  res.status(200).json(msg)
     /*res.send('');
     var correctIDStructure = /^<@.*>$/
