@@ -43,7 +43,7 @@ const handler = (payload, res) => {
                 type: 'text',
                 name: 'due',
                 optional: true,
-                hint: 'Uses a 24 hour clock || Format: MMM DD hh:mm || ex) Oct 29 21:30',
+                hint: 'Uses a 24 hour clock || Format: MMM d YYYY hh:mm || ex) Oct 29 2017 21:30',
               },
               {
                 label: 'Receiver',

@@ -11,6 +11,7 @@ const axios = require('axios')
 const dateValidator = require('date-and-time')
 const RED = "ff0000"
 const GREEN = "33cc33"
+const YELLOW = "ffcc00"
 
 var dbURL = process.env.ELEPHANTSQL_URL
 
@@ -20,6 +21,7 @@ const handler = (payload, res) => {
     var desc = payload.submission.description;
     var receiver = payload.submission.receiver;
     var sender = "<@" + payload.user.id + ">";
+    var due = payload.submission.due
     var text = "";
     var color = "";
     var sid = "";
@@ -29,14 +31,17 @@ const handler = (payload, res) => {
             console.log(err);
         }
         
-        if(payload.submission.due){
-            console.log(dateValidator.isValid(payload.submission.due, 'MMM d HH:mm'));
-            text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
+        if(due){
+            if(dateValidator.isValid(due 'MMM d YYYY HH:mm')) {
+                text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + due
+            } else {
+                text = "Invalid Date!"
+            }
         } else {
             text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
         }
 
-        client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
+        client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, due], function(err, result) {
             done();
 
             if(err) {
