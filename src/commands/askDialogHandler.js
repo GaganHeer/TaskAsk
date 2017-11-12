@@ -33,7 +33,7 @@ const handler = (payload, res) => {
         if(payload.submission.due){
             let currentDate = new Date();
             let dueDate = new Date(payload.submission.due);
-            conosle.log(currentDate - dueDate < 0);
+            console.log(currentDate - dueDate < 0);
             console.log(payload.submission.due);
             console.log(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm'));
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
