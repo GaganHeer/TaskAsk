@@ -24,82 +24,91 @@ const handler = (payload, res) => {
     var text = "";
     var color = "";
     var sid = "";
+    var buttons = [
+                        {
+                            name: "accept",
+                            text: "Accept",
+                            type: "button",
+                            value: sid,
+                            style: "primary",
+                            "confirm": {
+                                "title": "Are you sure?",
+                                "text": "You are about to accept this, are you sure?",
+                                "ok_text": "Yes",
+                                "dismiss_text": "No"
+                            }
+                        },
+                        {
+                            name: "reject", 
+                            text: "Reject",
+                            type: "button",
+                            value: sid,
+                            style: "danger",
+                            "confirm": {
+                                "title": "Are you sure?",
+                                "text": "You are about to reject this, are you sure?",
+                                "ok_text": "Yes",
+                                "dismiss_text": "No"
+                            }
+                        }
+                        ];
+    var correctIDStructure = /^<@.*>$/
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
             console.log(err);
         }
+        if(correctIDStructure.test(receiver)){
         
-        if(payload.submission.due){
-            let currentDate = new Date();
-            let dueDate = new Date(payload.submission.due);
-            console.log(currentDate - dueDate < 0);
-            console.log(payload.submission.due);
-            console.log(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm'));
-            if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
-                text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
+            if(payload.submission.due){
+                let currentDate = new Date();
+                let dueDate = new Date(payload.submission.due);
+                if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+                    text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
+                    color = YELLOW
+                } else {
+                    title = "***ERROR***"
+                    text = "Invalid Date!"
+                    buttons = ""
+                    color = RED
+                }
             } else {
-                text = "Invalid Date!"
+                text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
+                color = YELLOW
             }
         } else {
-            text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
+            title = "***ERROR***"
+            text = ""
+            buttons = ""
         }
 
-        client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
-            done();
+            client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
+                done();
 
-            if(err) {
-                console.log(err);
-            }
+                if(err) {
+                    console.log(err);
+                }
 
-            sid =  result.rows[0].serial_id;
-            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-                token: config('OAUTH_TOKEN'),
-                channel: payload.channel.id,
-                //text: 'Request sent!',
-                attachments: JSON.stringify([{
-                    title: title,
-                    //need to replace after validation completed
-                    color: "#ffcc00",
-                    text: text,
-                    fallback: "Something went wrong :/",
-                    callback_id: "askDialogHandler",
-                    actions: [
-                    {
-                        name: "accept",
-                        text: "Accept",
-                        type: "button",
-                        value: sid,
-                        style: "primary",
-                        "confirm": {
-                            "title": "Are you sure?",
-                            "text": "You are about to accept this, are you sure?",
-                            "ok_text": "Yes",
-                            "dismiss_text": "No"
-                        }
-                    },
-                    {
-                        name: "reject", 
-                        text: "Reject",
-                        type: "button",
-                        value: sid,
-                        style: "danger",
-                        "confirm": {
-                            "title": "Are you sure?",
-                            "text": "You are about to reject this, are you sure?",
-                            "ok_text": "Yes",
-                            "dismiss_text": "No"
-                        }
-                    }
-                    ],
-                }]),
-            })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
-            }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
-                console.error(err);
+                sid =  result.rows[0].serial_id;
+                axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                    token: config('OAUTH_TOKEN'),
+                    channel: payload.channel.id,
+                    //text: 'Request sent!',
+                    attachments: JSON.stringify([{
+                        title: title,
+                        color: color,
+                        text: text,
+                        fallback: "Something went wrong :/",
+                        callback_id: "askDialogHandler",
+                        actions: buttons,
+                    }]),
+                })).then((result) => {
+                    console.log('sendConfirmation: ', result.data);
+                }).catch((err) => {
+                    console.log('sendConfirmation error: ', err);
+                    console.error(err);
+                });
             });
-        });
     });
 }
 module.exports = { pattern: /askDialogHandler/ig, handler: handler }
