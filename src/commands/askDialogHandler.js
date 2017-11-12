@@ -16,7 +16,22 @@ const YELLOW = "ffcc00"
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
-    res.send('');
+    let attachments = [
+			{
+				title: "Bones Here!",
+				color: color,
+				text: text,
+			}
+		]
+    
+    let msg = _.defaults({
+		channel: payload.channel_name,
+		attachments: attachments
+	  }, msgDefaults)
+
+	  res.set('content-type', 'application/json')
+	  res.send(msg)
+    /*res.send('');
     var correctIDStructure = /^<@.*>$/
     var title = payload.submission.title;
     var desc = payload.submission.description;
@@ -67,7 +82,7 @@ const handler = (payload, res) => {
                     text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
                     color = YELLOW
                 } else {
-                    title = "***ERROR***"
+                    title = "*** ERROR ***"
                     text = "Invalid Date!"
                     buttons = ""
                     color = RED
@@ -77,7 +92,7 @@ const handler = (payload, res) => {
                 color = YELLOW
             }
         } else {
-            title = "***ERROR***"
+            title = "*** ERROR ***"
             text = ""
             buttons = ""
             color = RED
@@ -110,6 +125,6 @@ const handler = (payload, res) => {
                     console.error(err);
                 });
             });
-    });
+    });*/
 }
 module.exports = { pattern: /askDialogHandler/ig, handler: handler }
