@@ -17,6 +17,7 @@ var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
     res.send('');
+    var correctIDStructure = /^<@.*>$/
     var title = payload.submission.title;
     var desc = payload.submission.description;
     var receiver = payload.submission.receiver;
@@ -25,34 +26,33 @@ const handler = (payload, res) => {
     var color = "";
     var sid = "";
     var buttons = [
-                        {
-                            name: "accept",
-                            text: "Accept",
-                            type: "button",
-                            value: sid,
-                            style: "primary",
-                            "confirm": {
-                                "title": "Are you sure?",
-                                "text": "You are about to accept this, are you sure?",
-                                "ok_text": "Yes",
-                                "dismiss_text": "No"
-                            }
-                        },
-                        {
-                            name: "reject", 
-                            text: "Reject",
-                            type: "button",
-                            value: sid,
-                            style: "danger",
-                            "confirm": {
-                                "title": "Are you sure?",
-                                "text": "You are about to reject this, are you sure?",
-                                "ok_text": "Yes",
-                                "dismiss_text": "No"
-                            }
+                    {
+                        name: "accept",
+                        text: "Accept",
+                        type: "button",
+                        value: sid,
+                        style: "primary",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to accept this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
                         }
-                        ];
-    var correctIDStructure = /^<@.*>$/
+                    },
+                    {
+                        name: "reject", 
+                        text: "Reject",
+                        type: "button",
+                        value: sid,
+                        style: "danger",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to reject this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+                  ];
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
@@ -80,6 +80,7 @@ const handler = (payload, res) => {
             title = "***ERROR***"
             text = ""
             buttons = ""
+            color = RED
         }
 
             client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
