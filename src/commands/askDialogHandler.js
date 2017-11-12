@@ -34,8 +34,10 @@ const handler = (payload, res) => {
 		channel: payload.channel_name,
 		attachments: attachments
 	  }, msgDefaults)
-
-	  res.send(msg)
+    
+    res.send('')
+	  res.set('content-type', 'application/json')
+	  res.status(200).json(msg)
     /*res.send('');
     var correctIDStructure = /^<@.*>$/
     var title = payload.submission.title;
