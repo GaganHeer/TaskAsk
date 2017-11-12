@@ -21,7 +21,6 @@ const handler = (payload, res) => {
     var desc = payload.submission.description;
     var receiver = payload.submission.receiver;
     var sender = "<@" + payload.user.id + ">";
-    var due = payload.submission.due
     var text = "";
     var color = "";
     var sid = "";
@@ -31,9 +30,9 @@ const handler = (payload, res) => {
             console.log(err);
         }
         
-        if(due){
-            if(dateValidator.isValid(due, 'MMM d YYYY HH:mm')) {
-                text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + due
+        if(payload.submission.due){
+            if(dateValidator.isValid(payload.submission.due, 'MMM d YYYY HH:mm')) {
+                text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due
             } else {
                 text = "Invalid Date!"
             }
