@@ -16,6 +16,12 @@ const YELLOW = "ffcc00"
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
+    const msgDefaults = {
+		  response_type: 'in_channel',
+		  username: 'MrBoneyPantsGuy',
+		  icon_emoji: config('ICON_EMOJI')
+		}
+    
     let attachments = [
 			{
 				title: "Bones Here!",
