@@ -45,15 +45,14 @@ const handler = (payload, res) => {
                         }
                         sid =  result.rows[0].serial_id;
                         setButtons(sid);
-                        console.log("SID---------------------" + sid)
-                        sendMessage();
+                        sendMessage(false);
                     })
                 } else {
                     title = "*** ERROR ***"
                     text = "Invalid Date!"
                     buttons = ""
                     color = RED
-                    sendMessage();
+                    sendMessage(true);
                 }
             } else {
                 text = "Hey " + receiver + "! " + sender + " asked you to: \n" + desc
@@ -65,8 +64,7 @@ const handler = (payload, res) => {
                     }
                     sid =  result.rows[0].serial_id;
                     setButtons(sid);
-                    console.log("SID---------------------" + sid)
-                    sendMessage();
+                    sendMessage(false);
                 })
             }
         } else {
@@ -74,7 +72,7 @@ const handler = (payload, res) => {
             text = "Invalid User ID"
             buttons = ""
             color = RED
-            sendMessage();
+            sendMessage(true);
         }
     });
     
@@ -109,25 +107,45 @@ const handler = (payload, res) => {
                   ];
     }
     
-    function sendMessage(){
-        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-            token: config('OAUTH_TOKEN'),
-            channel: payload.channel.id,
-            //text: 'Request sent!',
-            attachments: JSON.stringify([{
-                title: title,
-                color: color,
-                text: text,
-                fallback: "Something went wrong :/",
-                callback_id: "askDialogHandler",
-                actions: buttons,
-            }]),
-        })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
-        }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
-            console.error(err);
-        });
+    function sendMessage(isError){
+        if(isError){
+            axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
+                token: config('OAUTH_TOKEN'),
+                channel: payload.channel.id,
+                //text: 'Request sent!',
+                attachments: JSON.stringify([{
+                    title: title,
+                    color: color,
+                    text: text,
+                    fallback: "Something went wrong :/",
+                    callback_id: "askDialogHandler",
+                }]),
+            })).then((result) => {
+                console.log('sendConfirmation: ', result.data);
+            }).catch((err) => {
+                console.log('sendConfirmation error: ', err);
+                console.error(err);
+            });
+        } else {
+            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                token: config('OAUTH_TOKEN'),
+                channel: payload.channel.id,
+                //text: 'Request sent!',
+                attachments: JSON.stringify([{
+                    title: title,
+                    color: color,
+                    text: text,
+                    fallback: "Something went wrong :/",
+                    callback_id: "askDialogHandler",
+                    actions: buttons,
+                }]),
+            })).then((result) => {
+                console.log('sendConfirmation: ', result.data);
+            }).catch((err) => {
+                console.log('sendConfirmation error: ', err);
+                console.error(err);
+            });
+        }
     }
 }
 module.exports = { pattern: /askDialogHandler/ig, handler: handler }
