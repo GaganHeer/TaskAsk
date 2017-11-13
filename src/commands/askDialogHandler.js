@@ -26,7 +26,7 @@ const handler = (payload, res) => {
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
-            console.log(err);
+            sendMessage(true, "*** ERROR ***", err, RED);
         }
         if(correctIDStructure.test(receiver)){
         
@@ -38,7 +38,7 @@ const handler = (payload, res) => {
                     client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
                         done();
                         if(err) {
-                            console.log(err);
+                            sendMessage(true, "*** ERROR ***", err, RED);
                         }
                         sid =  result.rows[0].serial_id;
                         setButtons(sid);
@@ -51,7 +51,7 @@ const handler = (payload, res) => {
                 client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
                     done();
                     if(err) {
-                        console.log(err);
+                        sendMessage(true, "*** ERROR ***", err, RED);
                     }
                     sid =  result.rows[0].serial_id;
                     setButtons(sid);
