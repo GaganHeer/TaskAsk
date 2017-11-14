@@ -16,8 +16,10 @@ const handler = (payload, res) => {
     console.log("PAYLOAD INSIDE FORWARD DIALOG-----" + util.inspect(payload, {showHidden: false, depth: null}))
     const { trigger_id } = payload;
     
-    
-    const dialog = {
+    axios.post('https://slack.com/api/users.list', qs.stringify({
+                token: config('OAUTH_TOKEN'),
+            })).then((result) => {
+        const dialog = {
       token: config('OAUTH_TOKEN'),
       trigger_id,
       dialog: JSON.stringify({
@@ -41,6 +43,36 @@ const handler = (payload, res) => {
         ],
       }),
     };
+                console.log('sendConfirmation: ', result.data);
+            }).catch((err) => {
+                console.log('sendConfirmation error: ', err);
+                console.error(err);
+            });
+    
+    /*const dialog = {
+      token: config('OAUTH_TOKEN'),
+      trigger_id,
+      dialog: JSON.stringify({
+        title: 'Forward A Task',
+        callback_id: 'forwardDialog',
+        submit_label: 'Forward',
+        elements: [
+          {
+            label: 'Receiever',
+            type: 'text',
+            name: 'receiver',
+            hint: 'The person you want to forward this task to'
+          },
+          {
+            label: 'Task#',
+            type: 'text',
+            name: 'task',
+            value: payload.actions[0].value,
+            hint: 'ID# of the task you are forwarding',
+          },
+        ],
+      }),
+    };*/
 
     // open the dialog by calling dialogs.open method and sending the payload
     axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
