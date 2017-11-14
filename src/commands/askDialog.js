@@ -68,7 +68,7 @@ const handler = (payload, res) => {
         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
             .then((result) => {
                 console.log('dialog.open: ', result.data);
-                res.send('');
+                //res.send('');
             }).catch((err) => {
                 console.log('dialog.open call failed: %o', err);
                 res.sendStatus(500);
