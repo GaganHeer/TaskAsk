@@ -26,10 +26,11 @@ const handler = (payload, res) => {
         for (var i = 0; i < resultList.length; i++) {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
-                userList[resultList[i].id] = [resultList[i].real_name];
-                console.log(userList[resultList[i].id]);
+                userList.push("label:" + resultList[i].real_name, "value:" + resultList[i].id);
             }
 		}
+        
+        
         
         console.log(util.inspect(userList, {showHidden: false, depth: null}));
         console.log("llllllllllllllllllllllllllllllllllllllllll")
