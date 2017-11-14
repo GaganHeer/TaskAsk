@@ -23,7 +23,7 @@ const handler = (payload, res) => {
         var userList = new Object();
         //console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
         
-        for (var i = 0; i < userList.length; i++) {
+        for (var i = 0; i < resultList.length; i++) {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
                 userList[resultList[i].id] = [resultList[i].real_name];
