@@ -20,11 +20,12 @@ const handler = (payload, res) => {
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
         var userList = result.data;
-        console.log(userList);
+        console.log("USERS------" + userList);
+        console.log("RESULTS------" + result);
         
-        for (var i = 0; i < userList.length; i++) {
-			console.log(i + ": " + userList[i]);
-		}
+        //for (var i = 0; i < userList.length; i++) {
+		//	console.log(i + ": " + userList[i]);
+		//}
         
         const dialog = {
             token: config('OAUTH_TOKEN'),
@@ -53,13 +54,13 @@ const handler = (payload, res) => {
         
         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
             .then((result) => {
-                console.log('dialog.open: ', result.data);
+                //console.log('dialog.open: ', result.data);
                 res.send('');
             }).catch((err) => {
                 console.log('dialog.open call failed: %o', err);
                 res.sendStatus(500);
             });
-                console.log('sendConfirmation: ', result.data);
+        //console.log('sendConfirmation: ', result.data);
     }).catch((err) => {
         console.log('sendConfirmation error: ', err);
     });
