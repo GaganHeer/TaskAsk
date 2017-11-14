@@ -20,8 +20,8 @@ const handler = (payload, res) => {
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
         var userList = result.data;
-        console.log("USERS------" + userList);
-        console.log("RESULTS------" + result);
+        console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
+        console.log("RESULTS------" + util.inspect(result, {showHidden: false, depth: null}));
         
         //for (var i = 0; i < userList.length; i++) {
 		//	console.log(i + ": " + userList[i]);
