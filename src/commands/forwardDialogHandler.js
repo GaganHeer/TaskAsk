@@ -10,7 +10,7 @@ const qs = require('querystring')
 const axios = require('axios')
 const dateValidator = require('date-and-time')
 const RED = "ff0000"
-const YELLOW = "ffcc00"
+const GREEN = "33cc33"
 const PENDING_STATUS = "PENDING"
 
 var dbURL = process.env.ELEPHANTSQL_URL
