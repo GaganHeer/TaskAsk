@@ -21,8 +21,9 @@ const handler = (payload, res) => {
     var fowarder = "<@" + payload.user.id + ">";
     var taskNumber = payload.submission.task;
     var sid = "";
-    var receiver = payload.submission.receiver;
+    var receiver = "<@" + payload.submission.receiver + ">";
     console.log(receiver);
+    console.log(forwarder);
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
@@ -33,7 +34,7 @@ const handler = (payload, res) => {
             if(err) {
                 sendMessage(true, "*** ERROR ***", err, RED);
             }
-            var taskNumberRow = selectResult.rows;
+            var taskNumberRow = result.rows;
 			if(taskNumberRow.length == 0){
                 sendMessage(true, "*** ERROR ***", taskNumber + " is not a valid ID#", RED);
             } else if(!(taskNumberRow[0].receiver_id === forwarder || taskNumberRow[0].sender_id === forwarder)){
