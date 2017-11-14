@@ -33,7 +33,7 @@ const handler = (payload, res) => {
         
         
         console.log(util.inspect(userList, {showHidden: false, depth: null}));
-        console.log("llllllllllllllllllllllllllllllllllllllllll")
+        console.log("GODFUCKINGDAMMITWORK")
         
         const dialog = {
             token: config('OAUTH_TOKEN'),
