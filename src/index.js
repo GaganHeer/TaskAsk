@@ -83,7 +83,7 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     ]
 })
         }else{
-            res.send(' ');
+            res.send('');
         }
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
