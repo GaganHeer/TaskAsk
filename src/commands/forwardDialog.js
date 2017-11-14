@@ -17,8 +17,15 @@ const handler = (payload, res) => {
     const { trigger_id } = payload;
     
     axios.post('https://slack.com/api/users.list', qs.stringify({
-                token: config('OAUTH_TOKEN'),
+        token: config('OAUTH_TOKEN'),
     })).then((result) => {
+        var userList = result.data;
+        console.log(userList);
+        
+        for (var i = 0; i < userList.length; i++) {
+			console.log(i + ": " + userList[i]);
+		}
+        
         const dialog = {
             token: config('OAUTH_TOKEN'),
             trigger_id,
