@@ -1,0 +1,99 @@
+
+'use strict'
+
+const _ = require('lodash')
+const config = require('../config')
+const util = require('util')
+const moment = require('moment')
+const pg = require('pg')
+const qs = require('querystring')
+const axios = require('axios')
+const dateValidator = require('date-and-time')
+const RED = "ff0000"
+const YELLOW = "ffcc00"
+
+var dbURL = process.env.ELEPHANTSQL_URL
+
+const handler = (payload, res) => {
+    res.send('');
+    var title = payload.submission.title;
+    var desc = payload.submission.description;
+    var fowarder = "<@" + payload.user.id + ">";
+    var taskNumber = payload.submission.task;
+    var sid = "";
+    var receiver = payload.submission.receiver;
+    
+    pg.connect(dbURL, function(err, client, done) {
+        if(err) {
+            sendMessage(true, "*** ERROR ***", err, RED);
+        }
+        client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [taskNumber], function (err, result) {
+            done();
+            if(err) {
+                sendMessage(true, "*** ERROR ***", err, RED);
+            }
+            var taskNumberRow = selectResult.rows;
+			if(taskNumberRow.length == 0){
+                sendMessage(true, "*** ERROR ***", taskNumber + " is not a valid ID#", RED);
+            } else if(!(taskNumberRow[0].receiver_id === forwarder || taskNumberRow[0].sender_id === forwarder)){
+                sendMessage(true, "*** ERROR ***", "You can't forward this request only " + taskNumberRow[0].receiver_id + " and " + taskNumberRow[0].sender_id + " are allowed to", RED);
+            } else if (taskNumberRow[0].status !== PENDING_STATUS) {
+                sendMessage(true, "*** ERROR ***", forwarder + " that task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]", RED);
+            } else {
+                client.query("UPDATE ASK_TABLE SET RECEIVER_ID = $1 WHERE SERIAL_ID = $2", [receiver, taskNumber], function(err, updateResult) {
+                    client.query("SELECT * FROM ASK_TABlE WHERE SERIAL_ID = $1", [taskNumber], function(err2, selectResult){
+                        done();
+                        if(err2) {
+                            console.log(err2);
+                        }
+                    if(err) {
+                        console.log(err);
+                    }
+                        taskNumberRow = selectResult.rows;
+                        sendMessage(false, "Task Forwarded", forwarder + " you have forwarded ID#" + taskNumber + " '" + taskNumberRow[0].req_desc + "' to " + receivingUserID, GREEN);
+                    });
+                });
+            }
+        });
+    });
+    
+    function sendMessage(isError, title, text, color){
+        if(isError){
+            axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
+                token: config('OAUTH_TOKEN'),
+                user: payload.user.id,
+                channel: payload.channel.id,
+                attachments: JSON.stringify([{
+                    title: title,
+                    color: color,
+                    text: text,
+                    fallback: "Something went wrong :/",
+                    callback_id: "askDialogHandler",
+                }]),
+            })).then((result) => {
+                console.log('sendConfirmation: ', result.data);
+            }).catch((err) => {
+                console.log('sendConfirmation error: ', err);
+                console.error(err);
+            });
+        } else {
+            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                token: config('OAUTH_TOKEN'),
+                channel: payload.channel.id,
+                attachments: JSON.stringify([{
+                    title: title,
+                    color: color,
+                    text: text,
+                    fallback: "Something went wrong :/",
+                    callback_id: "askDialogHandler",
+                }]),
+            })).then((result) => {
+                console.log('sendConfirmation: ', result.data);
+            }).catch((err) => {
+                console.log('sendConfirmation error: ', err);
+                console.error(err);
+            });
+        }
+    }
+}
+module.exports = { pattern: /askDialogHandler/ig, handler: handler }

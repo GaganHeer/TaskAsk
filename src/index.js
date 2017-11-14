@@ -23,6 +23,7 @@ const delCommand = require('./commands/delete');
 const askDialog = require('./commands/askDialog')
 const askDialogHandler = require('./commands/askDialogHandler')
 const forwardDialog = require('./commands/forwardDialog')
+const forwardDialogHandler = require('./commands/forwardDialogHandler')
 
 let bot = require('./bot');
 
@@ -68,25 +69,20 @@ app.post('/commands/boneypants/button_handler', (req, res) => {
 
 app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     let payload = JSON.parse(req.body.payload);
-
-    console.log("INSIDE INDEX INTERACTIVE----------------" + util.inspect(payload, {showHidden: false, depth: null}))
     
     if(payload.callback_id === 'askDialog'){
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
         payload.original_message.text = payload.actions[0].value;
         var cmd = buttonHandler
-        console.log(payload.actions[0].name);
         if(payload.actions[0].name === "forward"){
             var cmd = forwardDialog
         }
-        //console.log("ASK DIALOG HANDLER-----------------------")
-        //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
+    } else if(payload.callback_id === 'forwardDialog'){
+        var cmd = forwardDialogHandler
     } else if (payload.callback_id === 'ask_buttons') {
        payload.original_message.text = payload.actions[0].value;
        var cmd = buttonHandler
-       //console.log("BUTTONS ------------------")
-       //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
     }
     cmd.handler(payload, res)
 }); 
