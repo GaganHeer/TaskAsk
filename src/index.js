@@ -76,6 +76,10 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     } else if (payload.callback_id === 'askDialogHandler'){
         payload.original_message.text = payload.actions[0].value;
         var cmd = buttonHandler
+        console.log(payload.actions[0].name);
+        if(payload.actions[0].name === "forward"){
+            var cmd = forwardDialog
+        }
         //console.log("ASK DIALOG HANDLER-----------------------")
         //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
     } else if (payload.callback_id === 'ask_buttons') {
@@ -83,10 +87,6 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
        var cmd = buttonHandler
        //console.log("BUTTONS ------------------")
        //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
-       console.log(payload.actions[2]);
-       if(payload.actions[2].name === "forward"){
-           var cmd = forwardDialog
-       }
     }
     cmd.handler(payload, res)
 }); 
