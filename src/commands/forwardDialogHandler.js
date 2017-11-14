@@ -99,4 +99,4 @@ const handler = (payload, res) => {
         }
     }
 }
-module.exports = { pattern: /askDialogHandler/ig, handler: handler }
+module.exports = { pattern: /forwardDialogHandler/ig, handler: handler }

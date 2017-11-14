@@ -10,15 +10,24 @@ const qs = require('querystring')
 const axios = require('axios')
 	
 var dbURL = process.env.ELEPHANTSQL_URL
-var correctIDStructure = /^<@.*[|].*>$/
 
 const handler = (payload, res) => {
     
     const { token, text, trigger_id } = payload;
     
-    if(correctIDStructure.test(text)){
-        var receiverSplit = text.split("|");
-        var receivingUserID = receiverSplit[0] + ">";
+    axios.post('https://slack.com/api/users.list', qs.stringify({
+        token: config('OAUTH_TOKEN'),
+    })).then((result) => {
+        var resultList = result.data.members;
+        var userList = [];
+        var userListIndex = 0;
+        
+        for (var i = 0; i < resultList.length; i++) {
+            if(resultList[i].is_bot == false){
+                userList[userListIndex] = {label: resultList[i].real_name, value: resultList[i].id};
+                userListIndex++;
+            }
+		}
         
         const dialog = {
           token: config('OAUTH_TOKEN'),
@@ -46,11 +55,10 @@ const handler = (payload, res) => {
                 hint: 'Uses a 24 hour clock || Format: MMM d YYYY hh:mm || ex) Oct 29 2017 21:30',
               },
               {
-                label: 'Receiver',
-                type: 'text',
-                name: 'receiver',
-                value: receivingUserID,
-                hint: 'Do not change',
+                "label": "Receiver",
+                "type": "select",
+                "name": "receiver",
+                "options": userList,
               },
             ],
           }),
@@ -58,34 +66,16 @@ const handler = (payload, res) => {
 
         // open the dialog by calling dialogs.open method and sending the payload
         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-          .then((result) => {
-            console.log('dialog.open: ', result.data);
-            res.send('');
-          }).catch((err) => {
-            console.log('dialog.open call failed: %o', err);
-            res.sendStatus(500);
-          });
-    } else {
-        let attachments = [{
-            title: "Incorrect Parameters",
-            color: "#ff0000",
-            text: "Please enter the correct format /askdialog [@User] \n ex) /askdialog @David"
-		}]	
-        
-        const msgDefaults = {
-		  response_type: 'ephemeral',
-		  username: 'MrBoneyPantsGuy',
-		  icon_emoji: config('ICON_EMOJI')
-		}
-        
-        let msg = _.defaults({
-		channel: payload.channel_name,
-		attachments: attachments
-	    }, msgDefaults)
-
-        res.set('content-type', 'application/json')
-        res.status(200).json(msg)
-        return
-    }
+            .then((result) => {
+                console.log('dialog.open: ', result.data);
+                res.send('');
+            }).catch((err) => {
+                console.log('dialog.open call failed: %o', err);
+                res.sendStatus(500);
+            });
+        console.log('sendConfirmation: ', result.data);
+    }).catch((err) => {
+        console.log('sendConfirmation error: ', err);
+    });
 }
 module.exports = { pattern: /askDialog/ig, handler: handler }
