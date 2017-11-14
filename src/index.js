@@ -71,6 +71,7 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     let payload = JSON.parse(req.body.payload);
     
     if(payload.callback_id === 'askDialog'){
+        console.log("ITS HERE-------------" + payload)
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
         payload.original_message.text = payload.actions[0].value;
