@@ -27,14 +27,12 @@ const handler = (payload, res) => {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
                 userList[resultList[i].id] = [resultList[i].real_name];
+                console.log(userList[resultList[i].id]);
             }
 		}
         
         console.log(util.inspect(userList, {showHidden: false, depth: null}));
         console.log("llllllllllllllllllllllllllllllllllllllllll")
-        console.log(userList[0].label + " " + userList[0].value);
-        console.log(userList[1].label + " " + userList[1].value);
-        console.log(userList[2].label + " " + userList[2].value);
         
         const dialog = {
             token: config('OAUTH_TOKEN'),
