@@ -22,6 +22,7 @@ const handler = (payload, res) => {
     var taskNumber = payload.submission.task;
     var sid = "";
     var receiver = payload.submission.receiver;
+    console.log(receiver);
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
