@@ -28,6 +28,7 @@ const handler = (payload, res) => {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
                 userList[userListIndex] = {label: resultList[i].real_name, value: resultList[i].id};
+                userListIndex++;
             }
 		}
         
@@ -64,16 +65,7 @@ const handler = (payload, res) => {
                         "label": "Receiver",
                         "type": "select",
                         "name": "receiver",
-                        "options": [
-                            {
-                                "label": "user1",
-                                "value": "user1"
-                            },
-                            {
-                                "label": "user2",
-                                "value": "user2"
-                            },
-                        ]
+                        "options": userList,
                     },
                     {
                         label: 'Task#',
