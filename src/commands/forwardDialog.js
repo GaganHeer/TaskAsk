@@ -19,13 +19,12 @@ const handler = (payload, res) => {
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
-        var userList = result.data;
+        var userList = result.data.members;
         console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
-        console.log("RESULTS------" + util.inspect(result, {showHidden: false, depth: null}));
         
-        //for (var i = 0; i < userList.length; i++) {
-		//	console.log(i + ": " + userList[i]);
-		//}
+        for (var i = 0; i < userList.length; i++) {
+			console.log(i + ": " + userList[i]);
+		}
         
         const dialog = {
             token: config('OAUTH_TOKEN'),
