@@ -35,7 +35,7 @@ const handler = (payload, res) => {
             label: 'Task#',
             type: 'text',
             name: 'task',
-            value: payload.actions[0].value
+            value: payload.actions[0].value,
             hint: 'ID# of the task you are forwarding',
           },
         ],
