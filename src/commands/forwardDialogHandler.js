@@ -18,12 +18,12 @@ const handler = (payload, res) => {
     res.send('');
     var title = payload.submission.title;
     var desc = payload.submission.description;
-    var fowarder = "<@" + payload.user.id + ">";
+    var forwarder = "<@" + payload.user.id + ">";
     var taskNumber = payload.submission.task;
     var sid = "";
     var receiver = "<@" + payload.submission.receiver + ">";
     console.log(receiver);
-    console.log(fowarder);
+    console.log(forwarder);
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
