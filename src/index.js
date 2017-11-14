@@ -69,6 +69,8 @@ app.post('/commands/boneypants/button_handler', (req, res) => {
 app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     let payload = JSON.parse(req.body.payload);
     
+    console.log("INSIDE INDEX INTERACTIVE----------------" + payload)
+    
     if(payload.callback_id === 'askDialog'){
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
