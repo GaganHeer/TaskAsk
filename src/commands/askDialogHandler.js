@@ -96,7 +96,7 @@ const handler = (payload, res) => {
                         text: "Forward",
                         type: "button",
                         value: sid,
-                        style: "danger",
+                        style: "info",
                         "confirm": {
                             "title": "Are you sure?",
                             "text": "You are about to forward this, are you sure?",
