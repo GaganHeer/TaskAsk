@@ -22,6 +22,7 @@ const forCommand = require('./commands/forward');
 const delCommand = require('./commands/delete');
 const askDialog = require('./commands/askDialog')
 const askDialogHandler = require('./commands/askDialogHandler')
+const forwardDialog = require('./commands/forwardDialog')
 
 let bot = require('./bot');
 
@@ -80,6 +81,10 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
        var cmd = buttonHandler
        //console.log("BUTTONS ------------------")
        //console.log(util.inspect(payload.original_message.attachments, {showHidden: false, depth: null}))
+       console.log(payload.actions[2]);
+       if(payload.actions[2].name === "forward"){
+           var cmd = forwardDialog
+       }
     }
     cmd.handler(payload, res)
 }); 

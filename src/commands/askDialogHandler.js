@@ -90,6 +90,19 @@ const handler = (payload, res) => {
                             "ok_text": "Yes",
                             "dismiss_text": "No"
                         }
+                    },
+                    {
+                        name: "forward", 
+                        text: "Forward",
+                        type: "button",
+                        value: sid,
+                        style: "danger",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to forward this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
                     }
                   ];
     }
