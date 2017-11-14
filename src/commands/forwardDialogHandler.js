@@ -53,7 +53,7 @@ const handler = (payload, res) => {
                         console.log(err);
                     }
                         taskNumberRow = selectResult.rows;
-                        sendMessage(false, "Task Forwarded", forwarder + " you have forwarded ID#" + taskNumber + " '" + taskNumberRow[0].req_desc + "' to " + receivingUserID, GREEN);
+                        sendMessage(false, "Task Forwarded", forwarder + " you have forwarded ID#" + taskNumber + " '" + taskNumberRow[0].req_desc + "' to " + receiver, GREEN);
                     });
                 });
             }
