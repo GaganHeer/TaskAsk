@@ -23,7 +23,7 @@ const handler = (payload, res) => {
     var sid = "";
     var receiver = "<@" + payload.submission.receiver + ">";
     console.log(receiver);
-    console.log(forwarder);
+    console.log(fowarder);
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
