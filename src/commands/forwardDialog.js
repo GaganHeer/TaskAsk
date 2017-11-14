@@ -30,6 +30,18 @@ const handler = (payload, res) => {
             }
 		}
         
+        var option = [
+                            {
+                                "label": "user1",
+                                "value": "user1"
+                            },
+                            {
+                                "label": "user2",
+                                "value": "user2"
+                            },
+                        ]
+        
+        console.log("OPTIONS---------------" + util.inspect(option, {showHidden: false, depth: null}));
         
         
         console.log(util.inspect(userList, {showHidden: false, depth: null}));
