@@ -27,8 +27,7 @@ const handler = (payload, res) => {
         for (var i = 0; i < resultList.length; i++) {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
-                userList[userListIndex].label = resultList[i].real_name;
-                userList[userListIndex].value = resultList[i].id;
+                userList[userListIndex] = {label: resultList[i].real_name, value: resultList[i].id};
             }
 		}
         
