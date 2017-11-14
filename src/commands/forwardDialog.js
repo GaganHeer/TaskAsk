@@ -42,6 +42,10 @@ const handler = (payload, res) => {
                         ]
         
         console.log("OPTIONS---------------" + util.inspect(option, {showHidden: false, depth: null}));
+        console.log("OPTIONS2---------------" + option[0]);
+        console.log("OPTIONS3---------------" + option[0].label);
+        console.log("OPTIONS4---------------" + option[0].value);
+        console.log("OPTIONS5---------------" + option[1].value);
         
         
         console.log(util.inspect(userList, {showHidden: false, depth: null}));
