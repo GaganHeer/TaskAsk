@@ -19,14 +19,18 @@ const handler = (payload, res) => {
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
-        var userList = result.data.members;
+        var resultList = result.data.members;
+        var userList = [];
         console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
         
         for (var i = 0; i < userList.length; i++) {
-            if(userList[i].is_bot == false){
-                console.log(i + ": " + userList[i].real_name);
+            if(resultList[i].is_bot == false){
+                console.log(i + ": " + resultList[i].real_name);
+                userList.push("label": resultList[i].real_name, "value": resultList[i].id);
             }
 		}
+        
+        console.log(userList[0]);
         
         const dialog = {
             token: config('OAUTH_TOKEN'),
@@ -37,17 +41,26 @@ const handler = (payload, res) => {
                 submit_label: 'Forward',
                 elements: [
                     {
-                    label: 'Receiever',
-                    type: 'text',
-                    name: 'receiver',
-                    hint: 'The person you want to forward this task to'
+                        "label": "Receiver",
+                        "type": "select",
+                        "name": "receiver",
+                        "options": [
+                            {
+                                "label": "user1",
+                                "value": "user1"
+                            },
+                            {
+                                "label": "user2",
+                                "value": "user2"
+                            },
+                        ]
                     },
                     {
-                    label: 'Task#',
-                    type: 'text',
-                    name: 'task',
-                    value: payload.actions[0].value,
-                    hint: 'ID# of the task you are forwarding',
+                        label: 'Task#',
+                        type: 'text',
+                        name: 'task',
+                        value: payload.actions[0].value,
+                        hint: 'ID# of the task you are forwarding',
                     },
                 ],
             }),
