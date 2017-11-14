@@ -21,16 +21,18 @@ const handler = (payload, res) => {
     })).then((result) => {
         var resultList = result.data.members;
         var userList = [];
+        var userListIndex = 0;
         //console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
         
         for (var i = 0; i < resultList.length; i++) {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
-                userList.push("label:" + resultList[i].real_name, "value:" + resultList[i].id);
+                userList[userListIndex].label = resultList[i].real_name;
+                userList[userListIndex].value = resultList[i].id;
             }
 		}
         
-        var option = [
+        /*var option = [
                             {
                                 "label": "user1",
                                 "value": "user1"
@@ -45,7 +47,7 @@ const handler = (payload, res) => {
         console.log("OPTIONS2---------------" + option[0]);
         console.log("OPTIONS3---------------" + option[0].label);
         console.log("OPTIONS4---------------" + option[0].value);
-        console.log("OPTIONS5---------------" + option[1].value);
+        console.log("OPTIONS5---------------" + option[1].value);*/
         
         
         console.log(util.inspect(userList, {showHidden: false, depth: null}));
