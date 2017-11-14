@@ -21,12 +21,14 @@ const handler = (payload, res) => {
     })).then((result) => {
         var resultList = result.data.members;
         var userList = [];
+        var userListIndex = 0;
         //console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
         
         for (var i = 0; i < userList.length; i++) {
             if(resultList[i].is_bot == false){
                 console.log(i + ": " + resultList[i].real_name);
-                userList.push("label:" + resultList[i].real_name, "value:" + resultList[i].id);
+                userList[userListIndex] = ["label: " + resultList[i].real_name, "value: " + resultList[i].id];
+                userListIndex++;
             }
 		}
         
