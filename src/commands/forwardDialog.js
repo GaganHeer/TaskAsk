@@ -21,7 +21,7 @@ const handler = (payload, res) => {
     })).then((result) => {
         var resultList = result.data.members;
         var userList = [];
-        console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
+        //console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
         
         for (var i = 0; i < userList.length; i++) {
             if(resultList[i].is_bot == false){
@@ -30,7 +30,11 @@ const handler = (payload, res) => {
             }
 		}
         
-        console.log(userList[0]);
+        console.log(util.inspect(userList, {showHidden: false, depth: null}));
+        console.log("llllllllllllllllllllllllllllllllllllllllll")
+        console.log(userList[0].label + " " + userList[0].value);
+        console.log(userList[1].label + " " + userList[1].value);
+        console.log(userList[2].label + " " + userList[2].value);
         
         const dialog = {
             token: config('OAUTH_TOKEN'),
