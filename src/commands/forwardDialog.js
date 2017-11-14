@@ -23,7 +23,9 @@ const handler = (payload, res) => {
         console.log("USERS------" + util.inspect(userList, {showHidden: false, depth: null}));
         
         for (var i = 0; i < userList.length; i++) {
-			console.log(i + ": " + userList[i]);
+            if(userList[i].is_bot == false){
+                console.log(i + ": " + userList[i].real_name);
+            }
 		}
         
         const dialog = {
