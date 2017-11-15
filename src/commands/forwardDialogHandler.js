@@ -16,7 +16,6 @@ const PENDING_STATUS = "PENDING"
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
-    res.send('');
     var title = payload.submission.title;
     var desc = payload.submission.description;
     var forwarder = "<@" + payload.user.id + ">";
@@ -37,20 +36,33 @@ const handler = (payload, res) => {
             }
             var taskNumberRow = result.rows;
 			if(taskNumberRow.length == 0){
-                sendMessage(true, "*** ERROR ***", taskNumber + " is not a valid ID#", RED);
+                res.send({
+                    "errors": [{
+                        "name": "task",
+                        "error": taskNumber + " is not a valid ID#"
+                    }]
+                })
+                //sendMessage(true, "*** ERROR ***", taskNumber + " is not a valid ID#", RED);
             } else if(!(taskNumberRow[0].receiver_id === forwarder || taskNumberRow[0].sender_id === forwarder)){
                 sendMessage(true, "*** ERROR ***", "You can't forward this request only " + taskNumberRow[0].receiver_id + " and " + taskNumberRow[0].sender_id + " are allowed to", RED);
             } else if (taskNumberRow[0].status !== PENDING_STATUS) {
-                sendMessage(true, "*** ERROR ***", forwarder + " that task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]", RED);
+                res.send({
+                    "errors": [{
+                        "name": "task",
+                        "error": forwarder + " that task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]"
+                    }]
+                })
+                //sendMessage(true, "*** ERROR ***", forwarder + " that task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]", RED);
             } else {
+                res.send('')
                 client.query("UPDATE ASK_TABLE SET RECEIVER_ID = $1 WHERE SERIAL_ID = $2", [receiver, taskNumber], function(err, updateResult) {
                     client.query("SELECT * FROM ASK_TABlE WHERE SERIAL_ID = $1", [taskNumber], function(err2, selectResult){
                         done();
                         if(err2) {
-                            console.log(err2);
+                            sendMessage(true, "*** ERROR ***", err2, RED);
                         }
                     if(err) {
-                        console.log(err);
+                        sendMessage(true, "*** ERROR ***", err, RED);
                     }
                         taskNumberRow = selectResult.rows;
                         sendMessage(false, "Forwarded task: " + taskNumberRow[0].title, "Hey " + receiver + "! " + forwarder + " has forwarded ID#" + taskNumber + " '" + taskNumberRow[0].req_desc + "' to you", GREEN);
