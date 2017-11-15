@@ -43,7 +43,7 @@ const handler = (payload, res) => {
             let currentDate = new Date();
             let formatDueDate = payload.submission.due;
             formatDueDate.toLowerCase();
-            formatDueDate.substring(0,1).toUpperCase();
+            formatDueDate.charAt(0).toUpperCase();
             console.log("FORMAT-----------" + formatDueDate);
             let dueDate = new Date(formatDueDate);
             //Check if valid date format and that date hasn't already past
