@@ -15,7 +15,18 @@ const YELLOW = "ffcc00"
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
-    res.send('');
+    if(payload.submission.title !== 'r'){
+            res.send({
+    "errors": [
+        {
+            "name": "title",
+            "error": "Sorry, this email domain is not authorized!"
+        },
+    ]
+})
+        }else{
+            res.send('');
+        }
     var title = payload.submission.title;
     var desc = payload.submission.description;
     var receiver = "<@" + payload.submission.receiver + ">";

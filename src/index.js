@@ -73,18 +73,6 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     if(payload.callback_id === 'askDialog'){
         console.log("ITS HERE-------------" + util.inspect(payload.actions, {showHidden: false, depth: null}));
         console.log(payload.submission.title);
-        if(payload.submission.title !== 'r'){
-            res.send({
-    "errors": [
-        {
-            "name": "title",
-            "error": "Sorry, this email domain is not authorized!"
-        },
-    ]
-})
-        }else{
-            res.send('');
-        }
         var cmd = askDialogHandler
     } else if (payload.callback_id === 'askDialogHandler'){
         payload.original_message.text = payload.actions[0].value;
