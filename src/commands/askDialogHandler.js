@@ -31,6 +31,10 @@ const handler = (payload, res) => {
         if(payload.submission.due){
             var currentDate = new Date();
             var dueDate = new Date(payload.submission.due);
+            console.log("CURRENT DATE GMT" + currentDate.toDateString());
+            var offset = -8;
+            var newDate = new Date( new Date().getTime() + offset * 3600 * 1000).toUTCString().replace( / GMT$/, "" )
+            console.log("NEW DATE PST----" + newDate.toDateString());
             //Check if valid date format and that date hasn't already past
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                 res.send('');
