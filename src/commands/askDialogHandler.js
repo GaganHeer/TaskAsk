@@ -42,8 +42,9 @@ const handler = (payload, res) => {
         if(payload.submission.due){
             let currentDate = new Date();
             let formatDueDate = payload.submission.due
-            formatDueDate.toLowerCase().substring(0,1).toUpperCase();
-            console.log(formatDueDate);
+            formatDueDate.toLowerCase()
+            formatDueDate.substring(0,1).toUpperCase();
+            console.log("FORMAT-----------" + formatDueDate);
             let dueDate = new Date(formatDueDate);
             //Check if valid date format and that date hasn't already past
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
