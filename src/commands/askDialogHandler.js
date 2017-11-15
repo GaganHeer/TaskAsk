@@ -20,7 +20,7 @@ const handler = (payload, res) => {
     "errors": [
         {
             "name": "title",
-            "error": "THAT AINT RIGHT BRO"
+            "error": "OMFG IT ACTUALLY WORKS"
         },
     ]
 })
