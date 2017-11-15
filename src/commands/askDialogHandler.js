@@ -41,8 +41,8 @@ const handler = (payload, res) => {
         
         if(payload.submission.due){
             let currentDate = new Date();
-            let formatDueDate = payload.submission.due
-            formatDueDate.toLowerCase()
+            let formatDueDate = payload.submission.due;
+            formatDueDate.toLowerCase();
             formatDueDate.substring(0,1).toUpperCase();
             console.log("FORMAT-----------" + formatDueDate);
             let dueDate = new Date(formatDueDate);
