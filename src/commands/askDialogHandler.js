@@ -50,7 +50,6 @@ const handler = (payload, res) => {
                         "error": "Invalid Date!"
                     }]
                 })
-                sendMessage(true, "*** ERROR ***", "Invalid Date!", RED);
             }
         } else {
             res.send('');
