@@ -29,17 +29,11 @@ const handler = (payload, res) => {
         }
         
         if(payload.submission.due){
-            var currentDate = new Date();
             var dueDate = new Date(payload.submission.due);
-            
-            console.log("CURRENT DATE GMT" + currentDate);
-            console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
-            
             var offset = -8;
-            var newDate = new Date( new Date().getTime() + offset * 3600 * 1000).toUTCString().replace( / GMT$/, "" )
+            var currentDate = new Date( new Date().getTime() + offset * 3600 * 1000).toUTCString().replace( / GMT$/, "" )
             
-            console.log("NEW DATE PST----" + newDate);
-            console.log(util.inspect(newDate, {showHidden: false, depth: null}));
+            console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
             
             //Check if valid date format and that date hasn't already past
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
