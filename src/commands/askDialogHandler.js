@@ -30,17 +30,12 @@ const handler = (payload, res) => {
         
         if(payload.submission.due){
             var dueDate = new Date(payload.submission.due);
-            var offset = -8;
-            var currentDate = new Date( new Date().getTime() + offset * 3600 * 1000).toUTCString().replace( / GMT$/, "" )
+            var currentDate = new Date();
+            currentDate.setHours(d.getHours() - 8);
             
             console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
             
             //Check if valid date format and that date hasn't already past
-            var d = new Date();
-            console.log("BLEHHH----" + d)
-            d.setHours(d.getHours() - 8);
-            console.log("CURRENT----" + d);
-            
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                 res.send('');
                 client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
