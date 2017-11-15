@@ -40,12 +40,12 @@ const handler = (payload, res) => {
         }
         
         if(payload.submission.due){
-            let currentDate = new Date();
-            let formatDueDate = payload.submission.due;
+            var currentDate = new Date();
+            var formatDueDate = payload.submission.due;
             formatDueDate.toLowerCase();
             formatDueDate.charAt(0).toUpperCase();
             console.log("FORMAT-----------" + formatDueDate);
-            let dueDate = new Date(formatDueDate);
+            var dueDate = new Date(formatDueDate);
             //Check if valid date format and that date hasn't already past
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                 client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
