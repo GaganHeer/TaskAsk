@@ -42,9 +42,7 @@ const handler = (payload, res) => {
         if(payload.submission.due){
             var currentDate = new Date();
             var formatDueDate = payload.submission.due;
-            formatDueDate.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}
+            formatDueDate = lowercaseEverything(formatDueDate);
             console.log("FORMAT-----------" + formatDueDate);
             var dueDate = new Date(formatDueDate);
             //Check if valid date format and that date hasn't already past
@@ -74,6 +72,10 @@ const handler = (payload, res) => {
         }
     });
     
+    function lowercaseEverything(word){
+        return word[0].toUpperCase() + word.substr(1);
+    }
+            
     function setButtons(sid){
         buttons = [
                     {
