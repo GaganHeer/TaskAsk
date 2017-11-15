@@ -38,7 +38,7 @@ const handler = (payload, res) => {
             //Check if valid date format and that date hasn't already past
             var d = new Date();
             console.log("BLEHHH----" + d)
-            d.setHours(d.getHours() - 2);
+            d.setHours(d.getHours() - 8);
             console.log("CURRENT----" + d);
             
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
