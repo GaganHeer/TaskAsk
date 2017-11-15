@@ -31,7 +31,7 @@ const handler = (payload, res) => {
         if(payload.submission.due){
             var dueDate = new Date(payload.submission.due);
             var currentDate = new Date();
-            currentDate.setHours(d.getHours() - 8);
+            currentDate.setHours(currentDate.getHours() - 8);
             
             console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
             
