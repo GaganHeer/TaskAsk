@@ -49,7 +49,7 @@ const handler = (payload, res) => {
                 res.send({
                     "errors": [{
                         "name": "task",
-                        "error": forwarder + " that task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]"
+                        "error": "That task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]"
                     }]
                 })
                 //sendMessage(true, "*** ERROR ***", forwarder + " that task can't be forwarded! it is currently [" + taskNumberRow[0].status + "]", RED);
