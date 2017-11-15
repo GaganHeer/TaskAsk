@@ -15,17 +15,6 @@ const YELLOW = "ffcc00"
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
-    if(payload.submission.title !== 'r'){
-            res.send({
-    "errors": [
-        {
-            "name": "title",
-            "error": "OMFG IT ACTUALLY WORKS"
-        },
-    ]
-})
-        }else{
-            res.send('');
         
     var title = payload.submission.title;
     var desc = payload.submission.description;
@@ -44,6 +33,7 @@ const handler = (payload, res) => {
             var dueDate = new Date(payload.submission.due);
             //Check if valid date format and that date hasn't already past
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+                res.send('');
                 client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
                     done();
                     if(err) {
@@ -54,9 +44,16 @@ const handler = (payload, res) => {
                     sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due, YELLOW);
                 })
             } else {
+                res.send({
+                    "errors": [{
+                        "name": "due",
+                        "error": "Invalid Date!"
+                    }]
+                })
                 sendMessage(true, "*** ERROR ***", "Invalid Date!", RED);
             }
         } else {
+            res.send('');
             client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
                 done();
                 if(err) {
@@ -151,6 +148,5 @@ const handler = (payload, res) => {
             });
         }
     }
-        }
 }
 module.exports = { pattern: /askDialogHandler/ig, handler: handler }
