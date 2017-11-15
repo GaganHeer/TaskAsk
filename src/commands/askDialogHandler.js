@@ -36,6 +36,7 @@ const handler = (payload, res) => {
             console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
             
             //Check if valid date format and that date hasn't already past
+            console.log(currentDate - dueDate);
             if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                 res.send('');
                 client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
