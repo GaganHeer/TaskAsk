@@ -20,13 +20,13 @@ const handler = (payload, res) => {
     "errors": [
         {
             "name": "title",
-            "error": "Sorry, this email domain is not authorized!"
+            "error": "THAT AINT RIGHT BRO"
         },
     ]
 })
         }else{
             res.send('');
-        }
+        
     var title = payload.submission.title;
     var desc = payload.submission.description;
     var receiver = "<@" + payload.submission.receiver + ">";
@@ -151,5 +151,6 @@ const handler = (payload, res) => {
             });
         }
     }
+        }
 }
 module.exports = { pattern: /askDialogHandler/ig, handler: handler }
