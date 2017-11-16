@@ -44,7 +44,13 @@ const handler = (payload, res) => {
                 })
                 //sendMessage(true, "*** ERROR ***", taskNumber + " is not a valid ID#", RED);
             } else if(!(taskNumberRow[0].receiver_id === forwarder || taskNumberRow[0].sender_id === forwarder)){
-                sendMessage(true, "*** ERROR ***", "You can't forward this request only " + taskNumberRow[0].receiver_id + " and " + taskNumberRow[0].sender_id + " are allowed to", RED);
+                //sendMessage(true, "*** ERROR ***", "You can't forward this request only " + taskNumberRow[0].receiver_id + " and " + taskNumberRow[0].sender_id + " are allowed to", RED);
+                res.send({
+                    "errors": [{
+                        "name": "task",
+                        "error": "You haven't sent or received this request you can't forward it"
+                    }]
+                })
             } else if (taskNumberRow[0].status !== PENDING_STATUS) {
                 res.send({
                     "errors": [{
