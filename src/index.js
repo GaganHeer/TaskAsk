@@ -103,6 +103,20 @@ app.post('/commands/boneypants/askdialog', (req, res) => {
 	cmd.handler(payload, res)
 })
 
+app.post('/commands/boneypants/donedialog', (req, res) => {
+    let payload = req.body
+    
+    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
+    let err = '✋  Star—what? An invalid slash token was provided\n' +
+              '   Is your Slack slash token correctly configured?'
+    console.log(err)
+    res.status(401).end(err)
+    return
+    }
+    let cmd = doneDialog;
+	cmd.handler(payload, res)
+})
+
 app.post('/commands/boneypants/ask', (req, res) => {
   let payload = req.body;
 

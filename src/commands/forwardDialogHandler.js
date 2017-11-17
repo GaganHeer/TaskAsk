@@ -48,7 +48,7 @@ const handler = (payload, res) => {
                 res.send({
                     "errors": [{
                         "name": "task",
-                        "error": "You haven't sent or received this request you can't forward it"
+                        "error": "You haven't sent or received this request so you can't forward it"
                     }]
                 })
             } else if (taskNumberRow[0].status !== PENDING_STATUS) {

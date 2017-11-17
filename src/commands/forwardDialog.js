@@ -66,30 +66,5 @@ const handler = (payload, res) => {
     }).catch((err) => {
         console.log('sendConfirmation error: ', err);
     });
-    
-    /*const dialog = {
-      token: config('OAUTH_TOKEN'),
-      trigger_id,
-      dialog: JSON.stringify({
-        title: 'Forward A Task',
-        callback_id: 'forwardDialog',
-        submit_label: 'Forward',
-        elements: [
-          {
-            label: 'Receiever',
-            type: 'text',
-            name: 'receiver',
-            hint: 'The person you want to forward this task to'
-          },
-          {
-            label: 'Task#',
-            type: 'text',
-            name: 'task',
-            value: payload.actions[0].value,
-            hint: 'ID# of the task you are forwarding',
-          },
-        ],
-      }),
-    };*/
 }
 module.exports = { pattern: /forwardDialog/ig, handler: handler }
