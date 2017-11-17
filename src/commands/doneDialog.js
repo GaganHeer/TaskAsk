@@ -29,6 +29,8 @@ const handler = (payload, res) => {
             for (var i = 0; i < result.rows.length; i++) {
                 acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
 		    }
+            console.log("LENGTH" + result.rows.length);
+            console.log(result.rows[i].serial_id);
         })
     });
     
@@ -59,4 +61,4 @@ const handler = (payload, res) => {
             res.sendStatus(500);
         });
 }
-module.exports = { pattern: /forwardDialog/ig, handler: handler }
+module.exports = { pattern: /doneDialog/ig, handler: handler }
