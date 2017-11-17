@@ -16,7 +16,7 @@ const handler = (payload, res) => {
     
     const { trigger_id } = payload;
     var acceptedList = [];
-    
+    console.log("_________________" + payload.user_id);
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
             console.log("*** ERROR ***" + err);
