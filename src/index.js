@@ -24,6 +24,7 @@ const askDialog = require('./commands/askDialog')
 const askDialogHandler = require('./commands/askDialogHandler')
 const forwardDialog = require('./commands/forwardDialog')
 const forwardDialogHandler = require('./commands/forwardDialogHandler')
+const doneDialog = require('./commands/doneDialog')
 
 let bot = require('./bot');
 
