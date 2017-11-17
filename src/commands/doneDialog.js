@@ -30,7 +30,8 @@ const handler = (payload, res) => {
                 acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
 		    }
             console.log("LENGTH" + result.rows.length);
-            console.log(result.rows[i].serial_id);
+            console.log(result.rows[0].serial_id);
+            console.log(result.rows[1].serial_id);
         })
     });
     
