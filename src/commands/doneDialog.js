@@ -21,7 +21,7 @@ const handler = (payload, res) => {
         if(err) {
             console.log("*** ERROR ***" + err);
         }
-        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [payload.user.id, ACCEPTED_STATUS], function(err, result) {
+        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [payload.user_id, ACCEPTED_STATUS], function(err, result) {
             done();
             if(err) {
                 console.log("*** ERROR ***" + err);

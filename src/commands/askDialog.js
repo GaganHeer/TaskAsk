@@ -33,7 +33,7 @@ const handler = (payload, res) => {
           token: config('OAUTH_TOKEN'),
           trigger_id,
           dialog: JSON.stringify({
-            title: 'Request A Taskkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+            title: 'Request A Task',
             callback_id: 'askDialog',
             submit_label: 'Request',
             elements: [
