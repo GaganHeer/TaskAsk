@@ -16,12 +16,12 @@ const handler = (payload, res) => {
     
     const { trigger_id } = payload;
     var acceptedList = [];
-    console.log("_________________" + payload.user_id);
+    var receiver = "<@" + payload.user_id + ">";
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
             console.log("*** ERROR ***" + err);
         }
-        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [payload.user_id, ACCEPTED_STATUS], function(err, result) {
+        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [receiver, ACCEPTED_STATUS], function(err, result) {
             done();
             if(err) {
                 console.log("*** ERROR ***" + err);
