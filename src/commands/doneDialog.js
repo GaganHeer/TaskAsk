@@ -27,11 +27,8 @@ const handler = (payload, res) => {
                 console.log("*** ERROR ***" + err);
             }
             for (var i = 0; i < result.rows.length; i++) {
-                acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
+                acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].jira_id};
 		    }
-            console.log("LENGTH" + result.rows.length);
-            console.log(result.rows[0].serial_id);
-            console.log(result.rows[1].serial_id);
             
             const dialog = {
                 token: config('OAUTH_TOKEN'),
@@ -42,7 +39,7 @@ const handler = (payload, res) => {
                     submit_label: 'Done',
                     elements: [
                         {
-                            "label": "Tasks",
+                            "label": "Accepted Tasks",
                             "type": "select",
                             "name": "task",
                             "options": acceptedList,

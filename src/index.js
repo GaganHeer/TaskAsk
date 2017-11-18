@@ -83,9 +83,11 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
         }
     } else if(payload.callback_id === 'forwardDialog'){
         var cmd = forwardDialogHandler
+    } else if(payload.callback_id === 'doneDialog') {
+        var cmd = doneDialogHandler
     } else if (payload.callback_id === 'ask_buttons') {
        payload.original_message.text = payload.actions[0].value;
-       var cmd = buttonHandler
+        var cmd = buttonHandler
     }
     cmd.handler(payload, res)
 }); 
