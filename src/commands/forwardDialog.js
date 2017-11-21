@@ -15,7 +15,6 @@ var dbURL = process.env.ELEPHANTSQL_URL
 const handler = (payload, res) => {
     
     const { trigger_id } = payload;
-    var receiver = "<@" + payload.user.id + ">";
     
     console.log("FORWARD DIALOG PAYLOAD" + util.inspect(payload, {showHidden: false, depth: null}));
     
@@ -26,6 +25,9 @@ const handler = (payload, res) => {
         var pendingList = [];
         var userList = [];
         var userListIndex = 0;
+        var receiver = "<@" + payload.user.id + ">";
+        
+        console.log("RECEIVER" + receiver);
         
         pg.connect(dbURL, function(err, client, done) {
             if(err) {
