@@ -90,6 +90,7 @@ app.post('/commands/boneypants/forwarddialog', (req, res) => {
     res.status(401).end(err)
     return
     }
+    console.log("Index Forward Dialog" + util.inspect(payload.actions, {showHidden: false, depth: null}));
     let cmd = forwardDialog;
 	cmd.handler(payload, res)
 })
