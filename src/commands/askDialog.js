@@ -60,6 +60,7 @@ const handler = (payload, res) => {
                 "type": "select",
                 "name": "receiver",
                 "options": userList,
+                "value": resultList[0].value
               },
             ],
           }),
