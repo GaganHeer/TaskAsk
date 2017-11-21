@@ -8,6 +8,7 @@ const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
+const ACCEPTED_STATUS = "ACCEPTED";
 	
 var dbURL = process.env.ELEPHANTSQL_URL
 
