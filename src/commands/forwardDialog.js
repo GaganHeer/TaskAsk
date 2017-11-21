@@ -64,7 +64,7 @@ const handler = (payload, res) => {
                             },
                             {
                                 label: 'Task#',
-                                type: 'text',
+                                type: 'select',
                                 name: 'task',
                                 options: pendingList,
                                 value: payload.actions[0].value,
