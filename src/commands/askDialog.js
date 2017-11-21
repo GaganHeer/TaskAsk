@@ -29,6 +29,9 @@ const handler = (payload, res) => {
             }
 		}
         
+        console.log("VALUE " + resultList[0].value);
+        console.log("name " + resultList[0].real_name);
+        
         const dialog = {
           token: config('OAUTH_TOKEN'),
           trigger_id,
