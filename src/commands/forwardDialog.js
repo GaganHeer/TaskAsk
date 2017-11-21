@@ -8,17 +8,21 @@ const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
+const PENDING_STATUS = "PENDING";
 	
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
-    console.log("FORWARD PAYLOAD" + util.inspect(payload.actions, {showHidden: false, depth: null}));
+    
+    console.log("FORWARD DIALOG PAYLOAD " + util.inspect(payload.actions, {showHidden: false, depth: null}));
+    
     const { trigger_id } = payload;
     
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
         var resultList = result.data.members;
+        var forwardList = [];
         var userList = [];
         var userListIndex = 0;
         
@@ -26,13 +30,13 @@ const handler = (payload, res) => {
             if(err) {
                 console.log("*** ERROR ***" + err);
             }
-            client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [receiver, ACCEPTED_STATUS], function(err, result) {
+            client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [payload.user.id, PENDING_STATUS], function(err, result) {
                 done();
                 if(err) {
                     console.log("*** ERROR ***" + err);
                 }
                 for (var i = 0; i < result.rows.length; i++) {
-                    acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].jira_id};
+                    forwardList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
                 }
                 for (var i = 0; i < resultList.length; i++) {
                     if(resultList[i].is_bot == false){
@@ -56,10 +60,11 @@ const handler = (payload, res) => {
                             },
                             {
                                 label: 'Task#',
-                                type: 'text',
+                                type: 'select',
                                 name: 'task',
-                                value: payload.actions[0].value,
-                                hint: 'ID# of the task you are forwarding',
+                                options: forwardList,
+                                value: result.rows[0].serial_id,
+                                hint: 'The task you are forwarding to another person',
                             },
                         ],
                     }),
