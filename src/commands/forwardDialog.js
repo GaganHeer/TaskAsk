@@ -69,7 +69,7 @@ const handler = (payload, res) => {
                                 type: 'select',
                                 name: 'task',
                                 options: pendingList,
-                                value: payload.actions[0].value,
+                                //value: payload.actions[0].value,
                                 hint: 'The task you are forwarding',
                             },
                         ],
