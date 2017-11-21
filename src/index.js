@@ -42,33 +42,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => { res.send('\n 👋 🌍 \n') });
 
-/* All of this is handled in the interactiveComponent post
-
-app.post('/commands/boneypants/button_handler', (req, res) => {
-    var payload = JSON.parse(req.body.payload);
-	
-	payload.original_message.text = payload.actions[0].value;
-	
-	console.log(payload.token);
-	
-	console.log(!payload);
-
- 	if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-		let err = 'BONES IS OUTTA CALCIUM';
-		console.log(err);
-		res.status(401).end(err);
-    	return
-  	}
-	
-	//debug code. 	
-	//	console.log("ACTIONS: " + util.inspect(payload.actions, {showHidden: false, depth: null}));
-	//	console.log("NAME: " + payload.actions[0].name);
-	//	console.log("ACCEPT");
-
-	let cmd = buttonHandler;
-	cmd.handler(payload, res)	
-});*/
-
 app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     let payload = JSON.parse(req.body.payload);
     
@@ -104,6 +77,20 @@ app.post('/commands/boneypants/askdialog', (req, res) => {
     return
     }
     let cmd = askDialog;
+	cmd.handler(payload, res)
+})
+
+app.post('/commands/boneypants/forwarddialog', (req, res) => {
+    let payload = req.body
+    
+    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
+    let err = '✋  Star—what? An invalid slash token was provided\n' +
+              '   Is your Slack slash token correctly configured?'
+    console.log(err)
+    res.status(401).end(err)
+    return
+    }
+    let cmd = forwardDialog;
 	cmd.handler(payload, res)
 })
 
