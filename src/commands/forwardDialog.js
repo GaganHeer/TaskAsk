@@ -15,7 +15,7 @@ const handler = (payload, res) => {
     
     const { trigger_id } = payload;
     
-    console.log("FORWARD DIALOG PAYLOAD" + util.inspect(payload.actions, {showHidden: false, depth: null}));
+    console.log("FORWARD DIALOG PAYLOAD" + util.inspect(payload, {showHidden: false, depth: null}));
     
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
