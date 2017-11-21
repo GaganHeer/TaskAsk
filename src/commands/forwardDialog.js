@@ -26,11 +26,13 @@ const handler = (payload, res) => {
         var userList = [];
         var userListIndex = 0;
         var receiver = "";
+        var sid = ""
         
         if(payload.user_id){
             receiver = "<@" + payload.user_id + ">";
         } else {
             receiver = "<@" + payload.user.id + ">";
+            sid = payload.actions[0].value
         }
         
         console.log("RECEIVER" + receiver);
@@ -75,7 +77,7 @@ const handler = (payload, res) => {
                                 type: 'select',
                                 name: 'task',
                                 options: pendingList,
-                                value: payload.actions[0].value,
+                                value: sid,
                                 hint: 'The task you are forwarding',
                             },
                         ],
