@@ -63,7 +63,7 @@ const handler = (payload, res) => {
                                 type: 'select',
                                 name: 'task',
                                 options: forwardList,
-                                value: result.rows[0].serial_id,
+                                value: payload.actions[0].value,
                                 hint: 'The task you are forwarding to another person',
                             },
                         ],
