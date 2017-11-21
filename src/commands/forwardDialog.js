@@ -25,7 +25,13 @@ const handler = (payload, res) => {
         var pendingList = [];
         var userList = [];
         var userListIndex = 0;
-        var receiver = "<@" + payload.user.id + ">";
+        var receiver = "";
+        
+        if(!(payload.user.id)){
+            receiver = "<@" + payload.user_id + ">";
+        } else {
+            receiver = "<@" + payload.user.id + ">";
+        }
         
         console.log("RECEIVER" + receiver);
         
