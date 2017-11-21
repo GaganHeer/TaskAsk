@@ -11,6 +11,7 @@ const axios = require('axios')
 const dateValidator = require('date-and-time')
 const RED = "ff0000"
 const YELLOW = "ffcc00"
+const MAX_TITLE_LENGTH = 15;
 
 var dbURL = process.env.ELEPHANTSQL_URL
 
@@ -23,51 +24,60 @@ const handler = (payload, res) => {
     var sid = "";
     var buttons = "";
     
-    pg.connect(dbURL, function(err, client, done) {
-        if(err) {
-            sendMessage(true, "*** ERROR ***", err, RED);
-        }
-        
-        if(payload.submission.due){
-            var dueDate = new Date(payload.submission.due);
-            var currentDate = new Date();
-            currentDate.setHours(currentDate.getHours() - 8);
-            
-            console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
-            
-            //Check if valid date format and that date hasn't already past
-            if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+    if(title.length > MAX_TITLE_LENGTH) {
+        res.send({
+                    "errors": [{
+                        "name": "title",
+                        "error": "Must be 15 characters or less"
+                    }]
+                })
+    } else {
+        pg.connect(dbURL, function(err, client, done) {
+            if(err) {
+                sendMessage(true, "*** ERROR ***", err, RED);
+            }
+
+            if(payload.submission.due){
+                var dueDate = new Date(payload.submission.due);
+                var currentDate = new Date();
+                currentDate.setHours(currentDate.getHours() - 8);
+
+                console.log(util.inspect(currentDate, {showHidden: false, depth: null}));
+
+                //Check if valid date format and that date hasn't already past
+                if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+                    res.send('');
+                    client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
+                        done();
+                        if(err) {
+                            sendMessage(true, "*** ERROR ***", err, RED);
+                        }
+                        sid =  result.rows[0].serial_id;
+                        setButtons(sid);
+                        sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due, YELLOW);
+                    })
+                } else {
+                    res.send({
+                        "errors": [{
+                            "name": "due",
+                            "error": "Invalid Date!"
+                        }]
+                    })
+                }
+            } else {
                 res.send('');
-                client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due], function(err, result) {
+                client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
                     done();
                     if(err) {
                         sendMessage(true, "*** ERROR ***", err, RED);
                     }
                     sid =  result.rows[0].serial_id;
                     setButtons(sid);
-                    sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due, YELLOW);
-                })
-            } else {
-                res.send({
-                    "errors": [{
-                        "name": "due",
-                        "error": "Invalid Date!"
-                    }]
+                    sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc, YELLOW);
                 })
             }
-        } else {
-            res.send('');
-            client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title], function(err, result) {
-                done();
-                if(err) {
-                    sendMessage(true, "*** ERROR ***", err, RED);
-                }
-                sid =  result.rows[0].serial_id;
-                setButtons(sid);
-                sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc, YELLOW);
-            })
-        }
-    });
+        });
+    }
             
     function setButtons(sid){
         buttons = [

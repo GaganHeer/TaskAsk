@@ -64,7 +64,7 @@ const handler = (payload, res) => {
                 console.log('dialog.open call failed: %o', err);
                 res.sendStatus(500);
             });
-        console.log('sendConfirmation: ', result.data);
+        //console.log('sendConfirmation: ', result.data);
     }).catch((err) => {
         console.log('sendConfirmation error: ', err);
     });
