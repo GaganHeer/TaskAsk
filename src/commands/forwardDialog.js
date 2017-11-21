@@ -27,7 +27,7 @@ const handler = (payload, res) => {
         var userListIndex = 0;
         var receiver = "";
         
-        if(!(payload.user.id)){
+        if(payload.user_id){
             receiver = "<@" + payload.user_id + ">";
         } else {
             receiver = "<@" + payload.user.id + ">";
