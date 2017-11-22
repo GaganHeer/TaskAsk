@@ -22,8 +22,6 @@ const handler = (payload, res) => {
     var taskNumber = payload.submission.task;
     var sid = "";
     var receiver = "<@" + payload.submission.receiver + ">";
-    console.log(receiver);
-    console.log(forwarder);
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
@@ -88,7 +86,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
@@ -105,7 +102,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {

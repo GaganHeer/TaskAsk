@@ -9,6 +9,7 @@ const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
 const ACCEPTED_STATUS = "ACCEPTED";
+const RED = "ff0000"
 	
 var dbURL = process.env.ELEPHANTSQL_URL
 
@@ -19,12 +20,12 @@ const handler = (payload, res) => {
     var receiver = "<@" + payload.user_id + ">";
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
-            console.log("*** ERROR ***" + err);
+            sendMessage("*** ERROR ***", err, RED);
         }
-        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2", [receiver, ACCEPTED_STATUS], function(err, result) {
+        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100", [receiver, ACCEPTED_STATUS], function(err, result) {
             done();
             if(err) {
-                console.log("*** ERROR ***" + err);
+                sendMessage("*** ERROR ***", err, RED);
             }
             for (var i = 0; i < result.rows.length; i++) {
                 acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].jira_id};
@@ -52,10 +53,29 @@ const handler = (payload, res) => {
                 console.log('dialog.open: ', result.data);
                 res.send('');
             }).catch((err) => {
-                console.log('dialog.open call failed: %o', err);
+                sendMessage("*** ERROR ***", err, RED);
                 res.sendStatus(500);
             });
         })
     });
+    
+    function sendMessage(title, text, color){
+        axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
+            token: config('OAUTH_TOKEN'),
+            user: receiver,
+            channel: channel,
+            attachments: JSON.stringify([{
+                title: title,
+                color: color,
+                text: text,
+                callback_id: "askDialogHandler",
+            }]),
+        })).then((result) => {
+            console.log('sendConfirmation: ', result.data);
+        }).catch((err) => {
+            console.log('sendConfirmation error: ', err);
+            console.error(err);
+        });
+    }
 }
 module.exports = { pattern: /doneDialog/ig, handler: handler }

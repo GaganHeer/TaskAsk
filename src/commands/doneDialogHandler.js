@@ -11,7 +11,7 @@ const axios = require('axios')
 const JiraApi = require('jira').JiraApi;
 const RED = "ff0000"
 const GREEN = "33cc33"
-const PENDING_STATUS = "PENDING"
+const DONE_STATUS = "DONE"
 
 var dbURL = process.env.ELEPHANTSQL_URL;
 const dbConfig = config('DB_CONFIG');
@@ -33,15 +33,16 @@ const handler = (payload, res) => {
                 sendMessage(true, "*** ERROR ***", error, RED);
                 //return(error);
             } else {
-                console.log("Jira Status change was a: "+ JSON.stringify(issueUpdate));
+                console.log("Jira Status change was a: " + JSON.stringify(issueUpdate));
                 pg.connect(dbURL, function(err, client, done) {
-                    client.query("UPDATE ASK_TABLE SET status = 'DONE', fin_date = NOW() WHERE jira_id = $1 RETURNING *", [jid], function(err, result) {
+                    client.query("UPDATE ASK_TABLE SET status = $1, fin_date = NOW() WHERE jira_id = $2 RETURNING *", [DONE_STATUS, jid], function(err, result) {
                         if(err) {
                             title = "*** ERROR ***";
                             sendMessage(true, "*** ERROR ***", err, RED);
                         }
                         console.log("TITLE-------" + result.rows[0].title);
                         sendMessage(false, "Done", "The following task is now done: " + result.rows[0].title, GREEN);
+                        res.send('')
                     });
                 });
             }
@@ -58,7 +59,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
@@ -75,7 +75,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
@@ -87,4 +86,4 @@ const handler = (payload, res) => {
         }
     }
 }
-module.exports = { pattern: /forwardDialogHandler/ig, handler: handler }
+module.exports = { pattern: /doneDialogHandler/ig, handler: handler }
