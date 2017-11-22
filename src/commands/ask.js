@@ -97,7 +97,7 @@ const handler = (payload, res) => {
 		if(success) {
 
 			axios.post('https://slack.com/api/im.list', qs.stringify({
-			    token: process.env.POST_BOT_TOKEN,
+			    token: config('POST_BOT_TOKEN'),
 			    
 			})).then(function (resp){
 				console.log(resp.data);
@@ -107,8 +107,8 @@ const handler = (payload, res) => {
 					if(targetDM==resp.data.ims[t].user){
 						finalUser = resp.data.ims[t].id;
 						finalUserId = resp.data.ims[t].user;
-						axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
-						    token: process.env.POST_BOT_TOKEN,
+						axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+						    token: config('POST_BOT_TOKEN'),
 						    channel: finalUser,
 						    user:finalUserId,
 						    as_user:true,
