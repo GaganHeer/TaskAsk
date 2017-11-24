@@ -37,6 +37,8 @@ const rejectDialog = require('./commands/rejectDialog')
 const rejectDialogHandler = require('./commands/rejectDialogHandler')
 const acceptDialog = require('./commands/acceptDialog')
 const acceptDialogHandler = require('./commands/acceptDialogHandler')
+const detCommand = require('./commands/details')
+
 
 let bot = require('./bot');
 

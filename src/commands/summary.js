@@ -125,6 +125,9 @@ const handler = (payload, res) => {
 					type: "button"
 				}
 			]
+		},
+		{
+			text: "Use /progress [id] for more information and options"
 		}
 	]
 	

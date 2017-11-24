@@ -65,7 +65,49 @@ const handler = (payload, res) => {
                     }
                     //console.log(result);
                     var outMsg = "";
+                    sid = result.rows[0].question_id;
+                    setButtons(sid);
                     var task = result.rows;
+
+                     //Dm
+
+                    var finalUser;
+                    var finalUserId;
+                    var targetDM = task[0].sender_id.slice(2,11);
+
+
+                    axios.post('https://slack.com/api/im.list', qs.stringify({
+                        token: config('POST_BOT_TOKEN'),
+
+                    })).then(function (resp){
+                        console.log(resp.data);
+                        for(var t = 0; t < resp.data.ims.length; t++){
+                            console.log(t);
+                            console.log(resp.data.ims[t].id);
+                            if(targetDM==resp.data.ims[t].user){
+                                finalUser = resp.data.ims[t].id;
+                                finalUserId = resp.data.ims[t].user;
+                                axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                    token: config('POST_BOT_TOKEN'),
+                                    channel: finalUser,
+                                    user:finalUserId,
+                                    as_user:true,
+                                    text: task[0].receiver_id+": needs clarification on TASK: "+task[0].serial_id,
+
+                                })).then((resulttt) => {
+                                    console.log('sendConfirmation: ', resulttt.data);
+                                }).catch((err) => {
+                                    console.log('sendConfirmation error: ', err);
+                                    console.error(err);
+                                });
+                            }
+                        }
+                    }).catch(function (err){
+                        console.log(err);
+                    });
+
+                    //End of DM
+                    
                     outMsg =  "Hey "+task[0].sender_id+"," +clarID+"  "+"needs clarification on TASK - "+" "+ task[0].req_desc+" \n QUESTION: "+ desc;
                     test(false, outMsg, PURPLE);
 
@@ -77,7 +119,22 @@ const handler = (payload, res) => {
     })
  });
                                                                           
-                                                                        
+   function setButtons(sid){
+       buttons = [
+           {
+                       name: "answer", 
+                        text: "Answer",
+                        type: "button",
+                        value: sid,
+                        "confirm": {
+                            "title":"Answer",
+                            "text": "Are you ready to answer the question?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+       ]
+   }                                                                     
         
     function test(isError, msg, color){
         if(isError){
@@ -90,6 +147,8 @@ const handler = (payload, res) => {
                     text: msg,
                     fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
+                    actions: buttons
+                    
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
@@ -104,8 +163,8 @@ const handler = (payload, res) => {
                 attachments: JSON.stringify([{
                     color: color,
                     text: msg,
-                    fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
+                    actions: buttons
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);

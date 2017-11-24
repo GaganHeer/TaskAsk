@@ -7,6 +7,8 @@ const pg = require('pg')
 const REJECT_STATUS = "REJECTED"
 const DONE_STATUS = "DONE"
 const PURPLE = "#755990"
+const qs = require('querystring');
+const axios = require('axios');
 
 var dbURL = process.env.ELEPHANTSQL_URL || "postgres://jxdszhdu:HhgxHHy4W-JTlNcQsOi9TWUzEJA0kcod@elmer.db.elephantsql.com:5432/jxdszhdu";
 
@@ -65,11 +67,54 @@ const handler = (payload, res) => {
                     done();
 				    if(err) {
 					   console.log(err);
-				}
+				    }
                //console.log(result);
-               var task = result.rows;
-               outMsg =  "Hey "+task[0].sender_id+","+"<@" + payload.user_id + ">"+" "+"needs clarification on TASK - "+" "+ task[0].req_desc+" \n QUESTION: "+ request;
-               test(outMsg, PURPLE);
+                   var task = result.rows;
+
+                   //Dm
+
+                    var finalUser;
+                    var finalUserId;
+                    var targetDM = task[0].sender_id.slice(2,11);
+
+
+                    axios.post('https://slack.com/api/im.list', qs.stringify({
+                        token: config('POST_BOT_TOKEN'),
+
+                    })).then(function (resp){
+                        console.log(resp.data);
+                        for(var t = 0; t < resp.data.ims.length; t++){
+                            console.log(t);
+                            console.log(resp.data.ims[t].id);
+                            if(targetDM==resp.data.ims[t].user){
+                                finalUser = resp.data.ims[t].id;
+                                finalUserId = resp.data.ims[t].user;
+                                axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                    token: config('POST_BOT_TOKEN'),
+                                    channel: finalUser,
+                                    user:finalUserId,
+                                    as_user:true,
+                                    text: task[0].receiver_id+": needs clarification on TASK: "+task[0].serial_id,
+
+                                })).then((resulttt) => {
+                                    console.log('sendConfirmation: ', resulttt.data);
+                                }).catch((err) => {
+                                    console.log('sendConfirmation error: ', err);
+                                    console.error(err);
+                                });
+                            }
+                        }
+                    }).catch(function (err){
+                        console.log(err);
+                    });
+
+                    //End of DM
+
+                   outMsg =  "Hey "+task[0].sender_id+","+"<@" + payload.user_id + ">"+" "+"needs clarification on TASK - "+" "+ task[0].req_desc+" \n QUESTION: "+ request;
+                   test(outMsg, PURPLE);
+
+                    
+
 
                 })
 				

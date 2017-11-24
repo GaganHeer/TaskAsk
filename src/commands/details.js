@@ -18,23 +18,24 @@ var pool = new pg.Pool(dbConfig);
 var onlyNumbers = /^[0-9]*$/;   //regEx to test task id.
 
 const handler = (payload, res) => {
-    var channelName = payload.channel_name;
-    var deletingUserID = "<@" + payload.user_id + ">";
+//    var channelName = payload.channel_name;
+//    var deletingUserID = "<@" + payload.user_id + ">";
+	var channelName;
+	var taskNumber;
+	var isButton = false;
 
 	if(payload.hasOwnProperty('original_message')) {
 		console.log("BUTTON PRESSED TIME TO TRIM");
 		
 		taskNumber = parseInt(payload.original_message.text);
-		deletingUserID = "<@" + payload.user.id + ">";
 		channelName = payload.channel.name;
 		isButton = true;
 	} else if(!onlyNumbers.test(payload.text)) {
-        var wrongParamMsg = "Please enter the correct format /delete [ID#] \n ex) /accept 24"
+        var wrongParamMsg = "Please enter the correct format /details [ID#] \n ex) /accept 24"
         var wrongParamTitle = "*** ERROR ***"
         createSendMsg(wrongParamTitle, wrongParamMsg, RED, ONLY_USER);
 	} else {
 		taskNumber = parseInt(payload.text);
-		deletingUserID = "<@" + payload.user_id + ">";
 		channelName = payload.channel_name;
 	}
 	
@@ -47,22 +48,12 @@ const handler = (payload, res) => {
 				let falseIDMsg = taskNumber + " is not a valid ID#";
 				let falseIDTitle = "*** ERROR ***";
 				createSendMsg(falseIDTitle, falseIDMsg, RED, ONLY_USER);
-			} else if (!ALLOWED_STATUS.includes(taskNumberRow[0].status)) {
-				let notPendRejMsg = deletingUserID + " that task can't be deleted! it is currently [" + taskNumberRow[0].status + "]";
-				let notPendRejTitle = "*** ERROR ***";
-				createSendMsg(notPendRejTitle, notPendRejMsg, RED, ONLY_USER);
-				
-			} else if(taskNumberRow[0].sender_id != deletingUserID) {
-				let invalidAcceptMsg = deletingUserID + " that task is assigned by " + taskNumberRow[0].sender_id + " not you!";
-				let invalidAcceptTitle = "*** ERROR ***";
-				createSendMsg(invalidAcceptTitle, invalidAcceptMsg, RED, ONLY_USER);
 			} else {
 				pool.connect().then(client => {
-					return client.query('DELETE FROM ask_table WHERE serial_id = $1;', [taskNumber])
+					return client.query('SELECT * FROM clarify_table WHERE serial_id = $1;', [taskNumber])
 						.then(response => {
-						let deleteMsg = 'Task: '+ taskNumber +' Successfully Deleted';
-						let deleteTitle = 'Task Deleted';
-						createSendMsg(deleteTitle, deleteMsg, GREEN, IN_CHANNEL);
+						let detailTitle = 'Task: ' + taskNumber;
+						createSendMsg(detailTitle, resp.rows[0], GREEN, IN_CHANNEL, response);
 					})
 						.catch(e => {
 						client.release();
@@ -79,13 +70,49 @@ const handler = (payload, res) => {
 		})
 	});
 
-    function createSendMsg(attachTitle, attachMsg, attachColor, respType){
-
-        let msgAttachment = [{
-            title: attachTitle,
-            text: attachMsg,
-            color: attachColor
-        }];
+    function createSendMsg(attachTitle, attachMsg, attachColor, respType, response=false){
+		var msgAttachment;
+		
+		if(response != false) {
+			msgAttachment = [];
+			msgAttachment.push({
+				title: attachTitle,
+				text: attachMsg.req_desc + "\nTo: " + attachMsg.receiver_id + "\nFrom: " + attachMsg.sender_id,
+				color: "#000000",
+			});
+			var color = "#000000";
+			for(var i = 0; i < response.rows.length; i++) {
+				if(color === "#000000") {
+					color = "#afafaf"
+					console.log('WHITE')
+				} else if (color === "#afafaf") {
+					color = "#000000"
+					console.log("BLACK")
+				}
+				console.log(color)
+				msgAttachment.push({
+					text: response.rows[i].clar_quest,
+					color: color
+				});
+			}
+		} else if(isButton) {
+			var ogMsg = payload.original_message.attachments;
+			if(attachTitle != "*** ERROR ***") {
+				delete ogMsg[0].actions;
+			}
+			msgAttachment = [ogMsg[0], {
+        	    title: attachTitle,
+        	    text: attachMsg,
+        	    color: attachColor
+        	}]
+		} else {
+        	msgAttachment = [{
+        	    title: attachTitle,
+        	    text: attachMsg,
+        	    color: attachColor
+        	}]
+		}
+        
 
         const msgDefaults = {
             response_type: respType,

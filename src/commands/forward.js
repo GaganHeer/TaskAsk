@@ -11,12 +11,18 @@ const GREEN = "33cc33"
 const IN_CHANNEL = 'in_channel';
 const ONLY_USER = 'ephemeral'
 
+const qs = require('querystring');
+const axios = require('axios');
+
 var dbURL = process.env.ELEPHANTSQL_URL;
 var onlyNumbers = /^[0-9]*$/
 var correctIDStructure = /^<@.*[|].*>$/
 
 const handler = (payload, res) => {
-    
+
+    var finalUser;
+    var finalUserId;
+
     var payloadParams = payload.text.split(" ");
     var channelName = payload.channel_name;
     var forwardingUserID = "<@" + payload.user_id + ">";   
@@ -68,6 +74,45 @@ const handler = (payload, res) => {
                                 console.log(err);
                             }
                             taskNumberRow = selectResult.rows;
+
+                            var targetDM = taskNumberRow[0].receiver_id.slice(2,11);
+                            axios.post('https://slack.com/api/im.list', qs.stringify({
+                                token: config('POST_BOT_TOKEN'),
+                                
+                            })).then(function (resp){
+                                console.log(resp.data);
+                                for(var t = 0; t < resp.data.ims.length; t++){
+                                    console.log(t);
+                                    console.log(resp.data.ims[t].id);
+                                    if(targetDM==resp.data.ims[t].user){
+                                        finalUser = resp.data.ims[t].id;
+                                        finalUserId = resp.data.ims[t].user;
+                                        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                            token: config('POST_BOT_TOKEN'),
+                                            channel: finalUser,
+                                            user:finalUserId,
+                                            as_user:true,
+                                            text: 'Forwarded by <@'+payload.user_id+">",
+                                            attachments: JSON.stringify([
+                                              {
+                                                title: "Forward",
+                                                color: 'ffcc00'
+                                                
+                                              },
+                                            ]),
+                                          })).then((result) => {
+                                                console.log('sendConfirmation: ', result.data);
+                                              }).catch((err) => {
+                                                console.log('sendConfirmation error: ', err);
+                                                console.error(err);
+                                            });
+                                            }
+                                        }
+                                    }).catch(function (err){
+                                        console.log(err);
+                                    });
+
+
                             var forwardMsg = forwardingUserID + " you have forwarded ID#" + taskNumber + " '" + taskNumberRow[0].req_desc + "' to " + receivingUserID;
                             var forwardTitle = "Task Forwarded";
                             createSendMsg(forwardTitle, forwardMsg, GREEN, IN_CHANNEL);
@@ -76,6 +121,8 @@ const handler = (payload, res) => {
                 }
             });
         });
+
+
     }
     
     function createSendMsg(attachTitle, attachMsg, attachColor, respType){

@@ -13,6 +13,7 @@ const RED = "ff0000"
 const GREEN = "33cc33"
 const PENDING_STATUS = "PENDING"
 
+
 var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
@@ -69,6 +70,46 @@ const handler = (payload, res) => {
                         sendMessage(true, "*** ERROR ***", err, RED);
                     }
                         taskNumberRow = selectResult.rows;
+                        var finalUser;
+                        var finalUserId;
+                        var targetDM = taskNumberRow[0].receiver_id.slice(2,11);
+                        axios.post('https://slack.com/api/im.list', qs.stringify({
+                            token: config('POST_BOT_TOKEN'),
+                            
+                        })).then(function (resp){
+                            console.log(resp.data);
+                            for(var t = 0; t < resp.data.ims.length; t++){
+                                console.log(t);
+                                console.log(resp.data.ims[t].id);
+                                if(targetDM==resp.data.ims[t].user){
+                                    finalUser = resp.data.ims[t].id;
+                                    finalUserId = resp.data.ims[t].user;
+                                    axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                        token: config('POST_BOT_TOKEN'),
+                                        channel: finalUser,
+                                        user:finalUserId,
+                                        as_user:true,
+                                        text: 'Forwarded by :'+taskNumberRow[0].receiver_id, 
+                                        attachments: JSON.stringify([
+                                          {
+                                            title: "Forward",
+                                            color: 'ffcc00'
+                                            
+                                          },
+                                        ]),
+                                      })).then((result) => {
+                                            console.log('sendConfirmation: ', result.data);
+                                          }).catch((err) => {
+                                            console.log('sendConfirmation error: ', err);
+                                            console.error(err);
+                                        });
+                                        }
+                                    }
+                                }).catch(function (err){
+                                    console.log(err);
+                                });
+
+
                         sendMessage(false, "Forwarded task: " + taskNumberRow[0].title, "Hey " + receiver + "! " + forwarder + " has forwarded ID#" + taskNumber + " '" + taskNumberRow[0].req_desc + "' to you", GREEN);
                     });
                 });

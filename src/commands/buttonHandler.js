@@ -140,13 +140,13 @@ const handler = (payload, res) => {
 			for (var i = 0; i < data.length; i++) {
 				var stat = data[i].status;
 				if(stat === "PENDING") {
-					pend = pend + data[i].sender_id + " asked you to: " + data[i].req_desc + " on " + data[i].req_date + " (ID: " + data[i].serial_id + ") \n";	
+					pend = pend + "Task: " + data[i].serial_id + " --> " + data[i].title + "\n";	
 				} else if (stat === "REJECTED") {
-					rej = rej + data[i].sender_id + " asked you to: " + data[i].req_desc + " on " + data[i].req_date + " (ID: " + data[i].serial_id + ") \n";		
+					rej = rej + "Task: " + data[i].serial_id + " --> " + data[i].title + "\n";	
 				} else if (stat === "ACCEPTED") {
-					acc = acc + data[i].sender_id + " asked you to: " + data[i].req_desc + " on " + data[i].req_date + " (ID: " + data[i].serial_id + ") \n";		
+					acc = acc + "Task: " + data[i].serial_id + " --> " + data[i].title + "\n";	
 				} else if (stat === "DONE") {
-					done = done + data[i].sender_id + " asked you to: " + data[i].req_desc + " on " + data[i].req_date + " (ID: " + data[i].serial_id + ") \n";		
+					done = done + "Task: " + data[i].serial_id + " --> " + data[i].title + "\n";			
 				} else {
 					console.log("ERR AT: " + data[i]);
 				}
@@ -154,13 +154,13 @@ const handler = (payload, res) => {
 			for (var i = 0; i < sendData.length; i++) {			
 				var stat = sendData[i].status;
 				if (stat === "PENDING") {
-					sendPend = sendPend + "You asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + ") \n";		
+					sendPend = sendPend + "Task: " + sendData[i].serial_id + " --> " +  sendData[i].title + "\n";			
 				} else if (stat === "REJECTED") {
-					sendRej = sendRej + "You asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + ") \n";		
+					sendRej = sendRej + "Task: " + sendData[i].serial_id + " --> " +  sendData[i].title + "\n";			
 				} else if (stat === "ACCEPTED") {
-					sendAcc = sendAcc + "You asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + ") \n";		
+					sendAcc = sendAcc + "Task: " + sendData[i].serial_id + " --> " +  sendData[i].title + "\n";			
 				} else if (stat === "DONE") {
-					sendDone = sendDone + "You asked: " + sendData[i].receiver_id + " to: " + sendData[i].req_desc + " on " + sendData[i].req_date + " (ID: " + sendData[i].serial_id + ") \n";		
+					sendDone = sendDone + "Task: " + sendData[i].serial_id + " --> " +  sendData[i].title + "\n";		
 				} else {
 					console.log("ERR AT: " + sendData[i]);
 				}
