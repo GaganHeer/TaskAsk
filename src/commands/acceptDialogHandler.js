@@ -44,7 +44,7 @@ const handler = (payload, res) => {
     let dbQ1 = "SELECT * FROM clarify_table WHERE serial_id = $1;";
 	let dbQ2 = "SELECT * FROM ask_table WHERE serial_id = $1";
 		
-    taskNumber = parseInt(payload.original_message.text);
+    taskNumber = payload.submission.task;
     acceptingUserID = "<@" + payload.user.id + ">";
     channelName = payload.channel.name;
 
@@ -148,7 +148,7 @@ const handler = (payload, res) => {
                                                                                             user:finalUserId,
                                                                                             color: GREEN,
                                                                                             as_user:true,
-                                                                                            text: payload.user.id + " has accepted ID# " + taskNumber + ": " + jiraSummary,
+                                                                                            text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
 
                                                                                         })).then((result) => {
                                                                                             console.log('sendConfirmation: ', result.data);
