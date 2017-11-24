@@ -43,7 +43,6 @@ let bot = require('./bot');
 let app = express();
 
 
-
 if (config('PROXY_URI')) {
   app.use(proxy(config('PROXY_URI'), {
     forwardPath: (req, res) => { return require('url').parse(req.url).path }
@@ -88,6 +87,7 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     } else if (payload.callback_id === 'progressDialog'){
         var cmd = progressDialogHandler;
     } else if (payload.callback_id === 'progress_buttons') {
+        payload.original_message.text = payload.actions[0].value;
         var cmd = buttonHandler;
     } else if (payload.callback_id === 'rejectDialog') {
         var cmd = rejectDialogHandler;
