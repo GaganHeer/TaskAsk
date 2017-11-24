@@ -35,7 +35,7 @@ var issueTrans = {
 };
 
 const handler = (payload, res) => {
-    
+	
     var channelName;
     var acceptingUserID;
 	var taskNumber;
@@ -45,7 +45,7 @@ const handler = (payload, res) => {
 	let dbQ2 = "SELECT * FROM ask_table WHERE serial_id = $1";
 
     if(payload.hasOwnProperty('original_message')) {
-		console.log("BUTTON PRESSED TIME TO TRIM");
+//		console.log("BUTTON PRESSED"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		
 		taskNumber = parseInt(payload.original_message.text);
 		acceptingUserID = "<@" + payload.user.id + ">";
@@ -99,7 +99,7 @@ const handler = (payload, res) => {
                                     return client.query('SELECT * FROM user_table WHERE slack_id = $1 OR slack_id = $2', [receiverSlackID, senderSlackID])
                                         .then(res => {
                                             client.release();
-                                            console.log("Log 1: "+ res.rows[0].f_name);
+//                                            console.log("Log 1: "+ res.rows[0].f_name);  //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                             for (let i=0; i<res.rows.length; i++){
                                                 if (res.rows[i].slack_id == senderSlackID){
                                                     senderSlackName = res.rows[i].f_name +' '+ res.rows[i].l_name;
@@ -129,21 +129,21 @@ const handler = (payload, res) => {
                                                     }]
                                                 }
                                             };
-                                            console.log("Log 2 :"+ jiraIssue);
+//                                            console.log("Log 2 :"+ jiraIssue); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                             jira.addNewIssue(jiraIssue, function (error, issue){
                                                 if (error){
                                                     console.log(error);
                                                     return(error);
                                                 } else {
-                                                    console.log('Console log 3, Jira Key: ' + issue.key);
+//                                                    console.log('Console log 3, Jira Key: ' + issue.key); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     jiraKey = issue.key;
-                                                    console.log('Console log 4: '+ jiraKey);
+//                                                    console.log('Console log 4: '+ jiraKey); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     jira.transitionIssue(jiraKey, issueTrans, function (err, issueUpdate) {  //Changes the Issue's Status to In Progress
                                                         if (err) {
                                                             console.log(err);
                                                             return(err);
                                                         } else {
-                                                            console.log("Console log 5, Jira Status change was a: "+ JSON.stringify(issueUpdate));
+//                                                            console.log("Console log 5, Jira Status change was a: "+ JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                             pool.connect().then(client => {
                                                                 client.query("UPDATE ASK_TABLE SET STATUS = $1, JIRA_ID = $2 WHERE SERIAL_ID = $3", [ACCEPTED_STATUS, jiraKey, taskNumber])
 																	.then(result => {
@@ -152,16 +152,54 @@ const handler = (payload, res) => {
                                                                                 client.release();
                                                                                 taskNumberRow = result2.rows;
                                                                                 var acceptMsg = taskNumberRow[0].sender_id + "! " + taskNumberRow[0].receiver_id + " has accepted Task ID: " + taskNumberRow[0].serial_id + " '" + taskNumberRow[0].req_desc + "'";
-                                                                                var acceptTitle = taskNumberRow[0].title;
+                                                                                var acceptTitle = "Accepted!";
                                                                                 createSendMsg(acceptTitle, acceptMsg, GREEN, IN_CHANNEL);
+
+                                                                                //DM code
+
+                                                                                var finalUser;
+                                                                                var finalUserId;
+                                                                                var targetDM = senderSlackID.slice(2,11);
+
+
+                                                                                axios.post('https://slack.com/api/im.list', qs.stringify({
+                                                                                    token: config('POST_BOT_TOKEN'),
+
+                                                                                })).then(function (resp){
+                                                                                    console.log(resp.data);
+                                                                                    for(var t = 0; t < resp.data.ims.length; t++){
+                                                                                        console.log(t);
+                                                                                        console.log(resp.data.ims[t].id);
+                                                                                        if(targetDM==resp.data.ims[t].user){
+                                                                                            finalUser = resp.data.ims[t].id;
+                                                                                            finalUserId = resp.data.ims[t].user;
+                                                                                            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                                                                                token: config('POST_BOT_TOKEN'),
+                                                                                                channel: finalUser,
+                                                                                                user:finalUserId,
+                                                                                                as_user:true,
+                                                                                                text: "Accepted by: "+receiverSlackID,
+
+                                                                                            })).then((result) => {
+                                                                                                console.log('sendConfirmation: ', result.data); //arbitrary code, .then() is a requirement of axios
+                                                                                            }).catch((err) => {
+//                                                                                                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                                                                                createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
+                                                                                            });
+                                                                                        }
+                                                                                    }
+                                                                                }).catch(function (err){
+//                                                                                    console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+																					createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
+                                                                                });
 																			})
 																			.catch(err1 => {
-                                                                                console.log(err1);
+//                                                                                console.log(err1); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                                 createSendMsg("*** ERROR ***", err1, RED, ONLY_USER);
 																			});
                                                                         })
 																		.catch(err => {
-																			console.log(err);
+//																			console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 																			createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
 																		});
 															})
@@ -172,7 +210,8 @@ const handler = (payload, res) => {
 											});
                                         }).catch(e => {
                                             client.release();
-                                            console.log(e.stack);
+//                                            console.log(e.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+											createSendMsg("*** ERROR ***", e.stack, RED, ONLY_USER);
                                         });
                                 });
 
@@ -213,13 +252,13 @@ const handler = (payload, res) => {
                             }
 						})
 						.catch(err1 => {
-                            console.log(err1);
+//                            console.log(err1); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             createSendMsg("*** ERROR ***", err1, RED, ONLY_USER);
                         });
 				});
 			})
 			.catch(err => {
-				console.log(err);
+//				console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
 			});
 	});

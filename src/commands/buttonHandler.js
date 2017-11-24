@@ -7,7 +7,6 @@ const util = require('util');
 const moment = require('moment');
 const pg = require('pg');
 const JiraApi = require('jira').JiraApi;
-
 	
 var dbURL = process.env.ELEPHANTSQL_URL;
 const dbConfig = config('DB_CONFIG');

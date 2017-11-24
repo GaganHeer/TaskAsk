@@ -19,6 +19,8 @@ const handler = (payload, res) => {
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
+		console.log(result.data);
+		console.log(result.data.members);
         var resultList = result.data.members;
         var userList = [];
         var userListIndex = 0;

@@ -24,6 +24,46 @@ const handler = (payload, res) => {
             if(err) {
                 sendMessage(true, "*** ERROR ***", err, RED);
             }
+
+            
+           //Dm
+
+            var finalUser;
+            var finalUserId;
+            var targetDM = result.rows[0].sender_id.slice(2,11);
+
+
+            axios.post('https://slack.com/api/im.list', qs.stringify({
+                token: config('POST_BOT_TOKEN'),
+
+            })).then(function (resp){
+                console.log(resp.data);
+                for(var t = 0; t < resp.data.ims.length; t++){
+                    console.log(t);
+                    console.log(resp.data.ims[t].id);
+                    if(targetDM==resp.data.ims[t].user){
+                        finalUser = resp.data.ims[t].id;
+                        finalUserId = resp.data.ims[t].user;
+                        axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                            token: config('POST_BOT_TOKEN'),
+                            channel: finalUser,
+                            user:finalUserId,
+                            as_user:true,
+                            text: result.rows[0].sender_id+": Rejected TASK: "+result.rows[0].serial_id,
+
+                        })).then((resulttt) => {
+                            console.log('sendConfirmation: ', resulttt.data);
+                        }).catch((err) => {
+                            console.log('sendConfirmation error: ', err);
+                            console.error(err);
+                        });
+                    }
+                }
+            }).catch(function (err){
+                console.log(err);
+            });
+
+            //End of DM
             sendMessage(false, "Reject", "You have rejected ID# " + result.rows[0].serial_id + ": " + result.rows[0].title, RED);
             res.send('')
         });
@@ -59,6 +99,9 @@ const handler = (payload, res) => {
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
+
+
+
             }).catch((err) => {
                 console.log('sendConfirmation error: ', err);
                 console.error(err);
