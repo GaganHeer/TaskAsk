@@ -52,6 +52,7 @@ const handler = (payload, res) => {
 			if(err){
 				sendMessage(true, "*** ERROR ***", err, RED);
 			}
+            console.log(taskNumber);
 
             jiraSummary = selectResult.rows[0].title;
             let receiverSlackID = selectResult.rows[0].receiver_id;
