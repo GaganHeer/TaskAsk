@@ -38,6 +38,7 @@ var issueTrans = {
 
 const handler = (payload, res) => {
     var taskNumber = payload.submission.task;
+    var taskNumberRow = "";
     var channelName = payload.channel.id
     var acceptingUserID = "<@" + payload.user.id + ">";
     let dbQ1 = "SELECT * FROM ask_table INNER JOIN clarify_table ON (ask_table.serial_id = clarify_table.serial_id) WHERE ask_table.serial_id = $1;";
