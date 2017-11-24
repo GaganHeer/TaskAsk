@@ -152,7 +152,7 @@ const handler = (payload, res) => {
                                                                                 client.release();
                                                                                 taskNumberRow = result2.rows;
                                                                                 var acceptMsg = taskNumberRow[0].sender_id + "! " + taskNumberRow[0].receiver_id + " has accepted Task ID: " + taskNumberRow[0].serial_id + " '" + taskNumberRow[0].req_desc + "'";
-                                                                                var acceptTitle = "Task Accepted";
+                                                                                var acceptTitle = taskNumberRow[0].title;
                                                                                 createSendMsg(acceptTitle, acceptMsg, GREEN, IN_CHANNEL);
 																			})
 																			.catch(err1 => {
