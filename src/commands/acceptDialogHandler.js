@@ -132,7 +132,6 @@ const handler = (payload, res) => {
                             });
                         }
                     });
-                    res.send('');
                 })
                     .catch(e => {
                     client.release();
@@ -160,7 +159,7 @@ const handler = (payload, res) => {
                             channel: finalUser,
                             user:finalUserId,
                             as_user:true,
-                            text: payload.user.id + " has accepted ID# " + taskNumber + ": " + jiraSummary,
+                            text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
                             color: GREEN,
 
                         })).then((result) => {
@@ -173,7 +172,8 @@ const handler = (payload, res) => {
                 }
             }).catch(function (err){
                 console.log(err);
-            });	
+            });
+            res.send('');
 		});
 	});
     
