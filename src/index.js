@@ -35,6 +35,8 @@ const doneDialog = require('./commands/doneDialog')
 const doneDialogHandler = require('./commands/doneDialogHandler')
 const rejectDialog = require('./commands/rejectDialog')
 const rejectDialogHandler = require('./commands/rejectDialogHandler')
+const acceptDialog = require('./commands/acceptDialog')
+const acceptDialogHandler = require('./commands/acceptDialogHandler')
 
 let bot = require('./bot');
 
@@ -89,6 +91,8 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
         var cmd = buttonHandler;
     } else if (payload.callback_id === 'rejectDialog') {
         var cmd = rejectDialogHandler;
+    } else if (payload.callback_id === 'acceptDialog') {
+        var cmd = acceptDialogHandler;
     }
     cmd.handler(payload, res)
 }); 
@@ -118,6 +122,20 @@ app.post('/commands/boneypants/rejectdialog', (req, res) => {
         return
     }
     let cmd = rejectDialog;
+    cmd.handler(payload, res)
+})
+
+app.post('/commands/boneypants/acceptdialog', (req, res) => {
+    let payload = req.body
+
+    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
+        let err = '✋  Star—what? An invalid slash token was provided\n' +
+            '   Is your Slack slash token correctly configured?'
+        console.log(err)
+        res.status(401).end(err)
+        return
+    }
+    let cmd = acceptDialog;
     cmd.handler(payload, res)
 })
 
