@@ -146,7 +146,7 @@ const handler = (payload, res) => {
                                                                                             attachments: JSON.stringify([{
                                                                                                 title: "Task Accepted",
                                                                                                 color: GREEN,
-                                                                                                text: text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
+                                                                                                text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
                                                                                                 callback_id: "acceptDialogMsg",
                                                                                             }]),
 
