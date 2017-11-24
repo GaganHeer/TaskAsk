@@ -41,7 +41,7 @@ const handler = (payload, res) => {
                         if(err) {
                             sendMessage(true, "*** ERROR ***", err, RED);
                         }
-                        sendMessage(false, "Done", "The following task is now done: " + result.rows[0].serial_id + " - " + result.rows[0].title, GREEN);
+                        sendMessage(false, "Done", "The following task is now done - " + result.rows[0].serial_id + ": " + result.rows[0].title, GREEN);
                         res.send('')
                     });
                 });

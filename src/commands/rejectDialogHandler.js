@@ -24,7 +24,7 @@ const handler = (payload, res) => {
             if(err) {
                 sendMessage(true, "*** ERROR ***", err, RED);
             }
-            sendMessage(false, "Reject", "You have rejected: " + result.rows[0].serial_id + " - " + result.rows[0].title, RED);
+            sendMessage(false, "Reject", "You have rejected: " + result.rows[0].serial_id + ": " + result.rows[0].title, RED);
             res.send('')
         });
     })
