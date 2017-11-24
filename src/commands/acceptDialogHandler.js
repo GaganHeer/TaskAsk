@@ -142,9 +142,13 @@ const handler = (payload, res) => {
                                                                                             token: config('POST_BOT_TOKEN'),
                                                                                             channel: finalUser,
                                                                                             user:finalUserId,
-                                                                                            color: GREEN,
                                                                                             as_user:true,
-                                                                                            text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
+                                                                                            attachments: JSON.stringify([{
+                                                                                                title: "Task Accepted",
+                                                                                                color: GREEN,
+                                                                                                text: text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
+                                                                                                callback_id: "acceptDialogMsg",
+                                                                                            }]),
 
                                                                                         })).then((result) => {
                                                                                             console.log('sendConfirmation: ', result.data);
