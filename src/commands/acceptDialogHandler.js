@@ -42,7 +42,8 @@ const handler = (payload, res) => {
     let dbQ1 = "SELECT * FROM clarify_table WHERE serial_id = $1;";
 	let dbQ2 = "SELECT * FROM ask_table WHERE serial_id = $1";
     let channel = payload.channel.id;
-
+    
+    res.send('');
 	pool.connect().then(client => {
 		return client.query(dbQ1, [taskNumber])
 			.then(result => {
@@ -188,7 +189,6 @@ const handler = (payload, res) => {
 				console.log(err);
                 sendMessage("*** ERROR ***", err, RED)
 			});
-        res.send('');
 	});
 
     function sendMessage(title, text, color){
@@ -200,7 +200,7 @@ const handler = (payload, res) => {
                 title: title,
                 color: color,
                 text: text,
-                callback_id: "doneDialogMsg",
+                callback_id: "acceptDialogHandlerMsg",
             }]),
         })).then((result) => {
             console.log('sendConfirmation: ', result.data);
