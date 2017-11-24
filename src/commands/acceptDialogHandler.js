@@ -126,6 +126,7 @@ const handler = (payload, res) => {
                                             var acceptMsg = "You have accepted Task ID: " + taskNumberRow[0].serial_id + ": " + taskNumberRow[0].title;
                                             var acceptTitle = "Accepted";
                                             sendMessage(false, acceptTitle, acceptMsg, GREEN);
+                                            res.send('');
                                         });
                                     });
                                 }
@@ -185,7 +186,7 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    callback_id: "doneDialogHandlerMsg",
+                    callback_id: "acceptDialogHandlerMsg",
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
@@ -201,7 +202,7 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    callback_id: "doneDialogHandler",
+                    callback_id: "acceptDialogHandler",
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
