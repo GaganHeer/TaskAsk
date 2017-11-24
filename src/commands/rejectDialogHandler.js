@@ -8,46 +8,26 @@ const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
-const JiraApi = require('jira').JiraApi;
 const RED = "ff0000"
-const GREEN = "33cc33"
-const DONE_STATUS = "DONE"
+const REJECTED_STATUS = "REJECTED"
 
 var dbURL = process.env.ELEPHANTSQL_URL;
 const dbConfig = config('DB_CONFIG');
 var pool = new pg.Pool(dbConfig);
-const jira = new JiraApi('https', config('JIRA_HOST'), config('JIRA_PORT'), config('JIRA_USER'), config('JIRA_PWD'), 'latest');
-
-var issueTransDone = {
-    "transition": {
-        "id": "31"   //"31" is the ID of the transition to "Done" status.
-    }
-};
 
 const handler = (payload, res) => {
-    var jid = payload.submission.task;
+    var sid = payload.submission.task;
     
     pg.connect(dbURL, function(err, client, done){
-        done();
-        jira.transitionIssue(jid, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
-            if (error) {
-                sendMessage(true, "*** ERROR ***", error, RED);
-                //return(error);
-            } else {
-                console.log("Jira Status change was a: " + JSON.stringify(issueUpdate));
-                pg.connect(dbURL, function(err, client, done) {
-                    done();
-                    client.query("UPDATE ASK_TABLE SET status = $1, fin_date = NOW() WHERE jira_id = $2 RETURNING *", [DONE_STATUS, jid], function(err, result) {
-                        if(err) {
-                            sendMessage(true, "*** ERROR ***", err, RED);
-                        }
-                        sendMessage(false, "Done", "The following task is now done: " + result.rows[0].serial_id + " - " + result.rows[0].title, GREEN);
-                        res.send('')
-                    });
-                });
+        client.query("UPDATE ASK_TABLE SET status = $1 WHERE SERIAL_ID = $2 RETURNING *", [REJECTED_STATUS, sid], function(err, result) {
+            done();
+            if(err) {
+                sendMessage(true, "*** ERROR ***", err, RED);
             }
+            sendMessage(false, "Reject", "The following task is now rejected: " + result.rows[0].serial_id + " - " + result.rows[0].title, RED);
+            res.send('')
         });
-	});
+    })
     
     function sendMessage(isError, title, text, color){
         if(isError){
@@ -86,4 +66,4 @@ const handler = (payload, res) => {
         }
     }
 }
-module.exports = { pattern: /doneDialogHandler/ig, handler: handler }
+module.exports = { pattern: /rejectDialogHandler/ig, handler: handler }

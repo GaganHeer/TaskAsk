@@ -36,10 +36,10 @@ const handler = (payload, res) => {
                 })
     } else {
         pg.connect(dbURL, function(err, client, done) {
+            done();
             if(err) {
                 sendMessage(true, "*** ERROR ***", err, RED);
             }
-
             if(payload.submission.due){
                 var dueDate = new Date(payload.submission.due);
                 var currentDate = new Date();

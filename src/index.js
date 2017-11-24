@@ -33,6 +33,8 @@ const progressDialog = require('./commands/progressDialog');
 const progressDialogHandler = require('./commands/progressDialogHandler');
 const doneDialog = require('./commands/doneDialog')
 const doneDialogHandler = require('./commands/doneDialogHandler')
+const rejectDialog = require('./commands/rejectDialog')
+const rejectDialogHandler = require('./commands/rejectDialogHandler')
 
 let bot = require('./bot');
 
@@ -100,6 +102,20 @@ app.post('/commands/boneypants/askdialog', (req, res) => {
         return
     }
     let cmd = askDialog;
+    cmd.handler(payload, res)
+})
+
+app.post('/commands/boneypants/rejectdialog', (req, res) => {
+    let payload = req.body
+
+    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
+        let err = '✋  Star—what? An invalid slash token was provided\n' +
+            '   Is your Slack slash token correctly configured?'
+        console.log(err)
+        res.status(401).end(err)
+        return
+    }
+    let cmd = rejectDialog;
     cmd.handler(payload, res)
 })
 
