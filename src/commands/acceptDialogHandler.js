@@ -50,7 +50,7 @@ const handler = (payload, res) => {
 				client.release();
 				if (result.rows.length > 0) {
                     for (let i=0; i<result.rows.length; i++) {
-                        clarifications += '\n\nQuestion:\n'+ selectResult.rows[i].clar_quest + '\nAnswer:\n'+ selectResult.rows[i].clar_answer;
+                        clarifications += '\n\nQuestion:\n'+ result.rows[i].clar_quest + '\nAnswer:\n'+ result.rows[i].clar_answer;
                         console.log("CLARIFY-----------" +clarifications);
                     }
 				}
