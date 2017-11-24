@@ -87,6 +87,8 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
         var cmd = progressDialogHandler;
     } else if (payload.callback_id === 'progress_buttons') {
         var cmd = buttonHandler;
+    } else if (payload.callback_id === 'rejectDialog') {
+        var cmd = rejectDialogHandler;
     }
     cmd.handler(payload, res)
 }); 
