@@ -159,8 +159,8 @@ const handler = (payload, res) => {
                             channel: finalUser,
                             user:finalUserId,
                             as_user:true,
-                            text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
                             color: GREEN,
+                            text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
 
                         })).then((result) => {
                                 console.log('sendConfirmation: ', result.data);
