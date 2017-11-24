@@ -196,7 +196,6 @@ const handler = (payload, res) => {
                                 color: color,
                                 text: text,
                                 callback_id: "askDialogHandler",
-                                fallback: "Something went wrong :/",
                                 actions: buttons
                                 
                               },
