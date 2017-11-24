@@ -1,16 +1,18 @@
 
-'use strict'
+'use strict';
 
-const _ = require('lodash')
-const config = require('../config')
-const util = require('util')
-const moment = require('moment')
-const pg = require('pg')
-const qs = require('querystring')
-const axios = require('axios')
-const RED = "ff0000"
+const _ = require('lodash');
+const config = require('../config');
+const util = require('util');
+const pg = require('pg');
+const JiraApi = require('jira').JiraApi;
+const ACCEPTED_STATUS = "ACCEPTED";
+const RED = "ff0000";
 const GREEN = "33cc33";
-const REJECTED_STATUS = "REJECTED"
+const IN_CHANNEL = 'in_channel';
+const ONLY_USER = 'ephemeral';
+const qs = require('querystring');
+const axios = require('axios');
 
 var dbURL = process.env.ELEPHANTSQL_URL;
 var onlyNumbers = /^[0-9]*$/;
