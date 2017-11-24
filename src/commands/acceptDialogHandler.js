@@ -36,7 +36,6 @@ var issueTrans = {
 
 const handler = (payload, res) => {
     
-    var channelName;
     var acceptingUserID;
 	var taskNumber;
 	var isButton = false;
@@ -46,7 +45,7 @@ const handler = (payload, res) => {
 		
     taskNumber = payload.submission.task;
     acceptingUserID = "<@" + payload.user.id + ">";
-    channelName = payload.channel.name;
+    channel = payload.channel.id;
 
 	pool.connect().then(client => {
 		return client.query(dbQ1, [taskNumber])
