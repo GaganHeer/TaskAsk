@@ -36,16 +36,12 @@ var issueTrans = {
 
 const handler = (payload, res) => {
     
-    var acceptingUserID;
+    var acceptingUserID = "<@" + payload.user.id + ">";
 	var taskNumber;
-	var isButton = false;
     let clarifications = '';
     let dbQ1 = "SELECT * FROM clarify_table WHERE serial_id = $1;";
 	let dbQ2 = "SELECT * FROM ask_table WHERE serial_id = $1";
-		
-    taskNumber = payload.submission.task;
-    acceptingUserID = "<@" + payload.user.id + ">";
-    channel = payload.channel.id;
+    let channel = payload.channel.id;
 
 	pool.connect().then(client => {
 		return client.query(dbQ1, [taskNumber])
