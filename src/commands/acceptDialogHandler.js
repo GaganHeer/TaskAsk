@@ -126,13 +126,13 @@ const handler = (payload, res) => {
                                             var acceptMsg = "You have accepted Task ID: " + taskNumberRow[0].serial_id + ": " + taskNumberRow[0].title;
                                             var acceptTitle = "Accepted";
                                             sendMessage(false, acceptTitle, acceptMsg, GREEN);
-                                            res.send('');
                                         });
                                     });
                                 }
                             });
                         }
                     });
+                    res.send('');
                 })
                     .catch(e => {
                     client.release();
