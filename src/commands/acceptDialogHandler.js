@@ -38,8 +38,8 @@ const handler = (payload, res) => {
     
     var acceptingUserID = "<@" + payload.user.id + ">";
 	var taskNumber = payload.submission.task;
-    let clarifications = '';
-    let dbQ1 = "SELECT * FROM clarify_table WHERE serial_id = $1;";
+    let clarifications = 'test';
+    let dbQ1 = "SELECT * FROM clarify_table WHERE serial_id = $1";
 	let dbQ2 = "SELECT * FROM ask_table WHERE serial_id = $1";
     let channel = payload.channel.id;
     
