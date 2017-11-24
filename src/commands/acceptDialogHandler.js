@@ -48,7 +48,7 @@ const handler = (payload, res) => {
 		return client.query(dbQ1, [taskNumber])
 			.then(result => {
 				client.release();
-				if (result.rows > 0) {
+				if (result.rows.length > 0) {
                     for (let i=0; i<result.rows.length; i++) {
                         clarifications += '\n\nQuestion:\n'+ selectResult.rows[i].clar_quest + '\nAnswer:\n'+ selectResult.rows[i].clar_answer;
                         console.log("CLARIFY-----------" +clarifications);
