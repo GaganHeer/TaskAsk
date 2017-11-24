@@ -51,6 +51,7 @@ const handler = (payload, res) => {
 				if (result.rows > 0) {
                     for (let i=0; i<result.rows.length; i++) {
                         clarifications += '\n\nQuestion:\n'+ selectResult.rows[i].clar_quest + '\nAnswer:\n'+ selectResult.rows[i].clar_answer;
+                        console.log("CLARIFY-----------" +clarifications);
                     }
 				}
 				pool.connect().then(client1 => {
@@ -133,8 +134,6 @@ const handler = (payload, res) => {
                                                                             })).then(function (resp){
                                                                                 console.log(resp.data);
                                                                                 for(var t = 0; t < resp.data.ims.length; t++){
-                                                                                    console.log(t);
-                                                                                    console.log(resp.data.ims[t].id);
                                                                                     if(targetDM==resp.data.ims[t].user){
                                                                                         finalUser = resp.data.ims[t].id;
                                                                                         finalUserId = resp.data.ims[t].user;
