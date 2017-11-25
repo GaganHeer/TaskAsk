@@ -58,7 +58,7 @@ const handler = (payload, res) => {
 					})
 					.catch(e => {
 						client.release();
-						sendMessage(true, "*** ERROR ***", err, RED);
+						sendMessage(true, "*** ERROR ***", "E1 " + e, RED);
 					})
                 } else {
                     res.send({
@@ -79,7 +79,7 @@ const handler = (payload, res) => {
 				})
 				.catch(e => {
 					client.release();
-					sendMessage(true, "*** ERROR ***", e, RED);
+					sendMessage(true, "*** ERROR ***", "E2 " + e, RED);
 				})
             }
 		});
@@ -207,7 +207,7 @@ const handler = (payload, res) => {
                           })).then((result) => {
                                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                               }).catch((err) => {
-                                console.log('sendConfirmation error: ', err);
+                                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                 //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             });
                     }
