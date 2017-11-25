@@ -51,7 +51,6 @@ const handler = (payload, res) => {
 				if (result.rows.length > 0) {
                     for (let i=0; i<result.rows.length; i++) {
                         clarifications += '\n\nQuestion:\n'+ result.rows[i].clar_quest + '\nAnswer:\n'+ result.rows[i].clar_answer;
-                        console.log("CLARIFY-----------" +clarifications);
                     }
 				}
 				pool.connect().then(client1 => {
@@ -68,7 +67,7 @@ const handler = (payload, res) => {
                                 return client.query('SELECT * FROM user_table WHERE slack_id = $1 OR slack_id = $2', [receiverSlackID, senderSlackID])
                                     .then(res => {
                                         client.release();
-                                        console.log("Log 1: "+ res.rows[0].f_name);
+                                        //console.log("Log 1: "+ res.rows[0].f_name); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         for (let i=0; i<res.rows.length; i++){
                                             if (res.rows[i].slack_id == senderSlackID){
                                                 senderSlackName = res.rows[i].f_name +' '+ res.rows[i].l_name;
@@ -98,21 +97,21 @@ const handler = (payload, res) => {
                                                 }]
                                             }
                                         };
-                                        console.log("Log 2 :"+ jiraIssue);
+                                        //console.log("Log 2 :"+ jiraIssue); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         jira.addNewIssue(jiraIssue, function (error, issue){
                                             if (error){
-                                                console.log(error);
+                                                sendMessage("*** ERROR ***", "" + error, RED);
                                                 return(error);
                                             } else {
-                                                console.log('Console log 3, Jira Key: ' + issue.key);
+                                                //console.log('Console log 3, Jira Key: ' + issue.key); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                 jiraKey = issue.key;
-                                                console.log('Console log 4: '+ jiraKey);
+                                                //console.log('Console log 4: '+ jiraKey); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                 jira.transitionIssue(jiraKey, issueTrans, function (err, issueUpdate) {  //Changes the Issue's Status to In Progress
                                                     if (err) {
                                                         console.log(err);
                                                         return(err);
                                                     } else {
-                                                        console.log("Console log 5, Jira Status change was a: "+ JSON.stringify(issueUpdate));
+                                                        //console.log("Console log 5, Jira Status change was a: "+ JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                         pool.connect().then(client => {
                                                             client.query("UPDATE ASK_TABLE SET STATUS = $1, JIRA_ID = $2 WHERE SERIAL_ID = $3", [ACCEPTED_STATUS, jiraKey, taskNumber])
                                                                 .then(result => {
@@ -120,9 +119,7 @@ const handler = (payload, res) => {
                                                                         .then(result2 => {
                                                                             client.release();
                                                                             taskNumberRow = result2.rows;
-                                                                            var acceptMsg = taskNumberRow[0].sender_id + "! " + taskNumberRow[0].receiver_id + " has accepted Task ID: " + taskNumberRow[0].serial_id + " '" + taskNumberRow[0].req_desc + "'";
-                                                                            var acceptTitle = "Task Accepted";
-                                                                            sendMessage(acceptTitle, acceptMsg, GREEN);
+                                                                            sendMessage("Accepted", "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver + "\n Owner: " + taskNumberRow[0].sender, GREEN);
                                                                         
                                                                             var finalUser;
                                                                             var finalUserId;
@@ -132,7 +129,7 @@ const handler = (payload, res) => {
                                                                                 token: config('POST_BOT_TOKEN'),
 
                                                                             })).then(function (resp){
-                                                                                console.log(resp.data);
+                                                                                //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                                 for(var t = 0; t < resp.data.ims.length; t++){
                                                                                     if(targetDM==resp.data.ims[t].user){
                                                                                         finalUser = resp.data.ims[t].id;
@@ -143,32 +140,29 @@ const handler = (payload, res) => {
                                                                                             user:finalUserId,
                                                                                             as_user:true,
                                                                                             attachments: JSON.stringify([{
-                                                                                                title: "Task Accepted",
+                                                                                                title: "Accepted",
                                                                                                 color: GREEN,
-                                                                                                text: acceptingUserID + " has accepted ID# " + taskNumber + ": " + jiraSummary,
+                                                                                                text: taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver + "\n Owner: " + taskNumberRow[0].sender,
                                                                                                 callback_id: "acceptDialogMsg",
                                                                                             }]),
 
                                                                                         })).then((result) => {
-                                                                                            console.log('sendConfirmation: ', result.data);
+                                                                                            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                                         }).catch((err) => {
-                                                                                            console.log('sendConfirmation error: ', err);
-                                                                                            console.error(err);
+                                                                                            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                                         });
                                                                                     }
                                                                                 }
                                                                             }).catch(function (err){
-                                                                                console.log(err);
+                                                                                //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                             });
                                                                         })
                                                                         .catch(err1 => {
-                                                                            console.log(err1);
-                                                                            sendMessage("*** ERROR ***", err1, RED)
+                                                                            sendMessage("*** ERROR ***", "" + err1, RED)
                                                                         });
                                                                     })
-                                                                    .catch(err => {
-                                                                        console.log(err);
-                                                                        sendMessage("*** ERROR ***", err, RED)
+                                                                    .catch(err2 => {
+                                                                        sendMessage("*** ERROR ***", "" + err2, RED)
                                                                     });
                                                         })
                                                     }
@@ -177,20 +171,18 @@ const handler = (payload, res) => {
                                         });
                                     }).catch(e => {
                                         client.release();
-                                        console.log(e.stack);
+                                        //console.log(e.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     });
                             });
-
                     })
-                    .catch(err1 => {
-                        console.log(err1);
-                        sendMessage("*** ERROR ***", err1, RED)
+                    .catch(err3 => {
+                        sendMessage("*** ERROR ***", "" + err3, RED)
                     });
 				});
 			})
-			.catch(err => {
+			.catch(err4 => {
 				console.log(err);
-                sendMessage("*** ERROR ***", err, RED)
+                sendMessage("*** ERROR ***", "" + err4, RED)
 			});
 	});
 
@@ -206,10 +198,9 @@ const handler = (payload, res) => {
                 callback_id: "acceptDialogHandlerMsg",
             }]),
         })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
+            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
-            console.error(err);
+            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         });
     }
 }

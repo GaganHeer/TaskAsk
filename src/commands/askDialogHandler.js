@@ -13,15 +13,12 @@ const dateValidator = require('date-and-time')
 const RED = "ff0000"
 const YELLOW = "ffcc00"
 
-var dbURL = process.env.ELEPHANTSQL_URL
-
 var pool = new pg.Pool(dbConfig);
 
 const handler = (payload, res) => {
 
     var finalUser;
     var finalUserId;
-        
     var title = payload.submission.title;
     var desc = payload.submission.description;
     var receiver = "<@" + payload.submission.receiver + ">";
