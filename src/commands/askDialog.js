@@ -50,6 +50,8 @@ const handler = (payload, res) => {
                 label: 'Description',
                 type: 'textarea',
                 name: 'description',
+                max_length: 300,
+                hint: '300 characters or less'
               },
               {
                 label: 'Due Date',
