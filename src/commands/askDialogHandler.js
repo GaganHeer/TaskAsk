@@ -44,8 +44,6 @@ const handler = (payload, res) => {
                 var currentDate = new Date();
                 currentDate.setHours(currentDate.getHours() - 8);
 
-                //console.log(util.inspect(currentDate, {showHidden: false, depth: null})); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-
                 //Check if valid date format and that date hasn't already past
                 if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                     res.send('');
@@ -56,9 +54,9 @@ const handler = (payload, res) => {
 						setButtons(sid);
 						sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc + "\n Due Date: " + payload.submission.due, YELLOW);
 					})
-					.catch(e => {
+					.catch(err => {
 						client.release();
-						sendMessage(true, "*** ERROR ***", "" + e, RED);
+						sendMessage(true, "*** ERROR ***", "" + err, RED);
 					})
                 } else {
                     res.send({
@@ -79,7 +77,7 @@ const handler = (payload, res) => {
 				})
 				.catch(e => {
 					client.release();
-					sendMessage(true, "*** ERROR ***", e, RED);
+					sendMessage(true, "*** ERROR ***", "" + e, RED);
 				})
             }
 		});
