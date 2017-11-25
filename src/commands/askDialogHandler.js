@@ -78,7 +78,7 @@ const handler = (payload, res) => {
 					sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
 				})
 				.catch(e => {
-					client.relesae();
+					client.release();
 					sendMessage(true, "*** ERROR ***", e, RED);
 				})
             }
@@ -200,7 +200,6 @@ const handler = (payload, res) => {
                                 color: color,
                                 text: text,
                                 callback_id: "askDialogHandler",
-                                fallback: "Something went wrong :/",
                                 actions: buttons
                                 
                               },
