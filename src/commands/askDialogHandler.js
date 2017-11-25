@@ -58,7 +58,7 @@ const handler = (payload, res) => {
 					})
 					.catch(e => {
 						client.release();
-						sendMessage(true, "*** ERROR ***", e, RED);
+						sendMessage(true, "*** ERROR ***", "" + e, RED);
 					})
                 } else {
                     res.send({
@@ -79,7 +79,7 @@ const handler = (payload, res) => {
 				})
 				.catch(e => {
 					client.release();
-					sendMessage(true, "*** ERROR ***", e, RED);
+					sendMessage(true, "*** ERROR ***", "" + e, RED);
 				})
             }
 		});
