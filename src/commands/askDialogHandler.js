@@ -79,7 +79,7 @@ const handler = (payload, res) => {
 				})
 				.catch(e => {
 					client.relesae();
-					sendMessage(true, "*** ERROR ***", err, RED);
+					sendMessage(true, "*** ERROR ***", e, RED);
 				})
             }
 		});
