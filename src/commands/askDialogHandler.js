@@ -79,7 +79,7 @@ const handler = (payload, res) => {
 				})
 				.catch(e => {
 					client.release();
-					sendMessage(true, "*** ERROR ***", "" + e, RED);
+					sendMessage(true, "*** ERROR ***", e, RED);
 				})
             }
 		});
