@@ -8,7 +8,6 @@ const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
-const ACCEPTED_STATUS = "ACCEPTED";
 	
 var dbURL = process.env.ELEPHANTSQL_URL
 
@@ -19,8 +18,8 @@ const handler = (payload, res) => {
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
-		console.log(result.data);
-		console.log(result.data.members);
+		//console.log(result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+		//console.log(result.data.members); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         var resultList = result.data.members;
         var userList = [];
         var userListIndex = 0;
@@ -72,15 +71,15 @@ const handler = (payload, res) => {
         // open the dialog by calling dialogs.open method and sending the payload
         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
             .then((result) => {
-                console.log('dialog.open: ', result.data);
+                //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 res.send('');
             }).catch((err) => {
-                console.log('dialog.open call failed: %o', err);
+                //console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 res.sendStatus(500);
             });
-        console.log('sendConfirmation: ', result.data);
+        //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
     }).catch((err) => {
-        console.log('sendConfirmation error: ', err);
+        //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
     });
 }
 module.exports = { pattern: /askDialog/ig, handler: handler }

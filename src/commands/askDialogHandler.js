@@ -44,17 +44,17 @@ const handler = (payload, res) => {
                 var currentDate = new Date();
                 currentDate.setHours(currentDate.getHours() - 8);
 
-//                console.log(util.inspect(currentDate, {showHidden: false, depth: null})); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                //console.log(util.inspect(currentDate, {showHidden: false, depth: null})); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 
                 //Check if valid date format and that date hasn't already past
                 if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                     res.send('');
-                    return client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING serial_id", [receiver, sender, desc, title, payload.submission.due])
+                    return client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING *", [receiver, sender, desc, title, payload.submission.due])
 					.then(resp => {
 						client.release();
 						sid =  resp.rows[0].serial_id;
 						setButtons(sid);
-						sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc + " by " + payload.submission.due, YELLOW);
+						sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc + "\n Due Date: " + payload.submission.due, YELLOW);
 					})
 					.catch(e => {
 						client.release();
@@ -75,7 +75,7 @@ const handler = (payload, res) => {
 					client.release();
 					sid =  resp.rows[0].serial_id;
 					setButtons(sid);
-					sendMessage(false, title, "Hey " + receiver + "! " + sender + " asked you to: \n" + desc, YELLOW);
+					sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
 				})
 				.catch(e => {
 					client.relesae();
@@ -155,10 +155,10 @@ const handler = (payload, res) => {
                     callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+                //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
-                console.error(err);
+                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             });
         } else {
             axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
@@ -172,20 +172,20 @@ const handler = (payload, res) => {
                     actions: buttons,
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+                //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
-                console.error(err);
+                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             });
 
             axios.post('https://slack.com/api/im.list', qs.stringify({
                 token: config('POST_BOT_TOKEN'),
                 
             })).then(function (resp){
-                console.log(resp.data);
+                //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 for(var t = 0; t < resp.data.ims.length; t++){
-                    console.log(t);
-                    console.log(resp.data.ims[t].id);
+                    //console.log(t); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                    //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     if(targetDM==resp.data.ims[t].user){
                         finalUser = resp.data.ims[t].id;
                         finalUserId = resp.data.ims[t].user;
@@ -206,15 +206,15 @@ const handler = (payload, res) => {
                               },
                             ]),
                           })).then((result) => {
-                                console.log('sendConfirmation: ', result.data);
+                                //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                               }).catch((err) => {
                                 console.log('sendConfirmation error: ', err);
-                                console.error(err);
+                                //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             });
                     }
                 }
             }).catch(function (err){
-                console.log(err);
+                //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             });
         }
     }
