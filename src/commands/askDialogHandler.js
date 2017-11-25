@@ -12,7 +12,6 @@ const axios = require('axios')
 const dateValidator = require('date-and-time')
 const RED = "ff0000"
 const YELLOW = "ffcc00"
-const MAX_TITLE_LENGTH = 15;
 
 var dbURL = process.env.ELEPHANTSQL_URL
 
@@ -30,59 +29,49 @@ const handler = (payload, res) => {
     var sid = "";
     var buttons = "";
     
-    if(title.length > MAX_TITLE_LENGTH) {
-        res.send({
+    pool.connect().then(client => {
+        if(payload.submission.due){
+            var dueDate = new Date(payload.submission.due);
+            var currentDate = new Date();
+            currentDate.setHours(currentDate.getHours() - 8);
+
+            //Check if valid date format and that date hasn't already past
+            if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+                res.send('');
+                return client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING *", [receiver, sender, desc, title, payload.submission.due])
+                .then(resp => {
+                    client.release();
+                    sid =  resp.rows[0].serial_id;
+                    setButtons(sid);
+                    sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc + "\n Due Date: " + payload.submission.due, YELLOW);
+                })
+                .catch(err => {
+                    client.release();
+                    sendMessage(true, "*** ERROR ***", "" + err, RED);
+                })
+            } else {
+                res.send({
                     "errors": [{
-                        "name": "title",
-                        "error": "Must be 15 characters or less"
+                        "name": "due",
+                        "error": "Invalid Date!"
                     }]
                 })
-    } else {
-		pool.connect().then(client => {
-            if(payload.submission.due){
-                var dueDate = new Date(payload.submission.due);
-                var currentDate = new Date();
-                currentDate.setHours(currentDate.getHours() - 8);
-
-                //Check if valid date format and that date hasn't already past
-                if(dateValidator.isValid(payload.submission.due, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
-                    res.send('');
-                    return client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE, DUE_DATE) VALUES ($1, $2, $3, $4, $5) RETURNING *", [receiver, sender, desc, title, payload.submission.due])
-					.then(resp => {
-						client.release();
-						sid =  resp.rows[0].serial_id;
-						setButtons(sid);
-						sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc + "\n Due Date: " + payload.submission.due, YELLOW);
-					})
-					.catch(err => {
-						client.release();
-						sendMessage(true, "*** ERROR ***", "" + err, RED);
-					})
-                } else {
-                    res.send({
-                        "errors": [{
-                            "name": "due",
-                            "error": "Invalid Date!"
-                        }]
-                    })
-                }
-            } else {
-                res.send('');
-                return client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title])
-				.then(resp => {
-					client.release();
-					sid =  resp.rows[0].serial_id;
-					setButtons(sid);
-					sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
-				})
-				.catch(e => {
-					client.release();
-					sendMessage(true, "*** ERROR ***", "" + e, RED);
-				})
             }
-		});
-
-    }
+        } else {
+            res.send('');
+            return client.query("INSERT INTO ASK_TABLE (RECEIVER_ID, SENDER_ID, REQ_DESC, TITLE) VALUES ($1, $2, $3, $4) RETURNING serial_id", [receiver, sender, desc, title])
+            .then(resp => {
+                client.release();
+                sid =  resp.rows[0].serial_id;
+                setButtons(sid);
+                sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
+            })
+            .catch(e => {
+                client.release();
+                sendMessage(true, "*** ERROR ***", "" + e, RED);
+            })
+        }
+    });
             
     function setButtons(sid){
         buttons = [
