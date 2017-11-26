@@ -28,7 +28,8 @@ const handler = (payload, res) => {
                     for (let i=0; i<result.rows.length; i++){
                         console.log(result.rows[i].title);
                         if (ALLOWED_STATUS.includes(result.rows[i].status)) {
-                            tasks[taskIndex] = {label: 'ID#' + result.rows[i].serial_id +': ' + result.rows[i].title, value: result.rows[i].serial_id};
+                            //tasks[taskIndex] = {label: 'ID# ' + result.rows[i].serial_id +': ' + result.rows[i].title, value: result.rows[i].serial_id};
+                            tasks[taskIndex] = {label: 'ID# ', value: result.rows[i].serial_id};
                             taskIndex++;
                             //tasks.push({label: temp, value: result.rows[i].serial_id});
                         }
