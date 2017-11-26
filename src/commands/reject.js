@@ -49,7 +49,6 @@ const handler = (payload, res) => {
 	pool.connect().then(client => {
 		client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [taskNumber])
 			.then(result => {
-                client.release();
                 var taskNumberRow = selectResult.rows;
                 if(taskNumberRow.length == 0){
                     var falseIDMsg = taskNumber + " is not a valid ID#";
