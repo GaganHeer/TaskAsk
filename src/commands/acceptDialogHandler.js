@@ -51,6 +51,7 @@ const handler = (payload, res) => {
 				pool.connect().then(client1 => {
 					return client1.query(dbQ2, [taskNumber])
 						.then(result1 => {
+                            client1.release();
                             var taskNumberRow = result1.rows;
                             jiraSummary = taskNumberRow[0].title;
                             let receiverSlackID = taskNumberRow[0].receiver_id;
@@ -58,10 +59,10 @@ const handler = (payload, res) => {
                             let baseDesc = taskNumberRow[0].req_desc;
                             let dueDate = taskNumberRow[0].due_date;
 
-                            pool.connect().then(client => {
-                                return client.query('SELECT * FROM user_table WHERE slack_id = $1 OR slack_id = $2', [receiverSlackID, senderSlackID])
+                            pool.connect().then(client2 => {
+                                return client2.query('SELECT * FROM user_table WHERE slack_id = $1 OR slack_id = $2', [receiverSlackID, senderSlackID])
                                     .then(res => {
-                                        client.release();
+                                        client2.release();
                                         //console.log("Log 1: "+ res.rows[0].f_name); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         for (let i=0; i<res.rows.length; i++){
                                             if (res.rows[i].slack_id == senderSlackID){
@@ -152,10 +153,12 @@ const handler = (payload, res) => {
                                                                             });
                                                                         })
                                                                         .catch(err1 => {
+                                                                            client.release();
                                                                             sendMessage("*** ERROR ***", "" + err1, RED)
                                                                         });
                                                                     })
                                                                     .catch(err2 => {
+                                                                        client.release();
                                                                         sendMessage("*** ERROR ***", "" + err2, RED)
                                                                     });
                                                         })
@@ -164,20 +167,25 @@ const handler = (payload, res) => {
                                             }
                                         });
                                     }).catch(e => {
-                                        client.release();
+                                        client2.release();
                                         //console.log(e.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     });
                             });
                     })
                     .catch(err3 => {
+                        client1.release();
                         sendMessage("*** ERROR ***", "" + err3, RED)
                     });
 				});
 			})
 			.catch(err4 => {
+                client.release();
                 sendMessage("*** ERROR ***", "" + err4, RED)
 			});
 	});
+    .catch(err => {
+        sendMessage("*** ERROR ***", "" + err, RED)
+    });
 
     function sendMessage(title, text, color){
         axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({

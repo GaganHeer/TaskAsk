@@ -26,7 +26,6 @@ const handler = (payload, res) => {
     res.send('')
     var jid = payload.submission.task;
     
-    pool.connect().then(client => {
         jira.transitionIssue(jid, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
             if (error) {
                 sendMessage("*** ERROR ***", error, RED);
@@ -77,10 +76,6 @@ const handler = (payload, res) => {
                 });
             }
         });
-	}).catch(e => {
-        client.release();
-        sendMessage("*** ERROR ***", "" + e, RED);
-    })
     
     function sendMessage(title, text, color){
         
