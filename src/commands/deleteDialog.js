@@ -46,7 +46,7 @@ const handler = (payload, res) => {
                                     label: "Pending and Rejected Tasks",
                                     type: "select",
                                     name: "taskLabel",
-                                    options: {label: 'ID# ', value: "this"},
+                                    options: [{label: 'ID# ', value: 2}],
                                 },
                                 {
                                     label: 'Task# Confirmation',
