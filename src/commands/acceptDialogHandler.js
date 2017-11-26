@@ -119,7 +119,7 @@ const handler = (payload, res) => {
                                                                         .then(result2 => {
                                                                             client.release();
                                                                             taskNumberRow = result2.rows;
-                                                                            sendMessage("Accepted", "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver_id + " Owner: " + taskNumberRow[0].sender_id, GREEN);
+                                                                            sendMessage("Accepted", "", GREEN);
                                                                         
                                                                             var finalUser;
                                                                             var finalUserId;
