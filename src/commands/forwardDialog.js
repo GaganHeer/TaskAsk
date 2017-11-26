@@ -20,14 +20,17 @@ const handler = (payload, res) => {
     var userList = [];
     var userListIndex = 0;
     var receiver = "";
+    var receiverID = ""
     var sid = ""
     var channel = ""
         
     if(payload.user_id){
         receiver = "<@" + payload.user_id + ">";
+        receiverID = payload.user_id;
         channel = payload.channel_id
     } else {
         receiver = "<@" + payload.user.id + ">";
+        receiverID = payload.user.id;
         sid = payload.actions[0].value
         channel = payload.channel.id
     }
@@ -43,10 +46,6 @@ const handler = (payload, res) => {
                     client.release();
                 
                     if(result.rows.length <= 0){
-                        console.log("IM ERE")
-                        console.log(receiver);
-                        console.log(channel);
-                        
                         sendMessage("*** ERROR ***", "No pending requests to display", RED);
                     } else {
                         console.log("CONFIRM ELSE")
@@ -107,7 +106,7 @@ const handler = (payload, res) => {
     function sendMessage(title, text, color){
         axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
             token: config('OAUTH_TOKEN'),
-            user: receiver,
+            user: receiverID,
             channel: channel,
             attachments: JSON.stringify([{
                 title: title,
