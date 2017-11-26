@@ -43,9 +43,10 @@ const handler = (payload, res) => {
                     client.release();
                 
                     if(result.rows.length <= 0){
+                        console.log("IM ERE")
                         sendMessage("*** ERROR ***", "No pending requests to display", RED);
                     } else {
-
+                        console.log("CONFIRM ELSE")
                         for (var i = 0; i < result.rows.length; i++) {
                             pendingList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
                         }
