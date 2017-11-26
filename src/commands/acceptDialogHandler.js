@@ -189,7 +189,7 @@ const handler = (payload, res) => {
     function sendMessage(title, text, color){
         axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
             token: config('OAUTH_TOKEN'),
-            user: payload.user_id,
+            user: payload.user.id,
             channel: channel,
             attachments: JSON.stringify([{
                 title: title,
