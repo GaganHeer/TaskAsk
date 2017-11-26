@@ -22,7 +22,7 @@ const handler = (payload, res) => {
     var deletingUserID = "<@" + payload.user_id + ">";
 
     pool.connect().then(client => {
-        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID], PENDING_STATUS)
+        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 AND (STATUS = $2 OR STATUS = $3) ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID, PENDING_STATUS, REJECT_STATUS])
             .then(result => {
                 client.release();
                 if (result.rows.length > 0){
