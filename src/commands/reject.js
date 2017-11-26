@@ -92,8 +92,11 @@ const handler = (payload, res) => {
                                             channel: finalUser,
                                             user:finalUserId,
                                             as_user:true,
-                                            text: "Rejected by: "+taskNumberRow[0].receiver_id,
-
+                                            attachments: JSON.stringify([{
+                                                title: "Rejected",
+                                                color: RED,
+                                                text: "Task ID: " + sid + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id + " Owner: " + result.rows[0].sender_id,
+                                            }]),
                                         })).then((result) => {
                                             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         }).catch((err) => {
