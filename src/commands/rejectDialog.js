@@ -4,7 +4,6 @@
 const _ = require('lodash')
 const config = require('../config')
 const util = require('util')
-const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
@@ -19,15 +18,11 @@ const handler = (payload, res) => {
     var pendingList = [];
     var receiver = "<@" + payload.user_id + ">";
     var channel = payload.channel_id
-    pg.connect(dbURL, function(err, client, done) {
-        if(err) {
-            sendMessage("*** ERROR ***", err, RED);
-        }
-        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100", [receiver, PENDING_STATUS], function(err, result) {
-            done();
-            if(err) {
-                sendMessage("*** ERROR ***", err, RED);
-            }
+    pool.connect().then(client => {
+        client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100", [receiver, PENDING_STATUS])
+            .then(result => {
+                client.release();
+            
             if (result.rows.length > 0){
                 for (var i = 0; i < result.rows.length; i++) {
                     pendingList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
@@ -51,16 +46,18 @@ const handler = (payload, res) => {
                 };
                 axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                 .then((result) => {
-                    console.log('dialog.open: ', result.data);
+                    //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     res.send('');
                 }).catch((err) => {
-                    sendMessage("*** ERROR ***", err, RED);
+                    //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     res.sendStatus(500);
                 });
             } else {
                 sendMessage("*** ERROR ***", "No pending tasks to display", RED)
             }
         })
+    }).catch((err) => {
+        sendMessage("*** ERROR ***", "" + err, RED);
     });
     
     function sendMessage(title, text, color){
@@ -75,10 +72,9 @@ const handler = (payload, res) => {
                 callback_id: "rejectDialogMsg",
             }]),
         })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
+            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
-            console.error(err);
+            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         });
     }
 }

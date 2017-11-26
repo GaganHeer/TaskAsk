@@ -176,7 +176,6 @@ const handler = (payload, res) => {
 				});
 			})
 			.catch(err4 => {
-				console.log(err);
                 sendMessage("*** ERROR ***", "" + err4, RED)
 			});
 	});
