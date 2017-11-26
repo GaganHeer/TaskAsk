@@ -10,7 +10,8 @@ const axios = require('axios')
 const PENDING_STATUS = "PENDING";
 const RED = "ff0000"
 	
-var dbURL = process.env.ELEPHANTSQL_URL
+const dbConfig = config('DB_CONFIG');
+var pool = new pg.Pool(dbConfig);
 
 const handler = (payload, res) => {
     
