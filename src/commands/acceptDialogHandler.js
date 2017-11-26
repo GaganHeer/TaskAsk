@@ -119,7 +119,7 @@ const handler = (payload, res) => {
                                                                         .then(result2 => {
                                                                             client.release();
                                                                             taskNumberRow = result2.rows;
-                                                                            sendMessage("Accepted", "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver + "\n Owner: " + taskNumberRow[0].sender, GREEN);
+                                                                            sendMessage("Accepted", "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver_id + " Owner: " + taskNumberRow[0].sender_id, GREEN);
                                                                         
                                                                             var finalUser;
                                                                             var finalUserId;
@@ -142,7 +142,7 @@ const handler = (payload, res) => {
                                                                                             attachments: JSON.stringify([{
                                                                                                 title: "Accepted",
                                                                                                 color: GREEN,
-                                                                                                text: taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver + "\n Owner: " + taskNumberRow[0].sender,
+                                                                                                text: "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver_id + " Owner: " + taskNumberRow[0].sender_id,
                                                                                                 callback_id: "acceptDialogMsg",
                                                                                             }]),
 
