@@ -44,6 +44,9 @@ const handler = (payload, res) => {
                 
                     if(result.rows.length <= 0){
                         console.log("IM ERE")
+                        console.log(receiver);
+                        console.log(channel);
+                        
                         sendMessage("*** ERROR ***", "No pending requests to display", RED);
                     } else {
                         console.log("CONFIRM ELSE")
