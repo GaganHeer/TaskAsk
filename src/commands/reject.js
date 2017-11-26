@@ -67,10 +67,12 @@ const handler = (payload, res) => {
 
                 } else {
                     client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2 RETURNING *", [REJECTED_STATUS, taskNumber])
-                        .then(result => {
+                        .then(result1 => {
                             client.release();
-                            taskNumberRow = result.rows;
-
+                            taskNumberRow = result1.rows;
+                            createSendMsg("Rejected", "", RED);
+                            console.log(taskNumberRow[0].sender_id);
+                            console.log(taskNumberRow[0].serial_id);
                             //Dm
 
                             var finalUser;
@@ -81,6 +83,7 @@ const handler = (payload, res) => {
                                 token: config('POST_BOT_TOKEN'),
 
                             })).then(function (resp){
+                                console.log("AFTER THEN")
                                 for(var t = 0; t < resp.data.ims.length; t++){
                                     //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     if(targetDM==resp.data.ims[t].user){
@@ -94,16 +97,15 @@ const handler = (payload, res) => {
                                             attachments: JSON.stringify([{
                                                 title: "Rejected",
                                                 color: RED,
-                                                text: "Task ID: " + sid + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id + " Owner: " + result.rows[0].sender_id,
+                                                text: "Task ID: " + taskNumber + "\n Title: " + result1.rows[0].title + "\n Recipient: " + result1.rows[0].receiver_id + " Owner: " + result1.rows[0].sender_id,
                                             }]),
                                         })).then((result) => {
-                                            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                            console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         }).catch((err) => {
-                                            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                            console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         });
                                     }
                                 }
-                                createSendMsg("Rejected", "", RED);
                             }).catch(function (err){
                                 //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             });
