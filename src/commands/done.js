@@ -59,7 +59,6 @@ const handler = (payload, res) => {
                 if (result.rows.length == 0){
                     title = "*** ERROR ***";
                     outMsg = "Please enter an Accepted task that belongs to you.";
-
                     doneOut(title, outMsg, RED);
                 } else {
                     jiraKey = result.rows[0].jira_id;
@@ -72,6 +71,7 @@ const handler = (payload, res) => {
                             pool.connect().then(client => {
                                 client.query("UPDATE ASK_TABLE SET status = 'DONE', fin_date = NOW() WHERE receiver_id = $1 AND serial_id = $2 AND status =$3 RETURNING *", [doneUserID, taskNumber, "ACCEPTED"])
                                     .then(result2 => {
+        console.log("IN RESULT2" + taskNumber);
                                         client.release();
                                         doneOut("Done", "", BLUE);
                                         
@@ -81,8 +81,9 @@ const handler = (payload, res) => {
                                     
                                         axios.post('https://slack.com/api/im.list', qs.stringify({
                                             token: config('POST_BOT_TOKEN'),
-
+                                            
                                         })).then(function (resp){
+    console.log("IN THEN" + taskNumber);
                                             for(var t = 0; t < resp.data.ims.length; t++){
                                                 console.log(resp.data.ims[t].id);
                                                 if(targetDM==resp.data.ims[t].user){
