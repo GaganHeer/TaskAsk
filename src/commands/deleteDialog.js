@@ -26,7 +26,7 @@ const handler = (payload, res) => {
                 if (result.rows.length > 0){
                     for (let i=0; i<result.rows.length; i++){
                         if (ALLOWED_STATUS.includes(result.rows[i].status)) {
-                            let temp = 'ID#' + result.rows[i].serial_id +': '+result.rows[i].title;
+                            let temp = 'ID# ' + result.rows[i].serial_id +': '+result.rows[i].title;
                             tasks.push({label: temp, value: result.rows[i].serial_id});
                         }
                     }

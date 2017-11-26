@@ -73,6 +73,7 @@ const handler = (payload, res) => {
                 text: text,
             }]),
         })).then((result) => {
+            res.send('');
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY

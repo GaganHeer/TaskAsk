@@ -47,8 +47,8 @@ const handler = (payload, res) => {
                 };
                 axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                 .then((result) => {
-                    //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     res.send('');
+                    //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 }).catch((err) => {
                     //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     res.sendStatus(500);
@@ -75,6 +75,7 @@ const handler = (payload, res) => {
                 text: text,
             }]),
         })).then((result) => {
+            res.send('');
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
