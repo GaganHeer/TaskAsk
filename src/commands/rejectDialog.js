@@ -25,6 +25,7 @@ const handler = (payload, res) => {
                 client.release();
             
             if (result.rows.length > 0){
+                sendMessage("Rejected", "", RED);
                 for (var i = 0; i < result.rows.length; i++) {
                     pendingList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
                 }
