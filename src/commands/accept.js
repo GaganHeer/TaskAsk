@@ -210,38 +210,6 @@ const handler = (payload, res) => {
 											createSendMsg("*** ERROR ***", e.stack, RED, ONLY_USER);
                                         });
                                 });
-
-                                var finalUser;
-                                var finalUserId;
-                                var targetDM = senderSlackID.slice(2,11);
-
-
-                                axios.post('https://slack.com/api/im.list', qs.stringify({
-                                    token: config('POST_BOT_TOKEN'),
-
-                                })).then(function (resp){
-                                    for(var t = 0; t < resp.data.ims.length; t++){
-                                        console.log(resp.data.ims[t].id);
-                                        if(targetDM==resp.data.ims[t].user){
-                                            finalUser = resp.data.ims[t].id;
-                                            finalUserId = resp.data.ims[t].user;
-                                            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-                                                token: config('POST_BOT_TOKEN'),
-                                                channel: finalUser,
-                                                user:finalUserId,
-                                                as_user:true,
-                                                text: "Accepted by: "+receiverSlackID,
-
-                                            })).then((result) => {
-                                                //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                            }).catch((err) => {
-                                                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                            });
-                                        }
-                                    }
-                                }).catch(function (err){
-                                    //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                });
                             }
 						})
 						.catch(err1 => {
