@@ -10,7 +10,6 @@ const axios = require('axios');
 const RED = "ff0000"
 const dbConfig = config('DB_CONFIG');
 	
-var dbURL = process.env.ELEPHANTSQL_URL;
 var pool = new pg.Pool(dbConfig);
 var tasks = [];
 
@@ -22,7 +21,7 @@ const handler = (payload, res) => {
     var deletingUserID = "<@" + payload.user_id + ">";
 
     pool.connect().then(client => {
-        return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID])
+        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID])
             .then(result => {
                 client.release();
 
