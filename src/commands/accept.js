@@ -14,7 +14,6 @@ const ONLY_USER = 'ephemeral';
 const qs = require('querystring');
 const axios = require('axios');
 
-var dbURL = process.env.ELEPHANTSQL_URL;
 var onlyNumbers = /^[0-9]*$/;
 const dbConfig = config('DB_CONFIG');
 var pool = new pg.Pool(dbConfig);
@@ -45,7 +44,7 @@ const handler = (payload, res) => {
 	let dbQ2 = "SELECT * FROM ask_table WHERE serial_id = $1";
 
     if(payload.hasOwnProperty('original_message')) {
-//		console.log("BUTTON PRESSED"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+        //console.log("BUTTON PRESSED"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		
 		taskNumber = parseInt(payload.original_message.text);
 		acceptingUserID = "<@" + payload.user.id + ">";
@@ -132,16 +131,14 @@ const handler = (payload, res) => {
 //                                            console.log("Log 2 :"+ jiraIssue); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                             jira.addNewIssue(jiraIssue, function (error, issue){
                                                 if (error){
-                                                    console.log(error);
-                                                    return(error);
+                                                    //console.log(error); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                 } else {
 //                                                    console.log('Console log 3, Jira Key: ' + issue.key); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     jiraKey = issue.key;
 //                                                    console.log('Console log 4: '+ jiraKey); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     jira.transitionIssue(jiraKey, issueTrans, function (err, issueUpdate) {  //Changes the Issue's Status to In Progress
                                                         if (err) {
-                                                            console.log(err);
-                                                            return(err);
+                                                            //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                         } else {
 //                                                            console.log("Console log 5, Jira Status change was a: "+ JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                             pool.connect().then(client => {
@@ -151,9 +148,7 @@ const handler = (payload, res) => {
 																			.then(result2 => {
                                                                                 client.release();
                                                                                 taskNumberRow = result2.rows;
-                                                                                var acceptMsg = taskNumberRow[0].sender_id + "! " + taskNumberRow[0].receiver_id + " has accepted Task ID: " + taskNumberRow[0].serial_id + " '" + taskNumberRow[0].req_desc + "'";
-                                                                                var acceptTitle = "Accepted!";
-                                                                                createSendMsg(acceptTitle, acceptMsg, GREEN, IN_CHANNEL);
+                                                                                createSendMsg("Accepted", "", GREEN, IN_CHANNEL);
 
                                                                                 //DM code
 
@@ -166,10 +161,8 @@ const handler = (payload, res) => {
                                                                                     token: config('POST_BOT_TOKEN'),
 
                                                                                 })).then(function (resp){
-                                                                                    console.log(resp.data);
                                                                                     for(var t = 0; t < resp.data.ims.length; t++){
-                                                                                        console.log(t);
-                                                                                        console.log(resp.data.ims[t].id);
+                                                                                        //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                                         if(targetDM==resp.data.ims[t].user){
                                                                                             finalUser = resp.data.ims[t].id;
                                                                                             finalUserId = resp.data.ims[t].user;
@@ -178,18 +171,21 @@ const handler = (payload, res) => {
                                                                                                 channel: finalUser,
                                                                                                 user:finalUserId,
                                                                                                 as_user:true,
-                                                                                                text: "Accepted by: "+receiverSlackID,
+                                                                                                attachments: JSON.stringify([{
+                                                                                                    title: "Accepted",
+                                                                                                    color: GREEN,
+                                                                                                    text: "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver_id + " Owner: " + taskNumberRow[0].sender_id,
+                                                                                                }]),
 
                                                                                             })).then((result) => {
-                                                                                                console.log('sendConfirmation: ', result.data); //arbitrary code, .then() is a requirement of axios
+                                                                                                //console.log('sendConfirmation: ', result.data); //arbitrary code, .then() is a requirement of axios
                                                                                             }).catch((err) => {
-//                                                                                                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                                                                                createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
+                                                                                                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                                             });
                                                                                         }
                                                                                     }
                                                                                 }).catch(function (err){
-//                                                                                    console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+//                                                                                  //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 																					createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
                                                                                 });
 																			})
@@ -224,9 +220,7 @@ const handler = (payload, res) => {
                                     token: config('POST_BOT_TOKEN'),
 
                                 })).then(function (resp){
-                                    console.log(resp.data);
                                     for(var t = 0; t < resp.data.ims.length; t++){
-                                        console.log(t);
                                         console.log(resp.data.ims[t].id);
                                         if(targetDM==resp.data.ims[t].user){
                                             finalUser = resp.data.ims[t].id;
@@ -239,15 +233,14 @@ const handler = (payload, res) => {
                                                 text: "Accepted by: "+receiverSlackID,
 
                                             })).then((result) => {
-                                                console.log('sendConfirmation: ', result.data);
+                                                //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                             }).catch((err) => {
-                                                console.log('sendConfirmation error: ', err);
-                                                console.error(err);
+                                                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                             });
                                         }
                                     }
                                 }).catch(function (err){
-                                    console.log(err);
+                                    //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                 });
                             }
 						})
