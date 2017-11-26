@@ -31,16 +31,16 @@ const handler = (payload, res) => {
 
                 var taskNumberRow = result.rows;
                 setButtons(taskNumber);
+                var text;
                 var finalUser;
                 var finalUserId;
                 var receivertargetDM = taskNumberRow[0].receiver_id.slice(2,11);
                 var sendertargetDM = taskNumberRow[0].sender_id.slice(2,11);
                 
-            console.log(result.rows[0].due_date);
                 if(result.rows[0].due_date == null) {
-                    console.log("DOESNT");
+                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + desc + "\n Due Date: " + result.rows[0].due_date;
                 } else {
-                    console.log("EXISTS");
+                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + desc;
                 }
 
                 //DM to the new receiver of the task
@@ -61,8 +61,7 @@ const handler = (payload, res) => {
                                   {
                                     title: "Forwarded",
                                     color: ORANGE,
-                                    text: "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + desc + "\n Due Date: " + result.rows[0].due_date,
-                                    callback_id: "askDialogHandler",
+                                    text: text,
                                     actions: buttons
                                   },
                                 ]),
