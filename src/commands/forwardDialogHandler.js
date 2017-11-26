@@ -29,7 +29,7 @@ const handler = (payload, res) => {
             .then(result => {
                 client.release();
 
-                taskNumberRow = result.rows;
+                var taskNumberRow = result.rows;
                 setButtons(taskNumber);
                 var finalUser;
                 var finalUserId;
