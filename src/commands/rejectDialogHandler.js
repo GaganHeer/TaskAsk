@@ -65,7 +65,7 @@ const handler = (payload, res) => {
         sendMessage("*** ERROR ***", "" + err, RED);
     });
     
-    function sendMessage(isError, title, text, color){
+    function sendMessage(title, text, color){
         axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
             token: config('OAUTH_TOKEN'),
             user: payload.user.id,
