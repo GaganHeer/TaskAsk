@@ -17,7 +17,7 @@ var tasks = [];
 const ALLOWED_STATUS = ["PENDING", "REJECTED"];
 
 const handler = (payload, res) => {
-    
+    console.log("BYEBYR")
     const { trigger_id } = payload;
     var deletingUserID = "<@" + payload.user_id + ">";
 
