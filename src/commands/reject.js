@@ -30,7 +30,7 @@ const handler = (payload, res) => {
 	var isButton = false;
 	
 	if(payload.hasOwnProperty('original_message')) {
-		//console.log("BUTTON PRESSED TIME TO TRIM"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+		console.log("BUTTON PRESSED TIME TO TRIM"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		
 		taskNumber = parseInt(payload.original_message.text);
 		rejectingUserID = "<@" + payload.user.id + ">";
@@ -49,7 +49,7 @@ const handler = (payload, res) => {
 	pool.connect().then(client => {
 		client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [taskNumber])
 			.then(result => {
-                var taskNumberRow = selectResult.rows;
+                var taskNumberRow = result.rows;
                 if(taskNumberRow.length == 0){
                     var falseIDMsg = taskNumber + " is not a valid ID#";
                     var falseIDTitle = "Invalid ID#";
@@ -67,9 +67,9 @@ const handler = (payload, res) => {
 
                 } else {
                     client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2 RETURNING *", [REJECTED_STATUS, taskNumber])
-                        .then(result => {
+                        .then(result1 => {
                             client.release();
-                            taskNumberRow = updateResult.rows;
+                            taskNumberRow = result1.rows;
                             createSendMsg("Rejected", "", RED);
 
                             //Dm
@@ -153,6 +153,5 @@ const handler = (payload, res) => {
         return;
     }
 }
-
 
 module.exports = { pattern: /reject/ig, handler: handler }
