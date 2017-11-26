@@ -68,7 +68,7 @@ const handler = (payload, res) => {
                         var receivertargetDM = taskNumberRow[0].receiver_id.slice(2,11);
                         var sendertargetDM = taskNumberRow[0].sender_id.slice(2,11);
                         
-                        //DM to the new receiver of the task and the owner of the task
+                        //DM to the new receiver of the task
                         axios.post('https://slack.com/api/im.list', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
                         })).then(function (resp){
@@ -97,7 +97,20 @@ const handler = (payload, res) => {
                                     }).catch((err) => {
                                         //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     });
-                                } else if(sendertargetDM==resp.data.ims[t].user){
+                                }
+                            }
+                        }).catch(function (err){
+                            //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                        });
+                        
+                        //DM to the owner of the task
+                        axios.post('https://slack.com/api/im.list', qs.stringify({
+                            token: config('POST_BOT_TOKEN'),
+                        })).then(function (resp){
+                            //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                            for(var t = 0; t < resp.data.ims.length; t++){
+                                //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                if(sendertargetDM==resp.data.ims[t].user){
                                     finalUser = resp.data.ims[t].id;
                                     finalUserId = resp.data.ims[t].user;
                                     axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
@@ -117,12 +130,13 @@ const handler = (payload, res) => {
                                         //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     }).catch((err) => {
                                         //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                    });          
+                                    });
                                 }
                             }
                         }).catch(function (err){
                             //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         });
+                        
                         sendMessage("Forwarded", "", ORANGE);
                     
                 });
