@@ -61,12 +61,15 @@ const handler = (payload, res) => {
                 sid =  resp.rows[0].serial_id;
                 setButtons(sid);
                 sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + " Owner: " + sender + "\n Description: " + desc, YELLOW);
-            })
-            .catch(e => {
+            }).catch(e => {
                 client.release();
                 sendMessage(true, "*** ERROR ***", "" + e, RED);
             })
         }
+    })
+    .catch(e => {
+        client.release();
+        sendMessage(true, "*** ERROR ***", "" + e, RED);
     });
             
     function setButtons(sid){

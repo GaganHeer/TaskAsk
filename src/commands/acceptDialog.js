@@ -57,6 +57,10 @@ const handler = (payload, res) => {
                     sendMessage("*** ERROR ***", "No pending tasks to display", RED)
                 }
         })
+        .catch(e => {
+            client.release();
+            sendMessage("*** ERROR ***", "" + e, RED);
+        })
     }).catch((err) => {
         sendMessage("*** ERROR ***", "" + err, RED);
     });
