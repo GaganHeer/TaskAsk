@@ -10,7 +10,8 @@ const axios = require('axios')
 const PENDING_STATUS = "PENDING";
 const RED = "ff0000"
 	
-var dbURL = process.env.ELEPHANTSQL_URL
+const dbConfig = config('DB_CONFIG');
+var pool = new pg.Pool(dbConfig);
 
 const handler = (payload, res) => {
     
@@ -36,67 +37,62 @@ const handler = (payload, res) => {
             channel = payload.channel.id
         }
         
-        pg.connect(dbURL, function(err, client, done) {
-            if(err) {
-                sendMessage("*** ERROR ***", err, RED);
-            }
-            client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100", [receiver, PENDING_STATUS], function(err, result) {
-                done();
-                if(err) {
-                    sendMessage("*** ERROR ***", err, RED);
-                }
+        pool.connect().then(client => {
+            client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100", [receiver, PENDING_STATUS])
+                .then(result => {
+                    client.release();
                 
-                if(result.rows.length == 0){
-                    sendMessage("*** ERROR ***", "No pending requests to display", RED);
-                } else {
-                
-                    for (var i = 0; i < result.rows.length; i++) {
-                        pendingList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
-                    }
+                    if(result.rows.length == 0){
+                        sendMessage("*** ERROR ***", "No pending requests to display", RED);
+                    } else {
 
-                    for (var i = 0; i < resultList.length; i++) {
-                        if(resultList[i].is_bot == false){
-                            userList[userListIndex] = {label: resultList[i].real_name, value: resultList[i].id};
-                            userListIndex++;
+                        for (var i = 0; i < result.rows.length; i++) {
+                            pendingList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
                         }
-                    }       
 
-                    const dialog = {
-                        token: config('OAUTH_TOKEN'),
-                        trigger_id,
-                        dialog: JSON.stringify({
-                            title: 'Forward A Task',
-                            callback_id: 'forwardDialog',
-                            submit_label: 'Forward',
-                            elements: [
-                                {
-                                    "label": "Receiver",
-                                    "type": "select",
-                                    "name": "receiver",
-                                    "options": userList,
-                                },
-                                {
-                                    label: 'Task',
-                                    type: 'select',
-                                    name: 'task',
-                                    options: pendingList,
-                                    value: sid,
-                                    hint: 'The task you are forwarding',
-                                },
-                            ],
-                        }),
-                    };
+                        for (var i = 0; i < resultList.length; i++) {
+                            if(resultList[i].is_bot == false){
+                                userList[userListIndex] = {label: resultList[i].real_name, value: resultList[i].id};
+                                userListIndex++;
+                            }
+                        }       
 
-                    axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-                        .then((result) => {
-                            //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                            res.send('');
-                        }).catch((err) => {
-                            //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                            res.sendStatus(500);
-                        });
-                }
-            })
+                        const dialog = {
+                            token: config('OAUTH_TOKEN'),
+                            trigger_id,
+                            dialog: JSON.stringify({
+                                title: 'Forward A Task',
+                                callback_id: 'forwardDialog',
+                                submit_label: 'Forward',
+                                elements: [
+                                    {
+                                        "label": "Receiver",
+                                        "type": "select",
+                                        "name": "receiver",
+                                        "options": userList,
+                                    },
+                                    {
+                                        label: 'Task',
+                                        type: 'select',
+                                        name: 'task',
+                                        options: pendingList,
+                                        value: sid,
+                                        hint: 'The task you are forwarding',
+                                    },
+                                ],
+                            }),
+                        };
+
+                        axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
+                            .then((result) => {
+                                //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                res.send('');
+                            }).catch((err) => {
+                                //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                res.sendStatus(500);
+                            });
+                    }
+                })
         })
     }).catch((err) => {
         sendMessage("*** ERROR ***", err, RED);

@@ -12,7 +12,8 @@ const RED = "ff0000"
 const ORANGE = "#ffa500"
 const PENDING_STATUS = "PENDING"
 
-var dbURL = process.env.ELEPHANTSQL_URL
+const dbConfig = config('DB_CONFIG');
+var pool = new pg.Pool(dbConfig);
 
 const handler = (payload, res) => {
     var title = payload.submission.title;
@@ -22,15 +23,11 @@ const handler = (payload, res) => {
     var receiver = "<@" + payload.submission.receiver + ">";
     var buttons = "";
     
-    pg.connect(dbURL, function(err, client, done) {
-        if(err) {
-            sendMessage(true, "*** ERROR ***", err, RED);
-        }
-        client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [taskNumber], function (err, result) {
-            done();
-            if(err) {
-                sendMessage(true, "*** ERROR ***", err, RED);
-            }
+    pool.connect().then(client => {
+        client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [taskNumber])
+            .then(result => {
+                client.release();
+            
             var taskNumberRow = result.rows;
 			if(taskNumberRow.length == 0){
                 res.send({
@@ -72,7 +69,6 @@ const handler = (payload, res) => {
                         axios.post('https://slack.com/api/im.list', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
                         })).then(function (resp){
-                            //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             for(var t = 0; t < resp.data.ims.length; t++){
                                 //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                 if(receivertargetDM==resp.data.ims[t].user){
@@ -136,12 +132,12 @@ const handler = (payload, res) => {
                         }).catch(function (err){
                             //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         });
-                        
                         sendMessage("Forwarded", "", ORANGE);
-                    
                 });
             }
         });
+    }).catch((err) => {
+        sendMessage("*** ERROR ***", "" + err, RED);
     });
     
     function sendMessage(title, text, color){
