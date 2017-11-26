@@ -39,7 +39,7 @@ const handler = (payload, res) => {
                 
                 if(result.rows[0].due_date != null) {
                     var stringDate = result.rows[0].due_date.toString();
-                    var due = stringDate.slice(5,13)
+                    var due = stringDate.slice(4,20)
                     text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + result.rows[0].req_desc + "\n Due Date: " + due;
                 } else {
                     text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + result.rows[0].req_desc;
