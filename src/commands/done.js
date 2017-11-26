@@ -8,22 +8,15 @@ const pg = require('pg');
 const JiraApi = require('jira').JiraApi;
 var onlyNumbers = /^[0-9]*$/;
 var charCheck = /[^0-9]/;
+const BLUE = "33ccff"
 
 const qs = require('querystring');
 const axios = require('axios');
 
-	
-var dbURL = process.env.ELEPHANTSQL_URL;
 const dbConfig = config('DB_CONFIG');
 var pool = new pg.Pool(dbConfig);
 const jira = new JiraApi('https', config('JIRA_HOST'), config('JIRA_PORT'), config('JIRA_USER'), config('JIRA_PWD'), 'latest');
 
-
-const msgDefaults = {
-  response_type: 'ephemeral',
-  username: 'MrBoneyPantsGuy'
- 
-};
 
 var outMsg = "not working" ;
 var msgColor = "#ff0000";
@@ -41,11 +34,6 @@ const handler = (payload, res) => {
     var doneUserID;
 	var taskNumber;
 	var isButton = false;
-
-	var finalUser;
-	var finalUserId;
-	var targetDM;
-	
 	
     if(payload.hasOwnProperty('original_message')) {
 		console.log("BUTTON PRESSED TIME TO TRIM");
@@ -65,93 +53,80 @@ const handler = (payload, res) => {
 		channelName = payload.channel_name;
 	}
 	
-	outMsg="test";
-	pg.connect(dbURL, function(err, client, done){
-		client.query("SELECT * FROM ASK_TABLE WHERE receiver_id = $1 AND serial_id = $2 AND status = $3", [doneUserID, taskNumber, "ACCEPTED"], function(err, result) {
+	pool.connect().then(client => {
+		client.query("SELECT * FROM ASK_TABLE WHERE receiver_id = $1 AND serial_id = $2 AND status = $3", [doneUserID, taskNumber, "ACCEPTED"])
+            .then(result => {
+                client.release();
+                if (result.rows.length == 0){
+                    title = "*** ERROR ***";
+                    outMsg = "Please enter an Accepted task that belongs to you.";
+                    msgColor = "#ff0000";
 
-			if(err) {
-				title = "*** ERROR ***";
-				doneOut(title ,err, msgColor);
-			}
+                    doneOut(title, outMsg, msgColor);
+                } else {
+                    jiraKey = result.rows[0].jira_id;
+                    jira.transitionIssue(jiraKey, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
+                        if (error) {
+                            console.log(error);
+                            return(error);
+                        } else {
+                            console.log("Jira Status change was a: "+ JSON.stringify(issueUpdate));
+                            pool.connect().then(client => {
+                                client.query("UPDATE ASK_TABLE SET status = 'DONE', fin_date = NOW() WHERE receiver_id = $1 AND serial_id = $2 AND status =$3 RETURNING *", [doneUserID, taskNumber, "ACCEPTED"])
+                                    .then(result2 => {
+                                        client.release();
+                                        doneOut("Done", "", BLUE);
+                                        
+                                        var finalUser;
+                                        var finalUserId;
+                                        var targetDM = result2.rows[0].sender_id.slice(2,11);
+                                    
+                                        axios.post('https://slack.com/api/im.list', qs.stringify({
+                                            token: config('POST_BOT_TOKEN'),
 
-			if (result.rows.length == 0){
-				title = "*** ERROR ***";
-				outMsg = "Whoops. Please enter an Accepted task that belongs to you.";
-				msgColor = "#ff0000";
-
-				doneOut(title, outMsg, msgColor);
-			} else {
-				jiraKey = result.rows[0].jira_id;
-				jira.transitionIssue(jiraKey, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
-					if (error) {
-						console.log(error);
-						return(error);
-					} else {
-						console.log("Jira Status change was a: "+ JSON.stringify(issueUpdate));
-						pg.connect(dbURL, function(err, client, done) {
-							client.query("UPDATE ASK_TABLE SET status = 'DONE', fin_date = NOW() WHERE receiver_id = $1 AND serial_id = $2 AND status =$3", [doneUserID, taskNumber, "ACCEPTED"], function(err2, result2) {
-								if(err) {
-									title = "*** ERROR ***";
-									doneOut(title, err, msgColor);
-								}
-
-								outMsg = "The following task is now done: " + jiraKey;
-								msgColor = "#33ccff";
-
-								doneOut(title, outMsg, msgColor);
-							});
-						});
-
-						pg.connect(dbURL, function(err, client, done){
-							client.query("SELECT sender_id from ask_table where serial_id=$1",[taskNumber],function(err3,result4){
-								if(err){
-									title = "*** ERROR ***";
-									doneOut(title, err, msgColor);
-								}
-								console.log("************************************************");
-								console.log(result4.rows[0].sender_id);
-								targetDM = result4.rows[0].sender_id.slice(2,11);
-
-								
-							})
-						})
-
-						axios.post('https://slack.com/api/im.list', qs.stringify({
-						    token: config('POST_BOT_TOKEN'),
-						    
-						})).then(function (resp){
-							console.log(resp.data);
-							for(var t = 0; t < resp.data.ims.length; t++){
-								console.log(t);
-								console.log(resp.data.ims[t].id);
-								if(targetDM==resp.data.ims[t].user){
-									finalUser = resp.data.ims[t].id;
-									finalUserId = resp.data.ims[t].user;
-									axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-									    token: config('POST_BOT_TOKEN'),
-									    channel: finalUser,
-									    user:finalUserId,
-									    as_user:true,
-									    text: 'User <@'+payload.user_id+"> Completed a task",
-									    
-									    
-									  })).then((result) => {
-									        console.log('sendConfirmation: ', result.data);
-									      }).catch((err) => {
-									        console.log('sendConfirmation error: ', err);
-									        console.error(err);
-									    });
-								}
-							}
-						}).catch(function (err){
-							console.log(err);
-						});
-					}
-				});
-			}
-			done();
-		});
-	});
+                                        })).then(function (resp){
+                                            for(var t = 0; t < resp.data.ims.length; t++){
+                                                console.log(resp.data.ims[t].id);
+                                                if(targetDM==resp.data.ims[t].user){
+                                                    finalUser = resp.data.ims[t].id;
+                                                    finalUserId = resp.data.ims[t].user;
+                                                    axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                                        token: config('POST_BOT_TOKEN'),
+                                                        channel: finalUser,
+                                                        user:finalUserId,
+                                                        as_user:true,
+                                                        attachments: JSON.stringify([{
+                                                            title: "Done",
+                                                            color: BLUE,
+                                                            text: "Task ID: " + result2.rows[0].serial_id + "\n Title: " + result2.rows[0].title + "\n Recipient: " + result2.rows[0].receiver_id + " Owner: " + result2.rows[0].sender_id,
+                                                        }]),
+                                                    })).then((result) => {
+                                                        console.log('sendConfirmation: ', result.data);
+                                                    }).catch((err) => {
+                                                        console.log('sendConfirmation error: ', err);
+                                                    });
+                                                }
+                                            }
+                                        }).catch(function (err){
+                                            console.log(err);
+                                        });
+                                    }).catch(e => {
+                                        client.release();
+                                        sendMessage("*** ERROR ***", "" + e, RED);
+                                    });
+                            }).catch(e => {
+                                sendMessage("*** ERROR ***", "" + e, RED);
+                            });                            
+                        }
+                    });
+                }
+		}).catch(e => {
+            client.release();
+            sendMessage("*** ERROR ***", "" + e, RED);
+        });
+	}).catch(e => {
+        sendMessage("*** ERROR ***", "" + e, RED);
+    })
 
 	function doneOut(attachTitle, attachMsg, attachColor, respType=payload.channel_name) {
 		var msgAttachment;
@@ -181,9 +156,6 @@ const handler = (payload, res) => {
 		res.status(200).json(msg)
 		return;
 	}
-
-	
-	
 }
 
 module.exports = { pattern: /done/ig, handler: handler }

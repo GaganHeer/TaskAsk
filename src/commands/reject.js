@@ -30,7 +30,7 @@ const handler = (payload, res) => {
 	var isButton = false;
 	
 	if(payload.hasOwnProperty('original_message')) {
-		console.log("BUTTON PRESSED TIME TO TRIM"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+		//console.log("BUTTON PRESSED TIME TO TRIM"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		
 		taskNumber = parseInt(payload.original_message.text);
 		rejectingUserID = "<@" + payload.user.id + ">";
@@ -71,8 +71,6 @@ const handler = (payload, res) => {
                             client.release();
                             taskNumberRow = result1.rows;
                             createSendMsg("Rejected", "", RED);
-                            console.log(taskNumberRow[0].sender_id);
-                            console.log(taskNumberRow[0].serial_id);
                             //Dm
 
                             var finalUser;
@@ -83,7 +81,6 @@ const handler = (payload, res) => {
                                 token: config('POST_BOT_TOKEN'),
 
                             })).then(function (resp){
-                                console.log("AFTER THEN")
                                 for(var t = 0; t < resp.data.ims.length; t++){
                                     //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     if(targetDM==resp.data.ims[t].user){
@@ -100,9 +97,9 @@ const handler = (payload, res) => {
                                                 text: "Task ID: " + taskNumber + "\n Title: " + result1.rows[0].title + "\n Recipient: " + result1.rows[0].receiver_id + " Owner: " + result1.rows[0].sender_id,
                                             }]),
                                         })).then((result) => {
-                                            console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         }).catch((err) => {
-                                            console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         });
                                     }
                                 }
