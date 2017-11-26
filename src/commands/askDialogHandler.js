@@ -4,7 +4,6 @@
 const _ = require('lodash')
 const config = require('../config')
 const util = require('util')
-const moment = require('moment')
 const pg = require('pg')
 const dbConfig = config('DB_CONFIG');
 const qs = require('querystring')

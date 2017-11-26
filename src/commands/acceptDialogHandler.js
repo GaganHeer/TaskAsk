@@ -6,16 +6,11 @@ const util = require('util');
 const pg = require('pg');
 const JiraApi = require('jira').JiraApi;
 const ACCEPTED_STATUS = "ACCEPTED";
-const PENDING_STATUS = "PENDING";
 const RED = "ff0000";
 const GREEN = "33cc33";
-const IN_CHANNEL = 'in_channel';
-const ONLY_USER = 'ephemeral';
 const qs = require('querystring');
 const axios = require('axios');
 
-var dbURL = process.env.ELEPHANTSQL_URL;
-var onlyNumbers = /^[0-9]*$/;
 const dbConfig = config('DB_CONFIG');
 var pool = new pg.Pool(dbConfig);
 const jira = new JiraApi('https', config('JIRA_HOST'), config('JIRA_PORT'), config('JIRA_USER'), config('JIRA_PWD'), 'latest');
