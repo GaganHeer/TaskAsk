@@ -67,9 +67,9 @@ const handler = (payload, res) => {
 
                 } else {
                     client.query("UPDATE ASK_TABLE SET STATUS = $1 WHERE SERIAL_ID = $2 RETURNING *", [REJECTED_STATUS, taskNumber])
-                        .then(result1 => {
+                        .then(result => {
                             client.release();
-                            taskNumberRow = result1.rows;
+                            taskNumberRow = result.rows;
                             createSendMsg("Rejected", "", RED);
 
                             //Dm
