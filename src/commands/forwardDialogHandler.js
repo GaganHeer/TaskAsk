@@ -37,10 +37,10 @@ const handler = (payload, res) => {
                 var receivertargetDM = taskNumberRow[0].receiver_id.slice(2,11);
                 var sendertargetDM = taskNumberRow[0].sender_id.slice(2,11);
                 
-                if(result.rows[0].due_date == null) {
-                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + desc + "\n Due Date: " + result.rows[0].due_date;
+                if(result.rows[0].due_date != null) {
+                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + result.rows[0].req_desc + "\n Due Date: " + result.rows[0].due_date;
                 } else {
-                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + desc;
+                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + result.rows[0].req_desc;
                 }
 
                 //DM to the new receiver of the task
