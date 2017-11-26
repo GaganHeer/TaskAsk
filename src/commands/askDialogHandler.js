@@ -153,7 +153,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     callback_id: "askDialogHandler",
-                    actions: buttons,
                 }]),
             })).then((result) => {
                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
