@@ -18,22 +18,19 @@ const ALLOWED_STATUS = ["PENDING", "REJECTED"];
 const handler = (payload, res) => {
     const { trigger_id } = payload;
     var deletingUserID = "<@" + payload.user_id + ">";
-    var taskIndex = 0;
-    
+
     pool.connect().then(client => {
         client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID])
             .then(result => {
                 client.release();
                 if (result.rows.length > 0){
                     for (let i=0; i<result.rows.length; i++){
-                        console.log(result.rows[i].title);
                         if (ALLOWED_STATUS.includes(result.rows[i].status)) {
-                            //tasks[taskIndex] = {label: 'ID# ' + result.rows[i].serial_id +': ' + result.rows[i].title, value: result.rows[i].serial_id};
-                            tasks[taskIndex] = {label: 'ID# ', value: result.rows[i].serial_id};
-                            taskIndex++;
-                            //tasks.push({label: temp, value: result.rows[i].serial_id});
+                            let temp = 'ID#' + result.rows[i].serial_id +': '+result.rows[i].title;
+                            tasks.push({label: temp, value: result.rows[i].serial_id});
                         }
                     }
+                    
                     const dialog = {
                         token: config('OAUTH_TOKEN'),
                         trigger_id,
@@ -43,10 +40,10 @@ const handler = (payload, res) => {
                             submit_label: 'Delete',
                             elements: [
                                 {
-                                    label: "Pending s",
+                                    label: "Deletable Tasks",
                                     type: "select",
                                     name: "taskLabel",
-                                    options: [{label: 'ID# ', value: 2}],
+                                    options: tasks,
                                 },
                                 {
                                     label: 'Task# Confirmation',
@@ -67,7 +64,7 @@ const handler = (payload, res) => {
                         });
                         //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 } else {
-                    sendMessage("*** ERROR ***", "No deleteable tasks to display", RED)
+                    sendMessage("*** ERROR ***", "No deletable tasks to display", RED)
                     res.send('');
                 }
             })
