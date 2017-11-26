@@ -57,9 +57,6 @@ const handler = (payload, res) => {
                 res.send('')
                 client.query("UPDATE ASK_TABLE SET RECEIVER_ID = $1 WHERE SERIAL_ID = $2 RETURNING *", [receiver, taskNumber], function(err, result) {
                         done();
-                        if(err2) {
-                            sendMessage(true, "*** ERROR ***", err2, RED);
-                        }
                         if(err) {
                             sendMessage(true, "*** ERROR ***", err, RED);
                         }
