@@ -48,8 +48,8 @@ const handler = (payload, res) => {
 
 	pool.connect().then(client => {
 		client.query("SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1", [taskNumber])
-			.then(result => {
-                var taskNumberRow = result.rows;
+			.then(result1 => {
+                var taskNumberRow = result1.rows;
                 if(taskNumberRow.length == 0){
                     var falseIDMsg = taskNumber + " is not a valid ID#";
                     var falseIDTitle = "Invalid ID#";
