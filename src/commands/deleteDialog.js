@@ -24,7 +24,7 @@ const handler = (payload, res) => {
         client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID])
             .then(result => {
                 client.release();
-
+                console.log("SPOT 3")
                 if (result.rows.length > 0){
                     for (let i=0; i<result.rows.length; i++){
                         if (ALLOWED_STATUS.includes(result.rows[i].status)) {
@@ -32,7 +32,7 @@ const handler = (payload, res) => {
                             tasks.push({label: temp, value: result.rows[i].serial_id});
                         }
                     }
-                    
+                    console.log("SPOT 4")
                     const dialog = {
                         token: config('OAUTH_TOKEN'),
                         trigger_id,
@@ -56,7 +56,7 @@ const handler = (payload, res) => {
                             ],
                         }),
                     };
-
+                    console.log("SPOT 5")
                     axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                         .then((result) => {
                             //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
@@ -67,6 +67,7 @@ const handler = (payload, res) => {
                         });
                         //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 } else {
+                    console.log("SPOT 6")
                     sendMessage("*** ERROR ***", "No deleteable tasks to display", RED)
                 }
             })
@@ -91,5 +92,6 @@ const handler = (payload, res) => {
             //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         });
     }
+    console.log("SPOT 7")
 };
 module.exports = { pattern: /deleteDialog/ig, handler: handler };
