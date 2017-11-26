@@ -35,8 +35,9 @@ const handler = (payload, res) => {
                 var finalUserId;
                 var receivertargetDM = taskNumberRow[0].receiver_id.slice(2,11);
                 var sendertargetDM = taskNumberRow[0].sender_id.slice(2,11);
-            
-                if(result.rows[0].due_date = null) {
+                
+            console.log(result.rows[0].due_date);
+                if(result.rows[0].due_date == null) {
                     console.log("DOESNT");
                 } else {
                     console.log("EXISTS");
