@@ -185,7 +185,7 @@ app.post('/commands/boneypants/clarifydialog', (req, res) => {
 
 app.post('/commands/boneypants/deletedialog', (req, res) => {
     let payload = req.body;
-
+    console.log("HIHIHHI")
     if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
         let err = '✋  Star—what? An invalid slash token was provided\n' +
             '   Is your Slack slash token correctly configured?';
