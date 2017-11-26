@@ -73,7 +73,7 @@ const handler = (payload, res) => {
                                     .then(result2 => {
         console.log("IN RESULT2" + taskNumber);
                                         client.release();
-                                        //doneOut("Done", "", BLUE);
+                                        doneOut("Done", "", BLUE);
                                         
                                         var finalUser;
                                         var finalUserId;
