@@ -18,16 +18,19 @@ const ALLOWED_STATUS = ["PENDING", "REJECTED"];
 const handler = (payload, res) => {
     const { trigger_id } = payload;
     var deletingUserID = "<@" + payload.user_id + ">";
-
+    var taskIndex = 0;
+    
     pool.connect().then(client => {
         client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID])
             .then(result => {
                 client.release();
                 if (result.rows.length > 0){
                     for (let i=0; i<result.rows.length; i++){
+                        console.log(result.rows[i].title);
                         if (ALLOWED_STATUS.includes(result.rows[i].status)) {
-                            let temp = 'ID#' + result.rows[i].serial_id +': '+result.rows[i].title;
-                            tasks.push({label: temp, value: result.rows[i].serial_id});
+                            tasks[taskIndex] = {label: 'ID#' + result.rows[i].serial_id +': ' + result.rows[i].title, value: result.rows[i].serial_id};
+                            taskIndex++;
+                            //tasks.push({label: temp, value: result.rows[i].serial_id});
                         }
                     }
                     const dialog = {
