@@ -17,6 +17,15 @@ const handler = (payload, res) => {
     
     const { trigger_id } = payload;
     
+    if(payload.user_id){
+            receiver = "<@" + payload.user_id + ">";
+            channel = payload.channel_id
+        } else {
+            receiver = "<@" + payload.user.id + ">";
+            sid = payload.actions[0].value
+            channel = payload.channel.id
+        }
+    
     axios.post('https://slack.com/api/users.list', qs.stringify({
         token: config('OAUTH_TOKEN'),
     })).then((result) => {
@@ -27,15 +36,6 @@ const handler = (payload, res) => {
         var receiver = "";
         var sid = ""
         var channel = ""
-        
-        if(payload.user_id){
-            receiver = "<@" + payload.user_id + ">";
-            channel = payload.channel_id
-        } else {
-            receiver = "<@" + payload.user.id + ">";
-            sid = payload.actions[0].value
-            channel = payload.channel.id
-        }
         
         pool.connect().then(client => {
             client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 AND STATUS = $2 ORDER BY SERIAL_ID DESC LIMIT 100", [receiver, PENDING_STATUS])
