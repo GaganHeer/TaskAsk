@@ -70,7 +70,6 @@ const handler = (payload, res) => {
                         .then(result => {
                             client.release();
                             taskNumberRow = result.rows;
-                            createSendMsg("Rejected", "", RED);
 
                             //Dm
 
@@ -104,11 +103,13 @@ const handler = (payload, res) => {
                                         });
                                     }
                                 }
+                                createSendMsg("Rejected", "", RED);
                             }).catch(function (err){
                                 //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             });
 
                             //End of DM
+                            
                         
                     }).catch((err) => {
                         client.release();
