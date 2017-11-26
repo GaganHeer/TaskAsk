@@ -61,7 +61,7 @@ const handler = (payload, res) => {
                 client.release();
                 sid =  resp.rows[0].serial_id;
                 setButtons(sid);
-                sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
+                sendMessage(false, "Asked", "", YELLOW);
             })
             .catch(e => {
                 client.release();
@@ -145,8 +145,9 @@ const handler = (payload, res) => {
                 //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             });
         } else {
-            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+            axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
                 token: config('OAUTH_TOKEN'),
+                user: payload.user.id
                 channel: payload.channel.id,
                 attachments: JSON.stringify([{
                     title: title,
