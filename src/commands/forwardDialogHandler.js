@@ -63,7 +63,8 @@ const handler = (payload, res) => {
                         taskNumberRow = result.rows;
                         var finalUser;
                         var finalUserId;
-                        var targetDM = taskNumberRow[0].receiver_id.slice(2,11);
+                        var receivertargetDM = taskNumberRow[0].receiver_id.slice(2,11);
+                        var sendertargetDM = taskNumberRow[0].sender_id.slice(2,11);
                         
                         //DM to the new receiver of the task
                         axios.post('https://slack.com/api/im.list', qs.stringify({
@@ -72,7 +73,7 @@ const handler = (payload, res) => {
                             //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             for(var t = 0; t < resp.data.ims.length; t++){
                                 //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                if(targetDM==resp.data.ims[t].user){
+                                if(receivertargetDM==resp.data.ims[t].user){
                                     finalUser = resp.data.ims[t].id;
                                     finalUserId = resp.data.ims[t].user;
                                     axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
@@ -100,13 +101,13 @@ const handler = (payload, res) => {
                         });
                         
                         //DM to the owner of the task
-                        /*axios.post('https://slack.com/api/im.list', qs.stringify({
+                        axios.post('https://slack.com/api/im.list', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
                         })).then(function (resp){
                             //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             for(var t = 0; t < resp.data.ims.length; t++){
                                 //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                if(targetDM==resp.data.ims[t].user){
+                                if(sendertargetDM==resp.data.ims[t].user){
                                     finalUser = resp.data.ims[t].id;
                                     finalUserId = resp.data.ims[t].user;
                                     axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
@@ -117,8 +118,10 @@ const handler = (payload, res) => {
                                         text: 'Forwarded by :' + taskNumberRow[0].receiver_id, 
                                         attachments: JSON.stringify([
                                           {
-                                            title: "Forward",
-                                            color: 'ffcc00'
+                                            title: "Forwarded",
+                                            color: ORANGE,
+                                            text: "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id,
+                                            callback_id: "forwardDialogMsg",
                                           },
                                         ]),
                                     })).then((result) => {
@@ -130,7 +133,7 @@ const handler = (payload, res) => {
                             }
                         }).catch(function (err){
                             //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                        });*/
+                        });
                         
                         sendMessage("Forwarded", "", ORANGE);
                     
