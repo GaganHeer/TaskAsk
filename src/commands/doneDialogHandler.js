@@ -4,13 +4,12 @@
 const _ = require('lodash')
 const config = require('../config')
 const util = require('util')
-const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
 const JiraApi = require('jira').JiraApi;
 const RED = "ff0000"
-const GREEN = "33cc33"
+const BLUE = "33ccff"
 const DONE_STATUS = "DONE"
 
 var dbURL = process.env.ELEPHANTSQL_URL;
@@ -25,39 +24,32 @@ var issueTransDone = {
 };
 
 const handler = (payload, res) => {
+    res.send('')
     var jid = payload.submission.task;
     
     pg.connect(dbURL, function(err, client, done){
         done();
         jira.transitionIssue(jid, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
             if (error) {
-                sendMessage(true, "*** ERROR ***", error, RED);
-                //return(error);
+                sendMessage("*** ERROR ***", error, RED);
             } else {
-                console.log("Jira Status change was a: " + JSON.stringify(issueUpdate));
+                //console.log("Jira Status change was a: " + JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 pg.connect(dbURL, function(err, client, done) {
                     done();
                     client.query("UPDATE ASK_TABLE SET status = $1, fin_date = NOW() WHERE jira_id = $2 RETURNING *", [DONE_STATUS, jid], function(err, result) {
                         if(err) {
-                            sendMessage(true, "*** ERROR ***", err, RED);
+                            sendMessage("*** ERROR ***", err, RED);
                         }
-
-                        
-                       //Dm
-
                         var finalUser;
                         var finalUserId;
                         var targetDM = result.rows[0].sender_id.slice(2,11);
-
 
                         axios.post('https://slack.com/api/im.list', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
 
                         })).then(function (resp){
-                            console.log(resp.data);
                             for(var t = 0; t < resp.data.ims.length; t++){
-                                console.log(t);
-                                console.log(resp.data.ims[t].id);
+                                //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                 if(targetDM==resp.data.ims[t].user){
                                     finalUser = resp.data.ims[t].id;
                                     finalUserId = resp.data.ims[t].user;
@@ -66,63 +58,44 @@ const handler = (payload, res) => {
                                         channel: finalUser,
                                         user:finalUserId,
                                         as_user:true,
-                                        text: result.rows[0].sender_id+": Done TASK: "+result.rows[0].serial_id,
-
-                                    })).then((resulttt) => {
-                                        console.log('sendConfirmation: ', resulttt.data);
+                                        attachments: JSON.stringify([{
+                                            title: "Done",
+                                            color: BLUE,
+                                            text: "Task ID: " + result.rows[0].serial_id + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id + " Owner: " + result.rows[0].sender_id,
+                                        }]),
+                                    })).then((result) => {
+                                        //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     }).catch((err) => {
-                                        console.log('sendConfirmation error: ', err);
-                                        console.error(err);
+                                        //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     });
                                 }
                             }
                         }).catch(function (err){
-                            console.log(err);
+                            //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         });
-
-                        //End of DM
-                        
-                        sendMessage(false, "Done", "You have completed ID# " + result.rows[0].serial_id + ": " + result.rows[0].title, GREEN);
-                        res.send('')
+                        sendMessage("Done", "", BLUE);
                     });
                 });
             }
         });
 	});
     
-    function sendMessage(isError, title, text, color){
-        if(isError){
-            axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
-                token: config('OAUTH_TOKEN'),
-                user: payload.user.id,
-                channel: payload.channel.id,
-                attachments: JSON.stringify([{
-                    title: title,
-                    color: color,
-                    text: text,
-                }]),
-            })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
-            }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
-                console.error(err);
-            });
-        } else {
-            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-                token: config('OAUTH_TOKEN'),
-                channel: payload.channel.id,
-                attachments: JSON.stringify([{
-                    title: title,
-                    color: color,
-                    text: text,
-                }]),
-            })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
-            }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
-                console.error(err);
-            });
-        }
+    function sendMessage(title, text, color){
+        
+        axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
+            token: config('OAUTH_TOKEN'),
+            user: payload.user.id,
+            channel: payload.channel.id,
+            attachments: JSON.stringify([{
+                title: title,
+                color: color,
+                text: text,
+            }]),
+        })).then((result) => {
+            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+        }).catch((err) => {
+            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+        });
     }
 }
 module.exports = { pattern: /doneDialogHandler/ig, handler: handler }

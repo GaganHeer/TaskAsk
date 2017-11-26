@@ -138,7 +138,6 @@ const handler = (payload, res) => {
                                                                                                 title: "Accepted",
                                                                                                 color: GREEN,
                                                                                                 text: "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver_id + " Owner: " + taskNumberRow[0].sender_id,
-                                                                                                callback_id: "acceptDialogMsg",
                                                                                             }]),
 
                                                                                         })).then((result) => {
@@ -189,7 +188,6 @@ const handler = (payload, res) => {
                 title: title,
                 color: color,
                 text: text,
-                callback_id: "acceptDialogHandlerMsg",
             }]),
         })).then((result) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
