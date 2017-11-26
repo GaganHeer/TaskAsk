@@ -64,6 +64,7 @@ const handler = (payload, res) => {
                                     title: "Forwarded",
                                     color: ORANGE,
                                     text: text,
+                                    callback_id: "askDialogHandler",
                                     actions: buttons
                                   },
                                 ]),
