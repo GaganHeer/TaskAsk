@@ -43,7 +43,7 @@ const handler = (payload, res) => {
                             submit_label: 'Delete',
                             elements: [
                                 {
-                                    label: "Pending and Rejected Tasks",
+                                    label: "Pending s",
                                     type: "select",
                                     name: "taskLabel",
                                     options: [{label: 'ID# ', value: 2}],
