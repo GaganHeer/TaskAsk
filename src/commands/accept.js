@@ -71,6 +71,7 @@ const handler = (payload, res) => {
 				pool.connect().then(client1 => {
 					return client1.query(dbQ2, [taskNumber])
 						.then(result1 => {
+                            client1.release();
                             var taskNumberRow = result1.rows;
                             if(taskNumberRow.length == 0){
                                 var falseIDMsg = taskNumber + " is not a valid ID#";
@@ -195,6 +196,7 @@ const handler = (payload, res) => {
 																			});
                                                                         })
 																		.catch(err => {
+                                                                            client.release();
 //																			console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 																			createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
 																		});
@@ -213,16 +215,24 @@ const handler = (payload, res) => {
                             }
 						})
 						.catch(err1 => {
-//                            console.log(err1); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                            client1.release();
+//                          console.log(err1); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             createSendMsg("*** ERROR ***", err1, RED, ONLY_USER);
                         });
-				});
+				}).catch(err => {
+                    //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                    createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
+                });
 			})
 			.catch(err => {
 //				console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                client.release();
                 createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
 			});
-	});
+	}).catch(err => {
+        //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+        createSendMsg("*** ERROR ***", err, RED, ONLY_USER);
+    });
 
     function createSendMsg(attachTitle, attachMsg, attachColor, respType){
 		var msgAttachment;
