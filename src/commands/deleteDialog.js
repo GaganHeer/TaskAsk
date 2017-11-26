@@ -15,8 +15,6 @@ const dbConfig = config('DB_CONFIG');
 var pool = new pg.Pool(dbConfig);
 var tasks = [];
 
-const ALLOWED_STATUS = ["PENDING", "REJECTED"];
-
 const handler = (payload, res) => {
     const { trigger_id } = payload;
     var deletingUserID = "<@" + payload.user_id + ">";
@@ -27,10 +25,8 @@ const handler = (payload, res) => {
                 client.release();
                 if (result.rows.length > 0){
                     for (let i=0; i<result.rows.length; i++){
-                        if (ALLOWED_STATUS.includes(result.rows[i].status)) {
-                            let temp = 'ID# ' + result.rows[i].serial_id +': '+result.rows[i].title;
-                            tasks.push({label: temp, value: result.rows[i].serial_id});
-                        }
+                        let temp = 'ID# ' + result.rows[i].serial_id +': '+result.rows[i].title;
+                        tasks.push({label: temp, value: result.rows[i].serial_id});
                     }
                     
                     const dialog = {
