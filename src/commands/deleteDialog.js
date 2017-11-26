@@ -8,6 +8,8 @@ const pg = require('pg');
 const qs = require('querystring');
 const axios = require('axios');
 const RED = "ff0000"
+const PENDING_STATUS = "PENDING";
+const REJECTED_STATUS = "REJECTED";
 const dbConfig = config('DB_CONFIG');
 	
 var pool = new pg.Pool(dbConfig);
@@ -20,7 +22,7 @@ const handler = (payload, res) => {
     var deletingUserID = "<@" + payload.user_id + ">";
 
     pool.connect().then(client => {
-        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID])
+        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 AND STATUS = $2 OR $3 ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID], PENDING_STATUS, REJECTED_STATUS)
             .then(result => {
                 client.release();
                 if (result.rows.length > 0){
