@@ -42,7 +42,7 @@ const handler = (payload, res) => {
                 .then(result => {
                     client.release();
                 
-                    if(result.rows.length == 0){
+                    if(result.rows.length <= 0){
                         sendMessage("*** ERROR ***", "No pending requests to display", RED);
                     } else {
 
@@ -92,10 +92,12 @@ const handler = (payload, res) => {
                                 res.sendStatus(500);
                             });
                     }
-                })
+                }).catch((err) => {
+                    sendMessage("*** ERROR ***", "" + err, RED);
+                });
         })
     }).catch((err) => {
-        sendMessage("*** ERROR ***", err, RED);
+        sendMessage("*** ERROR ***", "" + err, RED);
     });
     
     function sendMessage(title, text, color){
@@ -112,8 +114,7 @@ const handler = (payload, res) => {
             res.send('');
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
-            //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+            //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         });
     }
 }
