@@ -183,7 +183,6 @@ const handler = (payload, res) => {
                                 text: text,
                                 callback_id: "askDialogHandler",
                                 actions: buttons
-                                
                               },
                             ]),
                           })).then((result) => {

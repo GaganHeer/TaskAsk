@@ -20,6 +20,7 @@ const handler = (payload, res) => {
     var forwarder = "<@" + payload.user.id + ">";
     var taskNumber = payload.submission.task;
     var receiver = "<@" + payload.submission.receiver + ">";
+    var buttons = "";
     
     pg.connect(dbURL, function(err, client, done) {
         if(err) {
@@ -61,6 +62,7 @@ const handler = (payload, res) => {
                         }
                         
                         taskNumberRow = result.rows;
+                        setButtons(taskNumber);
                         var finalUser;
                         var finalUserId;
                         var receivertargetDM = taskNumberRow[0].receiver_id.slice(2,11);
@@ -86,7 +88,8 @@ const handler = (payload, res) => {
                                             title: "Forwarded",
                                             color: ORANGE,
                                             text: "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id,
-                                            callback_id: "forwardDialogMsg",
+                                            callback_id: "askDialogHandler",
+                                            actions: buttons
                                           },
                                         ]),
                                     })).then((result) => {
@@ -114,8 +117,7 @@ const handler = (payload, res) => {
                                         token: config('POST_BOT_TOKEN'),
                                         channel: finalUser,
                                         user:finalUserId,
-                                        as_user:true,
-                                        text: 'Forwarded by :' + taskNumberRow[0].receiver_id, 
+                                        as_user:true,                                        
                                         attachments: JSON.stringify([
                                           {
                                             title: "Forwarded",
@@ -158,6 +160,61 @@ const handler = (payload, res) => {
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         });
+    }
+    
+    function setButtons(sid){
+        buttons = [
+                    {
+                        name: "accept",
+                        text: "Accept",
+                        type: "button",
+                        value: sid,
+                        style: "primary",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to accept this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    },
+                    {
+                        name: "reject", 
+                        text: "Reject",
+                        type: "button",
+                        value: sid,
+                        style: "danger",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to reject this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    },
+                    {
+                        name: "forward", 
+                        text: "Forward",
+                        type: "button",
+                        value: sid,
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to forward this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    },
+                    {
+                        name: "clarify", 
+                        text: "Clarify",
+                        type: "button",
+                        value: sid,
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "You are about to clarify this, are you sure?",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+                  ];
     }
 }
 module.exports = { pattern: /forwardDialogHandler/ig, handler: handler }
