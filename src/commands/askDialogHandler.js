@@ -40,7 +40,7 @@ const handler = (payload, res) => {
                     client.release();
                     sid =  resp.rows[0].serial_id;
                     setButtons(sid);
-                    sendMessage(false, "Asked", "", YELLOW);
+                    sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "  Owner: " + sender + "\n Description: " + desc + "\n Due Date: " + payload.submission.due, YELLOW);
                 })
                 .catch(err => {
                     client.release();
@@ -61,7 +61,7 @@ const handler = (payload, res) => {
                 client.release();
                 sid =  resp.rows[0].serial_id;
                 setButtons(sid);
-                sendMessage(false, "Asked", "", YELLOW);
+                sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
             })
             .catch(e => {
                 client.release();
@@ -147,12 +147,11 @@ const handler = (payload, res) => {
         } else {
             axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
                 token: config('OAUTH_TOKEN'),
-                user: payload.user.id,
+                user: payload.user.id
                 channel: payload.channel.id,
                 attachments: JSON.stringify([{
                     title: title,
                     color: color,
-                    text: text,
                     callback_id: "askDialogHandler",
                     actions: buttons,
                 }]),
