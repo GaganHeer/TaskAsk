@@ -60,7 +60,7 @@ const handler = (payload, res) => {
                 client.release();
                 sid =  resp.rows[0].serial_id;
                 setButtons(sid);
-                sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + "\n Owner: " + sender + "\n Description: " + desc, YELLOW);
+                sendMessage(false, "Asked", "Task ID: " + sid + "\n Title: " + title + "\n Recipient: " + receiver + " Owner: " + sender + "\n Description: " + desc, YELLOW);
             })
             .catch(e => {
                 client.release();
