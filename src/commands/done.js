@@ -9,6 +9,7 @@ const JiraApi = require('jira').JiraApi;
 var onlyNumbers = /^[0-9]*$/;
 var charCheck = /[^0-9]/;
 const BLUE = "33ccff"
+const RED = "ff0000"
 
 const qs = require('querystring');
 const axios = require('axios');
@@ -19,7 +20,6 @@ const jira = new JiraApi('https', config('JIRA_HOST'), config('JIRA_PORT'), conf
 
 
 var outMsg = "not working" ;
-var msgColor = "#ff0000";
 var title = "Done!";
 var jiraKey;
 
@@ -45,8 +45,7 @@ const handler = (payload, res) => {
 	} else if(!onlyNumbers.test(payload.text)){
         title = "*** ERROR ***";
 		outMsg = "Invalid value. Please enter a integer.";
-		msgColor = "#ff0000";
-		doneOut(title, outMsg, msgColor);
+		doneOut(title, outMsg, RED);
 	} else {
 		taskNumber = parseInt(payload.text);
 		doneUserID = "<@" + payload.user_id + ">";
@@ -60,9 +59,8 @@ const handler = (payload, res) => {
                 if (result.rows.length == 0){
                     title = "*** ERROR ***";
                     outMsg = "Please enter an Accepted task that belongs to you.";
-                    msgColor = "#ff0000";
 
-                    doneOut(title, outMsg, msgColor);
+                    doneOut(title, outMsg, RED);
                 } else {
                     jiraKey = result.rows[0].jira_id;
                     jira.transitionIssue(jiraKey, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
@@ -128,7 +126,7 @@ const handler = (payload, res) => {
         sendMessage("*** ERROR ***", "" + e, RED);
     })
 
-	function doneOut(attachTitle, attachMsg, attachColor, respType=payload.channel_name) {
+	function doneOut(attachTitle, attachMsg, attachColor, respType=channelName) {
 		var msgAttachment;
 		
         if(isButton) {
