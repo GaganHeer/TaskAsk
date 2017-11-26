@@ -44,7 +44,7 @@ const handler = (payload, res) => {
                                     title: "Rejected",
                                     color: RED,
                                     text: "Task ID: " + sid + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id + " Owner: " + result.rows[0].sender_id,
-                                    callback_id: "acceptDialogMsg",
+                                    callback_id: "rejectDialogMsg",
                                 }]),
 
                             })).then((result) => {

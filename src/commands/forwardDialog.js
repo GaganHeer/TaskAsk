@@ -4,7 +4,6 @@
 const _ = require('lodash')
 const config = require('../config')
 const util = require('util')
-const moment = require('moment')
 const pg = require('pg')
 const qs = require('querystring')
 const axios = require('axios')
@@ -90,10 +89,10 @@ const handler = (payload, res) => {
 
                     axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                         .then((result) => {
-                            console.log('dialog.open: ', result.data);
+                            //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             res.send('');
                         }).catch((err) => {
-                            sendMessage("*** ERROR ***", err, RED);
+                            //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             res.sendStatus(500);
                         });
                 }
@@ -115,10 +114,10 @@ const handler = (payload, res) => {
                 callback_id: "askDialogHandler",
             }]),
         })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
+            //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             console.log('sendConfirmation error: ', err);
-            console.error(err);
+            //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         });
     }
 }
