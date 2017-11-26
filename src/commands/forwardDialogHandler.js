@@ -71,6 +71,7 @@ const handler = (payload, res) => {
                 });
 
                 //DM to the owner of the task
+            console.log("IM HERE " + sendertargetDM);
                 axios.post('https://slack.com/api/im.list', qs.stringify({
                     token: config('POST_BOT_TOKEN'),
                 })).then(function (resp){
