@@ -138,7 +138,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
@@ -154,7 +153,6 @@ const handler = (payload, res) => {
                 attachments: JSON.stringify([{
                     title: title,
                     color: color,
-                    callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY

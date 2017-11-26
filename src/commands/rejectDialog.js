@@ -73,7 +73,6 @@ const handler = (payload, res) => {
                 title: title,
                 color: color,
                 text: text,
-                callback_id: "rejectDialogMsg",
             }]),
         })).then((result) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY

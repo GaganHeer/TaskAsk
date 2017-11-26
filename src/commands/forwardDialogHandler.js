@@ -98,7 +98,6 @@ const handler = (payload, res) => {
                                     title: "Forwarded",
                                     color: ORANGE,
                                     text: "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id,
-                                    callback_id: "forwardDialogMsg",
                                   },
                                 ]),
                             })).then((result) => {
@@ -126,7 +125,6 @@ const handler = (payload, res) => {
                 title: title,
                 color: color,
                 text: text,
-                callback_id: "forwardDialogHandlerMsg",
             }]),
         })).then((result) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY

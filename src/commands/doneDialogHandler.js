@@ -100,7 +100,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    callback_id: "doneDialogHandlerMsg",
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
@@ -116,7 +115,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    callback_id: "doneDialogHandler",
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);

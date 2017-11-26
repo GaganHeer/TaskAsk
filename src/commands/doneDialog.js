@@ -72,7 +72,6 @@ const handler = (payload, res) => {
                 title: title,
                 color: color,
                 text: text,
-                callback_id: "doneDialogMsg",
             }]),
         })).then((result) => {
             console.log('sendConfirmation: ', result.data);
