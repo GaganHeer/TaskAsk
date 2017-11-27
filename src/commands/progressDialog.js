@@ -3,11 +3,10 @@
 
 const _ = require('lodash');
 const config = require('../config');
-const util = require('util');
-const moment = require('moment');
 const pg = require('pg');
 const qs = require('querystring');
 const axios = require('axios');
+const RED = "#ff0000";
 const dbConfig = config('DB_CONFIG');
 
 var pool = new pg.Pool(dbConfig);
@@ -23,7 +22,7 @@ const handler = (payload, res) => {
 
 
     pool.connect().then(client => {
-        return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1;', [askingUserID])
+        return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100;', [askingUserID])
             .then(result => {
                 client.release();
 
@@ -35,10 +34,10 @@ const handler = (payload, res) => {
                         }
                     }
                     if (tasks.length == 0) {
-                        tasks.push({label:'No tasks found.', value: null});
+                        tasks.push({label:'No tasks found.', value: "null"});
                     }
                 } else {
-                    tasks.push({label:'No tasks found.', value: null});
+                    tasks.push({label:'No tasks found.', value: "null"});
                 }
 
                 const dialog = {
@@ -61,10 +60,10 @@ const handler = (payload, res) => {
 
                 axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                     .then((result) => {
-                        console.log('dialog.open: ', result.data);
+//                        console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         res.send('');
                     }).catch((err) => {
-                    console.log('dialog.open call failed: %o', err);
+//                    console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     res.sendStatus(500);
                 });
                 // console.log('sendConfirmation: ', result.data);
@@ -72,6 +71,26 @@ const handler = (payload, res) => {
             })
     }).catch((err) => {
         console.log('sendConfirmation error: ', err);
+        sendMessage("*** ERROR ***", ""+err.stack, RED, payload.channel.id, payload.user.id);
     });
+
+    function sendMessage(title, text, color, channel, receiver){
+        axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
+            token: config('OAUTH_TOKEN'),
+            user: receiver,
+            channel: channel,
+            attachments: JSON.stringify([{
+                title: title,
+                color: color,
+                text: text,
+                callback_id: "askDialogHandler",
+            }]),
+        })).then((result) => {
+            console.log('sendConfirmation: ', result.data);
+        }).catch((err) => {
+            console.log('sendConfirmation error: ', err);
+            console.error(err);
+        });
+    }
 };
 module.exports = { pattern: /progressDialog/ig, handler: handler };

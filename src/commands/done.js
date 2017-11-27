@@ -36,7 +36,7 @@ const handler = (payload, res) => {
 	var isButton = false;
 	
     if(payload.hasOwnProperty('original_message')) {
-		console.log("BUTTON PRESSED TIME TO TRIM");
+		//console.log("BUTTON PRESSED TIME TO TRIM"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		
 		taskNumber = parseInt(payload.original_message.text);
 		doneUserID = "<@" + payload.user.id + ">";
@@ -64,14 +64,12 @@ const handler = (payload, res) => {
                     jiraKey = result.rows[0].jira_id;
                     jira.transitionIssue(jiraKey, issueTransDone, function (error, issueUpdate) { //changes the Jira Issue to "Done" status.
                         if (error) {
-                            console.log(error);
-                            return(error);
+                            //console.log(error); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         } else {
-                            console.log("Jira Status change was a: "+ JSON.stringify(issueUpdate));
+                            //console.log("Jira Status change was a: "+ JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             pool.connect().then(client => {
                                 client.query("UPDATE ASK_TABLE SET status = 'DONE', fin_date = NOW() WHERE receiver_id = $1 AND serial_id = $2 AND status =$3 RETURNING *", [doneUserID, taskNumber, "ACCEPTED"])
                                     .then(result2 => {
-        console.log("IN RESULT2" + taskNumber);
                                         client.release();
                                         doneOut("Done", "", BLUE);
                                         
@@ -83,9 +81,8 @@ const handler = (payload, res) => {
                                             token: config('POST_BOT_TOKEN'),
                                             
                                         })).then(function (resp){
-    console.log("IN THEN" + taskNumber);
                                             for(var t = 0; t < resp.data.ims.length; t++){
-                                                console.log(resp.data.ims[t].id);
+                                                //console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                 if(targetDM==resp.data.ims[t].user){
                                                     finalUser = resp.data.ims[t].id;
                                                     finalUserId = resp.data.ims[t].user;
@@ -100,14 +97,14 @@ const handler = (payload, res) => {
                                                             text: "Task ID: " + result2.rows[0].serial_id + "\n Title: " + result2.rows[0].title + "\n Recipient: " + result2.rows[0].receiver_id + " Owner: " + result2.rows[0].sender_id,
                                                         }]),
                                                     })).then((result) => {
-                                                        console.log('sendConfirmation: ', result.data);
+                                                        //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     }).catch((err) => {
-                                                        console.log('sendConfirmation error: ', err);
+                                                        //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     });
                                                 }
                                             }
                                         }).catch(function (err){
-                                            console.log(err);
+                                            //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         });
                                     }).catch(e => {
                                         client.release();

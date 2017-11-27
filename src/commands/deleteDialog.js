@@ -3,11 +3,10 @@
 
 const _ = require('lodash');
 const config = require('../config');
-const util = require('util');
 const pg = require('pg');
 const qs = require('querystring');
 const axios = require('axios');
-const RED = "ff0000"
+const RED = "#ff0000";
 const PENDING_STATUS = "PENDING";
 const REJECTED_STATUS = "REJECTED";
 const dbConfig = config('DB_CONFIG');
@@ -67,7 +66,7 @@ const handler = (payload, res) => {
                 }
             })
     }).catch((err) => {
-        //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+        sendMessage("*** ERROR ***", ""+err.stack, RED);
     });
     
     function sendMessage(title, text, color){

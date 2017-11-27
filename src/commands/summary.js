@@ -17,7 +17,7 @@ const msgDefaults = {
 const handler = (payload, res) => {
 	
 //	console.log("*****************");
-//	console.log("USER: " + payload.user_id);
+//	console.log("USER: " + payload.user_id);  null})); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 //	console.log("*****************");
 
 	let attachments2 = [
@@ -131,7 +131,7 @@ const handler = (payload, res) => {
 		}
 	]
 	
-	//		console.log("ATTACHMENTS: " + attachments2);
+	//		console.log("ATTACHMENTS: " + attachments2);  null})); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 	
 	var msg = _.defaults({
 		channel: payload.channel_name,

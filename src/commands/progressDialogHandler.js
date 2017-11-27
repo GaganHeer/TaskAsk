@@ -22,12 +22,21 @@ const handler = (payload, res) => {
 
     var build = "";
 
+	if (taskNumber == null) {
+		res.send({
+			"errors": [{
+				"name": "task",
+				"error": "No tasks were found"
+			}]
+		})
+	}
+	
     if (onlyNumbers.test(taskNumber)){
         pool.connect().then(client => {
             client.query('SELECT * FROM ask_table WHERE serial_id = $1;', [taskNumber])
                 .then(result => {
                     client.release();
-                    console.log("I'm here boy: "+ result.rows[0].serial_id);
+//                    console.log("I'm here: "+ result.rows[0].serial_id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     if (result.rows.length < 0) { //checking to make sure the task wasn't deleted while executing the command.
                         res.send({
                             "errors": [{
@@ -37,15 +46,61 @@ const handler = (payload, res) => {
                         })
                     } else {
                         let resp = result.rows[0];
-                        build = resp.receiver_id +',  '+ resp.sender_id+' would like to know the progress of Task ID: '+ resp.serial_id +' - '+ resp.title;
+                        build = "You have sent a progress update request to:"+resp.receiver_id;
                         res.send('');
                         setButtons(taskNumber, resp.status);
                         sendMessage(false, "Status Update: ", build, col);
+
+                        //Dm
+
+                        var finalUser;
+                        var finalUserId;
+                        var targetDM = resp.sender_id.slice(2,11);
+
+
+                        axios.post('https://slack.com/api/im.list', qs.stringify({
+                            token: config('POST_BOT_TOKEN'),
+
+                        })).then(function (resp2){
+                            for(var t = 0; t < resp2.data.ims.length; t++){
+                          
+                                if(targetDM==resp2.data.ims[t].user){
+                                    finalUser = resp2.data.ims[t].id;
+                                    finalUserId = resp2.data.ims[t].user;
+                                    axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+                                        token: config('POST_BOT_TOKEN'),
+                                        channel: finalUser,
+                                        user:finalUserId,
+                                        as_user:true,
+                                        attachments: JSON.stringify([
+                                        {   
+                                            title: "Progress update requested by: "+resp.sender_id,
+                                            color: col,
+                                            callback_id: "progress_buttons",
+                                            actions: buttons
+                                            
+                                        },
+                                        ]),
+                                        
+
+                                    })).then((result) => {
+                                        console.log('sendConfirmation: ', result.data);
+                                    }).catch((err) => {
+                                        console.log('sendConfirmation error: ', err);
+                                        console.error(err);
+                                    });
+                                }
+                            }
+                        }).catch(function (err){
+                            console.log(err);
+                        });
+
+                        //End of DM
                     }
                 })
                 .catch(err => {
                     client.release();
-                    console.log(err.stack);
+//                    console.log(err.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     sendMessage(true, "*** ERROR ***", err.stack, "#ff0000");
                 })
         })
@@ -77,6 +132,30 @@ const handler = (payload, res) => {
                     "confirm": {
                         "title": "Are you sure?",
                         "text": "You are about to reject this, are you sure?",
+                        "ok_text": "Yes",
+                        "dismiss_text": "No"
+                    }
+                },
+                {
+                    name: "forward",
+                    text: "Forward",
+                    type: "button",
+                    value: sid,
+                    "confirm": {
+                        "title": "Are you sure?",
+                        "text": "You are about to forward this, are you sure?",
+                        "ok_text": "Yes",
+                        "dismiss_text": "No"
+                    }
+                },
+                {
+                    name: "clarify",
+                    text: "Clarify",
+                    type: "button",
+                    value: sid,
+                    "confirm": {
+                        "title": "Are you sure?",
+                        "text": "You are about to clarify this, are you sure?",
                         "ok_text": "Yes",
                         "dismiss_text": "No"
                     }
@@ -117,7 +196,6 @@ const handler = (payload, res) => {
                     title: title,
                     color: color,
                     text: text,
-                    fallback: "Something went wrong :/",
                     callback_id: "progressDialogHandler",
                 }]),
             })).then((result) => {
@@ -127,16 +205,15 @@ const handler = (payload, res) => {
                 console.error(err);
             });
         } else {
-            axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
+            axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
                 token: config('OAUTH_TOKEN'),
                 channel: payload.channel.id,
+                user: payload.user.id,
                 attachments: JSON.stringify([{
                     title: title,
                     color: color,
                     text: text,
-                    // fallback: "Something went wrong :/",
-                    callback_id: "progress_buttons",
-                    actions: buttons
+                    
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
