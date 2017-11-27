@@ -153,6 +153,8 @@ const handler = (payload, res) => {
                 attachments: JSON.stringify([{
                     title: title,
                     color: color,
+                    actions: buttons,
+                    callback_id: "askDialogHandler",
                 }]),
             })).then((result) => {
                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
