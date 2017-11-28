@@ -11,13 +11,16 @@ const dbConfig = config('DB_CONFIG');
 
 var pool = new pg.Pool(dbConfig);
 
+
 const ALLOWED_STATUS = ["PENDING", "ACCEPTED"];
 
 const handler = (payload, res) => {
     
     const { trigger_id } = payload;
     var askingUserID = "<@" + payload.user_id + ">";
-    var tasks = [];
+    payload.text = '';  //This will tell the app to ignore any data if someone typed something like "/progress XXX", and just run the /progress dialog.
+
+    let tasks = [];
 
     pool.connect().then(client => {
         return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100;', [askingUserID])

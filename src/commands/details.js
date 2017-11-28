@@ -30,12 +30,12 @@ const handler = (payload, res) => {
 		taskNumber = parseInt(payload.original_message.text);
 		channelName = payload.channel.name;
 		isButton = true;
-	} else if(!onlyNumbers.test(payload.text)) {
-        var wrongParamMsg = "Please enter the correct format /details [ID#] \n ex) /accept 24"
-        var wrongParamTitle = "*** ERROR ***"
+	} else if(!onlyNumbers.test(payload.submission.task)) {
+        var wrongParamMsg = "Please enter the correct format /details [ID#] \n ex) /accept 24";
+        var wrongParamTitle = "*** ERROR ***";
         createSendMsg(wrongParamTitle, wrongParamMsg, RED, ONLY_USER);
 	} else {
-		taskNumber = parseInt(payload.text);
+		taskNumber = parseInt(payload.submission.task);
 		channelName = payload.channel_name;
 	}
 	

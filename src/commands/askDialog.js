@@ -42,7 +42,7 @@ const handler = (payload, res) => {
                 label: 'Title',
                 type: 'text',
                 name: 'title',
-                max_length: 24,
+                max_length: 13,
                 hint: '13 characters or less'
               },
               {

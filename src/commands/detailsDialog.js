@@ -16,11 +16,11 @@ var pool = new pg.Pool(dbConfig);
 
 const handler = (payload, res) => {
     const { trigger_id } = payload;
-    var deletingUserID = "<@" + payload.user_id + ">";
+    var userID = "<@" + payload.user_id + ">";
     let tasks = [];
 
     pool.connect().then(client => {
-        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 AND (STATUS = $2 OR STATUS = $3) ORDER BY SERIAL_ID DESC LIMIT 100', [deletingUserID, PENDING_STATUS, REJECTED_STATUS])
+        client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 OR RECEIVER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [userID])
             .then(result => {
                 client.release();
                 if (result.rows.length > 0){
@@ -33,22 +33,16 @@ const handler = (payload, res) => {
                         token: config('OAUTH_TOKEN'),
                         trigger_id,
                         dialog: JSON.stringify({
-                            title: 'Delete A Task',
-                            callback_id: 'deleteDialog',
-                            submit_label: 'Delete',
+                            title: 'Get Details of a Task',
+                            callback_id: 'detailsDialog',
+                            submit_label: 'Submit',
                             elements: [
                                 {
-                                    label: "Deletable Tasks",
+                                    label: "Relevant Tasks for You",
                                     type: "select",
-                                    name: "taskLabel",
+                                    name: "task",
                                     options: tasks,
-                                },
-                                {
-                                    label: 'Task# Confirmation',
-                                    type: 'text',
-                                    name: 'task',
-                                    hint: 'Please type the ID# of the task you are deleting to confirm you choice.',
-                                },
+                                }
                             ],
                         }),
                     };
@@ -62,10 +56,12 @@ const handler = (payload, res) => {
                         });
                         //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 } else {
-                    sendMessage("*** ERROR ***", "No deletable tasks to display", RED)
+                    sendMessage("*** ERROR ***", "No tasks assigned by or to you.", RED);
                     res.send('');
                 }
-            })
+            }).catch((err) => {
+                sendMessage("*** ERROR ***", ""+err.stack, RED);
+            });
     }).catch((err) => {
         sendMessage("*** ERROR ***", ""+err.stack, RED);
     });
@@ -88,4 +84,4 @@ const handler = (payload, res) => {
         });
     }
 };
-module.exports = { pattern: /deleteDialog/ig, handler: handler };
+module.exports = { pattern: /detailsDialog/ig, handler: handler };

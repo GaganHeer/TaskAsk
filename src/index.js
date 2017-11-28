@@ -39,6 +39,7 @@ const acceptDialogHandler = require('./commands/acceptDialogHandler');
 const detCommand = require('./commands/details');
 const answerDialog = require('./commands/answerDialog');
 const answerDialogHandler = require('./commands/answerDialogHandler');
+const detailsDialog = require('./commands/detailsDialog');
 
 let bot = require('./bot');
 
@@ -109,6 +110,10 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
         var cmd = acceptDialogHandler;
     } else if (payload.callback_id === 'clarify_answer') {
         var cmd = answerDialog;
+    } else if (payload.callback_id === 'details') {
+        var cmd = detailsDialog;
+    } else if (payload.callback_id === 'detailsDialog') {
+        var cmd = detCommand;
     }
     cmd.handler(payload, res)
 }); 
@@ -137,7 +142,7 @@ app.post('/commands/boneypants/details', (req, res) => {
         res.status(401).end(err)
         return
     }
-    let cmd = detCommand;
+    let cmd = detailsDialog;
     cmd.handler(payload, res)
 })
 
