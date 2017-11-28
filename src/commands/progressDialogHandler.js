@@ -77,7 +77,7 @@ const handler = (payload, res) => {
                                             title: "Progress update requested by: "+resp.sender_id,
                                             text: "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + "  Owner: " + resp.sender_id + "\n Description: " + resp.req_desc + "\n Due Date: " + resp.due_date,
                                             color: col,
-                                            callback_id: "progress_buttons",
+                                            callback_id: "askDialogHandler",
                                             actions: buttons
                                             
                                         },
