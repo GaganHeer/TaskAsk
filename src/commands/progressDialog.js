@@ -57,13 +57,13 @@ const handler = (payload, res) => {
                             console.log("PLACE 4");
                         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                             .then((result) => {
-            //                        console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                    console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                 res.send('');
                             }).catch((err) => {
-            //                    console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             res.sendStatus(500);
                         });
-                        // console.log('sendConfirmation: ', result.data);
+                         console.log('sendConfirmation: ', result.data);
                     }
                 } else {
                     tasks.push({label:'No tasks found.', value: "null"});
