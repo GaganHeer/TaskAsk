@@ -18,14 +18,14 @@ const handler = (payload, res) => {
     
     const { trigger_id } = payload;
     var askingUserID = "<@" + payload.user_id + ">";
-    payload.text = '';  //This will tell the app to ignore any data if someone typed something like "/progress XXX", and just run the /progress dialog.
-
-
+    
+    console.log("PLACE 1");
+    
     pool.connect().then(client => {
         return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100;', [askingUserID])
             .then(result => {
                 client.release();
-
+    console.log("PLACE 2");
                 if (result.rows.length > 0){
                     for (let i=0; i<result.rows.length; i++){
                         if (ALLOWED_STATUS.includes(result.rows[i].status)) {
@@ -35,38 +35,39 @@ const handler = (payload, res) => {
                     }
                     if (tasks.length == 0) {
                         tasks.push({label:'No tasks found.', value: "null"});
+                    } else {
+                        console.log("PLACE 3");
+                        const dialog = {
+                            token: config('OAUTH_TOKEN'),
+                            trigger_id,
+                            dialog: JSON.stringify({
+                                title: "Ask for a Task Progress",
+                                callback_id: 'progressDialog',
+                                submit_label: 'Submit',
+                                elements: [
+                                    {
+                                        label: "Task ID and Title",
+                                        type: "select",
+                                        name: "task",
+                                        options: tasks,
+                                    }
+                                ],
+                            }),
+                        };
+                            console.log("PLACE 4");
+                        axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
+                            .then((result) => {
+            //                        console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                res.send('');
+                            }).catch((err) => {
+            //                    console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                            res.sendStatus(500);
+                        });
+                        // console.log('sendConfirmation: ', result.data);
                     }
                 } else {
                     tasks.push({label:'No tasks found.', value: "null"});
                 }
-
-                const dialog = {
-                    token: config('OAUTH_TOKEN'),
-                    trigger_id,
-                    dialog: JSON.stringify({
-                        title: "Ask for a Task Progress",
-                        callback_id: 'progressDialog',
-                        submit_label: 'Submit',
-                        elements: [
-                            {
-                                label: "Task ID and Title",
-                                type: "select",
-                                name: "task",
-                                options: tasks,
-                            }
-                        ],
-                    }),
-                };
-
-                axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-                    .then((result) => {
-//                        console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                        res.send('');
-                    }).catch((err) => {
-//                    console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                    res.sendStatus(500);
-                });
-                // console.log('sendConfirmation: ', result.data);
 
             })
     }).catch((err) => {
