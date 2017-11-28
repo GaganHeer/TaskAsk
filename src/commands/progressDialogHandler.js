@@ -55,7 +55,7 @@ const handler = (payload, res) => {
 
                         var finalUser;
                         var finalUserId;
-                        var targetDM = resp.sender_id.slice(2,11);
+                        var targetDM = resp.receiver_id.slice(2,11);
 
 
                         axios.post('https://slack.com/api/im.list', qs.stringify({
@@ -75,6 +75,7 @@ const handler = (payload, res) => {
                                         attachments: JSON.stringify([
                                         {   
                                             title: "Progress update requested by: "+resp.sender_id,
+                                            text: "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + "  Owner: " + resp.sender_id + "\n Description: " + resp.req_desc + "\n Due Date: " + resp.due_date,
                                             color: col,
                                             callback_id: "progress_buttons",
                                             actions: buttons

@@ -311,7 +311,7 @@ const handler = (payload, res) => {
                                     title: title,
                                     color: color,
                                     text: text,
-                                    callback_id: "answer_buttons",
+                                    callback_id: "askDialogHandler",
                                     actions: buttons
 
                                 },
