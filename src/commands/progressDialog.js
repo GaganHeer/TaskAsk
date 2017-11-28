@@ -22,7 +22,7 @@ const handler = (payload, res) => {
     console.log("PLACE 1");
     
     pool.connect().then(client => {
-        return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100;', [askingUserID])
+        return client.query('SELECT * FROM ASK_TABLE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC LIMIT 100', [askingUserID])
             .then(result => {
                 client.release();
     console.log("PLACE 2");
