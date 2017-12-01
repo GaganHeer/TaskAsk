@@ -121,7 +121,12 @@ const handler = (payload, res) => {
                                                                             client4.release();
                                                                             res.send('');
                                                                             setButtons(taskID);
-                                                                            let taskSum = "Task ID: " + taskID+ "\n Title " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                                            let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                                            if (dueDate) {  //checking for valid due date, only if due date exists.
+                                                                                if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+                                                                                    taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                                }
+                                                                            }
                                                                             let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
                                                                             sendMessage(false, "Question Answered: ", build, GREEN);
                                                                         })
@@ -150,7 +155,12 @@ const handler = (payload, res) => {
                                                         client4.release();
                                                         res.send('');
                                                         setButtons(taskID);
-                                                        let taskSum = "Task ID: " + taskID+ "\n Title " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                        let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                        if (dueDate) {  //checking for valid due date, only if due date exists.
+                                                            if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
+                                                                taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                            }
+                                                        }
                                                         let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
                                                         sendMessage(false, "Question Answered: ", build, GREEN);
                                                     })
