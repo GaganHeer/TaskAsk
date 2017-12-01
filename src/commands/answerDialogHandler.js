@@ -158,7 +158,7 @@ const handler = (payload, res) => {
                                                         let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
                                                         if (dueDate) {  //checking for valid due date, only if due date exists.
                                                             if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
-                                                                taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                //taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
                                                             }
                                                         }
                                                         let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
