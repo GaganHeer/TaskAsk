@@ -120,7 +120,6 @@ const handler = (payload, res) => {
                                                                     return client4.query(dbQ5, [dueDate, taskID])
                                                                         .then(result4 => {
                                                                             client4.release();
-                                                                            res.send('');
                                                                             setButtons(taskID);
                                                                             let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
                                                                             if (dueDate) {  //checking for valid due date, only if due date exists.
@@ -153,11 +152,9 @@ const handler = (payload, res) => {
                                                 return client4.query(dbQ5, [dueDate, taskID])
                                                     .then(result4 => {
                                                         client4.release();
-                                                        res.send('');
                                                         setButtons(taskID);
                                                         let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
                                                         if (dueDate) {  //checking for valid due date, only if due date exists.
-                                                            console.log("EXISTS");
                                                             if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                                                                 if(taskDueDate != null){
                                                                     console.log("NEW DATE------------" + taskDueDate - dueDate);
@@ -167,6 +164,13 @@ const handler = (payload, res) => {
                                                                 } else {
                                                                     taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate   
                                                                 }
+                                                            } else {
+                                                                res.send({
+                                                                    "errors": [{
+                                                                        "name": "dueDate",
+                                                                        "error": "Invalid Date!"
+                                                                    }]
+                                                                })
                                                             }
                                                         }
                                                         let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
