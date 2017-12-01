@@ -42,7 +42,7 @@ const handler = (payload, res) => {
                         dateParts[1] = dateParts[1][1];  //if the Day text starts with zero, the zero is removed.
                     }
                     if(dateParts[3][0] === '0'){
-                        dateParts[3] = dateParts[3][1];  //if the Day text starts with zero, the zero is removed.
+                        dateParts[3] = dateParts[3][1] + dateParts[3][2] + dateParts[3][3] + dateParts[3][4];  //if the Day text starts with zero, the zero is removed.
                     }
                     cleanDate =  dateParts.join(" ");
                 }
