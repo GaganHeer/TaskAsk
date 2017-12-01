@@ -121,8 +121,8 @@ const handler = (payload, res) => {
                                                                             client4.release();
                                                                             res.send('');
                                                                             setButtons(taskID);
-                                                                            let taskSum = "Task ID: "+ taskID+ " - "+ jiraSummary;
-                                                                            let build = taskSum +"\n\n"+ "Question: "+ question +"\n\n"+ "Answer: "+ answer;
+                                                                            let taskSum = "Task ID: " + taskID+ "\n Title " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                                            let build = taskSum +"\n"+ "Question: "+ question +"\n"+ "Answer: "+ answer;
                                                                             sendMessage(false, "Question Answered: ", build, GREEN);
                                                                         })
                                                                         .catch(err4 => {
