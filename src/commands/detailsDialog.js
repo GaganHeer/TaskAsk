@@ -60,6 +60,7 @@ const handler = (payload, res) => {
                     res.send('');
                 }
             }).catch((err) => {
+				client.release();
                 sendMessage("*** ERROR ***", ""+err.stack, RED);
             });
     }).catch((err) => {

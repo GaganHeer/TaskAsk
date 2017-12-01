@@ -75,51 +75,51 @@ const handler = (payload, res) => {
 	//#####################################################
 	//#####################################################
 	function summaryCMD(payload) {
-		pg.connect(dbURL, function(err, client, done) {		
-			if(err) {
-				let attachments = [ogMsg[0],
-					{
-						title: "***ERROR***",
-						color: "#ff0000",
-						text: err
-					}
-				]
-				returnToIndex(attachments, payload, false);
-			}
-			client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1", ["<@" + payload.user.id + ">"], function(err, result) {
-				client.query("SELECT * FROM ASK_TABlE WHERE SENDER_ID = $1", ["<@" + payload.user.id + ">"], function(errSend, resultSend){
-					var resp = "temp";
-					var sendResp = "temp";
-					done();
-					if(err) {
-						let attachments = [ogMsg[0],
-					{
-						title: "***ERROR***",
-						color: "#ff0000",
-						text: err
-					}
-				];
-				returnToIndex(attachments, payload, false);
-					}
-					if(errSend) {
-						let attachments = [ogMsg[0],
-					{
-						title: "***ERROR***",
-						color: "#ff0000",
-						text: errSend
-					}
-				];
-				returnToIndex(attachments, payload, false);
-					}
+		pool.connect().then(client => {
+			return client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1", ["<@" + payload.user.id + ">"])
+				.then(result => {
+				pool.connect().then(client2 => {
+					return client2.query("SELECT * FROM ASK_TABlE WHERE SENDER_ID = $1", ["<@" + payload.user.id + ">"])
+						.then(resultSend => {
+						client.release();
+						client2.release();
+						
+						var resp = "temp";
+						var sendResp = "temp";
+						
+						resp = result.rows;
+						sendResp = resultSend.rows;
 
-					resp = result.rows;
-					sendResp = resultSend.rows;  //''
-					
-  					send(resp, sendResp);
-				});
-			});
-			
+						send(resp, sendResp);
+					}).catch(e => {
+						client.release();
+						client2.release();
+						sendError(e.stack);
+					})
+				}).catch(er => {
+					client.release();
+					client2.release();
+					sendError(er.stack);
+				})
+			}).catch(err => {
+				client.release();
+				sendError(err.stack);
+			})
+		}).catch(error => {
+			client.release();
+			sendError(error.stack);
 		});
+		
+		function sendError(errMsg) {
+			let attachments = [ogMsg[0],
+							   {
+								   title: "***ERROR***",
+								   color: "#ff0000",
+								   text: errMsg
+							   }
+							  ];
+			returnToIndex(attachments, payload, false);
+		}
 		
 		function send(data, sendData) {
 			console.log("MESSAGE: " + util.inspect(payload, {showHidden: false, depth: null}));

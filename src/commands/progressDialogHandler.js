@@ -63,7 +63,15 @@ const handler = (payload, res) => {
 
                         })).then(function (resp2){
                             for(var t = 0; t < resp2.data.ims.length; t++){
-                          
+                                var text;
+                                if(result.rows[0].due_date != null) {
+                                    var stringDate = resp.due_date.toString();
+                                    var due = stringDate.slice(4,21)
+                                    text = "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + " Owner: " + resp.sender_id + "\n Description: " + resp.req_desc + "\n Due Date: " + due;
+                                } else {
+                                    text = "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + " Owner: " + resp.sender_id + "\n Description: " + resp.req_desc;
+                                }
+
                                 if(targetDM==resp2.data.ims[t].user){
                                     finalUser = resp2.data.ims[t].id;
                                     finalUserId = resp2.data.ims[t].user;
@@ -74,8 +82,8 @@ const handler = (payload, res) => {
                                         as_user:true,
                                         attachments: JSON.stringify([
                                         {   
-                                            title: "Progress update requested by: "+resp.sender_id,
-                                            text: "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + "  Owner: " + resp.sender_id + "\n Description: " + resp.req_desc + "\n Due Date: " + resp.due_date,
+                                            title: "Progress Update Requested",
+                                            text: text,
                                             color: col,
                                             callback_id: "progress_buttons",
                                             actions: buttons
