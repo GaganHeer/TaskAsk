@@ -78,6 +78,7 @@ const handler = (payload, res) => {
                                         let baseDesc = result2.rows[0].req_desc;
                                         let questions = [];
                                         let answers = [];
+                                        let taskDueDate = result2.rows[0].due_date
                                         for (let i=0; i<result2.rows.length; i++) {
                                             questions.push(result2.rows[i].clar_quest);
                                             answers.push(result2.rows[i].clar_answer);
@@ -121,7 +122,7 @@ const handler = (payload, res) => {
                                                                             client4.release();
                                                                             res.send('');
                                                                             setButtons(taskID);
-                                                                            let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                                            let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
                                                                             if (dueDate) {  //checking for valid due date, only if due date exists.
                                                                                 if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                                                                                     taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
@@ -151,14 +152,21 @@ const handler = (payload, res) => {
                                             pool.connect().then(client4 => {
                                                 return client4.query(dbQ5, [dueDate, taskID])
                                                     .then(result4 => {
-                                                        console.log("---I'm here--");
                                                         client4.release();
                                                         res.send('');
                                                         setButtons(taskID);
-                                                        let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner " + senderSlackID;
+                                                        let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
                                                         if (dueDate) {  //checking for valid due date, only if due date exists.
+                                                            console.log("EXISTS");
                                                             if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
-                                                                //taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                if(taskDueDate != null){
+                                                                    console.log("NEW DATE------------" + taskDueDate - dueDate);
+                                                                    if(taskDueDate - dueDate != 0) {
+                                                                        taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                    }
+                                                                } else {
+                                                                    taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate   
+                                                                }
                                                             }
                                                         }
                                                         let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
@@ -243,24 +251,12 @@ const handler = (payload, res) => {
                 text: "Forward",
                 type: "button",
                 value: sid,
-                "confirm": {
-                    "title": "Are you sure?",
-                    "text": "You are about to forward this, are you sure?",
-                    "ok_text": "Yes",
-                    "dismiss_text": "No"
-                }
             },
             {
                 name: "clarify",
                 text: "Clarify",
                 type: "button",
                 value: sid,
-                "confirm": {
-                    "title": "Are you sure?",
-                    "text": "You are about to clarify this, are you sure?",
-                    "ok_text": "Yes",
-                    "dismiss_text": "No"
-                }
             }
         ];
     }
@@ -306,8 +302,6 @@ const handler = (payload, res) => {
             })).then(function (resp){
                 console.log(resp.data);
                 for(var t = 0; t < resp.data.ims.length; t++){
-                    console.log(t);
-                    console.log(resp.data.ims[t].id);
                     if(targetDM == resp.data.ims[t].user){
                         finalUser = resp.data.ims[t].id;
                         finalUserId = resp.data.ims[t].user;
