@@ -117,7 +117,7 @@ const handler = (payload, res) => {
 			]
 		},
 		{
-			text: "Use /progress [id] for more information and options"
+			text: "Use /details for more information and options"
 		}
 	]
 	

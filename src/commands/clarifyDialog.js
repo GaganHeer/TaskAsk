@@ -55,18 +55,17 @@ const handler = (payload, res) => {
                                 submit_label: 'Clarify',
                                 elements: [
                                     {
-                                        label: 'Question',
-                                        type: 'textarea',
-                                        name: 'Question',
-                                    },
-                                    {
                                         label: 'Task ID',
                                         type: 'select',
                                         name: 'ID',
                                         options: pendingList,
                                         value: sid,
                                     },
-
+                                    {
+                                        label: 'Question',
+                                        type: 'textarea',
+                                        name: 'Question',
+                                    },
                                 ]
                             })
                         };

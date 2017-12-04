@@ -5,7 +5,8 @@ const config = require('../config');
 const pg = require('pg');
 const qs = require('querystring');
 const axios = require('axios');
-const REJECT_STATUS = "REJECTED";
+const REJECTED_STATUS = "REJECTED";
+const ACCEPTED_STATUS = "REJECTED";
 const DONE_STATUS = "DONE";
 const PURPLE = "#755990";
 const RED = "#ff0000";
@@ -36,13 +37,15 @@ const handler = (payload, res) => {
             .then(result => {
                 var task = result.rows;
                 let invalidClarify;
-                if(task[0].status == REJECT_STATUS){
-                    invalidClarify = "Rejected Task cannot be clarified";
-                    test(true, invalidClarify, RED);
-                }
-                else if(task[0].status == DONE_STATUS){
-                    invalidClarify = "Finished Task cannot be clarified";
-                    test(true, invalidClarify, RED);
+                if(task[0].status == REJECTED_STATUS){
+                    invalidClarify = "Rejected Tasks can't be clarified";
+                    sendMessage(true, "*** ERROR ***", invalidClarify, RED);
+                } else if(task[0].status == DONE_STATUS){
+                    invalidClarify = "Done Tasks can't be clarified";
+                    sendMessage(true, "*** ERROR ***", invalidClarify, RED);
+                } else if(task[0].status == ACCEPTED_STATUS){
+                    invalidClarify = "Accepted Tasks can't be clarified";
+                    sendMessage(true, "*** ERROR ***", invalidClarify, RED);
                 } else {
                     res.send('');
                     client.query(dbQ2, [taskNumber, desc])
@@ -50,21 +53,17 @@ const handler = (payload, res) => {
                             client.query(dbQ3, [taskNumber])
                                 .then(result2 => {
                                     client.release();
-                                    var outMsg = "";
                                     sid = result2.rows[0].question_id;
                                     setButtons(sid);
                                     var task = result2.rows;
 
                                     //Dm
-
                                     var finalUser;
                                     var finalUserId;
                                     var targetDM = task[0].sender_id.slice(2,11);
 
-
                                     axios.post('https://slack.com/api/im.list', qs.stringify({
                                         token: config('POST_BOT_TOKEN'),
-
                                     })).then(function (resp){
                                         console.log(resp.data);
                                         for(let t = 0; t < resp.data.ims.length; t++){
@@ -80,15 +79,14 @@ const handler = (payload, res) => {
                                                     as_user:true,
                                                     attachments: JSON.stringify([
                                                         {
-                                                            title: "Clarfication Needed",
+                                                            title: "Clarification Needed",
                                                             color: PURPLE,
                                                             text: task[0].sender_id+", " +clarID+"  "+"needs clarification on TASK - "+" "+ task[0].req_desc+" \n QUESTION: "+ desc,
                                                             callback_id: "clarify_answer",
                                                             actions: buttons
                                                         }]),
-
-                                                })).then((resulttt) => {
-                                                    console.log('sendConfirmation: ', resulttt.data);
+                                                })).then((result) => {
+                                                    console.log('sendConfirmation: ', result.data);
                                                 }).catch((err) => {
                                                     console.log('sendConfirmation error: ', err);
                                                     console.error(err);
@@ -98,27 +96,23 @@ const handler = (payload, res) => {
                                     }).catch(function (err){
                                         console.log(err);
                                     });
-
                                     //End of DM
-
-                                    outMsg =  task[0].sender_id+"," +clarID+"  "+"needs clarification on TASK - "+" "+ task[0].req_desc+" \n QUESTION: "+ desc;
-                                    test(false, "Clarification Needed", outMsg, PURPLE);
-
+                                    sendMessage(false, "Clarification Requested", '', PURPLE);
                                 })
                                 .catch(err2 => {
-                                    test(true, "*** ERROR ***", ''+err2.stack, RED);
+                                    sendMessage(true, "*** ERROR ***", ''+err2.stack, RED);
                                 });
                         })
                         .catch(err1 => {
-                            test(true, "*** ERROR ***", ''+err1.stack, RED);
+                            sendMessage(true, "*** ERROR ***", ''+err1.stack, RED);
                         });
                 }
             })
             .catch(err => {
-                test(true, "*** ERROR ***", ''+err.stack, RED);
+                sendMessage(true, "*** ERROR ***", ''+err.stack, RED);
             })
     }).catch(err => {
-        test(true, "*** ERROR ***", ''+err.stack, RED);
+        sendMessage(true, "*** ERROR ***", ''+err.stack, RED);
     });
 
     function setButtons(sid){
@@ -128,17 +122,11 @@ const handler = (payload, res) => {
                 text: "Answer",
                 type: "button",
                 value: sid,
-                "confirm": {
-                    "title":"Answer",
-                    "text": "Are you ready to answer the question?",
-                    "ok_text": "Yes",
-                    "dismiss_text": "No"
-                }
            }
        ]
     }
         
-    function test(isError, title, msg, color){
+    function sendMessage(isError, title, msg, color){
         if(isError){
             axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
                 token: config('OAUTH_TOKEN'),
@@ -148,10 +136,8 @@ const handler = (payload, res) => {
                     color: color,
                     title: title,
                     text: msg,
-                    fallback: "Something went wrong :/",
                     callback_id: "askDialogHandler",
                     actions: buttons
-                    
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);
@@ -166,7 +152,7 @@ const handler = (payload, res) => {
                 channel: payload.channel.id,
                 attachments: JSON.stringify([{
                     color: color,
-                    title: "Clarification Requested"
+                    title: title
                 }]),
             })).then((result) => {
                 console.log('sendConfirmation: ', result.data);

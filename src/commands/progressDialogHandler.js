@@ -150,24 +150,12 @@ const handler = (payload, res) => {
                     text: "Forward",
                     type: "button",
                     value: sid,
-                    "confirm": {
-                        "title": "Are you sure?",
-                        "text": "You are about to forward this, are you sure?",
-                        "ok_text": "Yes",
-                        "dismiss_text": "No"
-                    }
                 },
                 {
                     name: "clarify",
                     text: "Clarify",
                     type: "button",
                     value: sid,
-                    "confirm": {
-                        "title": "Are you sure?",
-                        "text": "You are about to clarify this, are you sure?",
-                        "ok_text": "Yes",
-                        "dismiss_text": "No"
-                    }
                 }
             ];
         } else if (status === "ACCEPTED") {
