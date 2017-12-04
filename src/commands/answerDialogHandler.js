@@ -43,9 +43,7 @@ const handler = (payload, res) => {
     var targetDM;
     var question;
 
-
     let buttons;
-
     let dbQ1 = "UPDATE clarify_table SET clar_answer = $1 WHERE question_id = $2 RETURNING serial_id, clar_quest;";
     let dbQ3 = "SELECT * FROM ask_table INNER JOIN clarify_table ON (ask_table.serial_id = clarify_table.serial_id) WHERE ask_table.serial_id = $1;";
     let dbQ4 = "SELECT * FROM user_table WHERE slack_id = $1 OR slack_id = $2";
@@ -230,7 +228,7 @@ const handler = (payload, res) => {
         res.send({
             "errors": [{
                 "name": "dueDate",
-                "error": "Sorry incorrect date format."
+                "error": "Incorrect Date"
             }]
         })
     }

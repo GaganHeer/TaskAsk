@@ -81,7 +81,7 @@ const handler = (payload, res) => {
                                                         {
                                                             title: "Clarification Needed",
                                                             color: PURPLE,
-                                                            text: task[0].sender_id+", " +clarID+"  "+"needs clarification on TASK - "+" "+ task[0].req_desc+" \n QUESTION: "+ desc,
+                                                            text: "Task ID: " + task[0].serial_id + "\n Title: " + task[0].title + "\n Recipient: " + task[0].receiver_id + " Owner: " + task[0].sender_id + "\n Question: " + desc,
                                                             callback_id: "clarify_answer",
                                                             actions: buttons
                                                         }]),
