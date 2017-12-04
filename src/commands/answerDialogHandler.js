@@ -330,7 +330,7 @@ const handler = (payload, res) => {
                                     color: color,
                                     text: text,
                                     callback_id: "askDialogHandler",
-                                    mrkdwn: true,
+                                    username: "TESTBOT",
                                     actions: buttons
                                 },
                             ]),
