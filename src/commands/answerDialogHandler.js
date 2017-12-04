@@ -332,7 +332,7 @@ const handler = (payload, res) => {
                                     callback_id: "askDialogHandler",
                                     "mrkdwn_in": [
                                         "text"
-                                    ]
+                                    ],
                                     actions: buttons
                                 },
                             ]),
