@@ -123,10 +123,10 @@ const handler = (payload, res) => {
                                                                                 if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                                                                                     if(taskDueDate != null){
                                                                                         if(taskDueDate - dueDate != 0) {
-                                                                                            taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                                            taskSum = taskSum + "\n *New Due Date:* " + payload.submission.dueDate
                                                                                         }
                                                                                     } else {
-                                                                                        taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate   
+                                                                                        taskSum = taskSum + "\n *New Due Date:* " + payload.submission.dueDate   
                                                                                     }
                                                                                 } else {
                                                                                     res.send({
@@ -138,7 +138,7 @@ const handler = (payload, res) => {
                                                                                 }
                                                                             }
                                                                         res.send('');
-                                                                            let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
+                                                                            let build = taskSum +"\n *Question:* "+ question +"\n *Answer:* "+ answer;
                                                                             sendMessage(false, "Question Answered: ", build, GREEN);
                                                                         })
                                                                         .catch(err4 => {
@@ -164,7 +164,7 @@ const handler = (payload, res) => {
                                                     .then(result4 => {
                                                         client4.release();
                                                         setButtons(taskID);
-                                                        let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
+                                                        let taskSum = "*Task ID:* " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
                                                         if (dueDate) {  //checking for valid due date, only if due date exists.
                                                             if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                                                                 if(taskDueDate != null){
@@ -228,7 +228,7 @@ const handler = (payload, res) => {
         res.send({
             "errors": [{
                 "name": "dueDate",
-                "error": "Incorrect Date"
+                "error": "Passed or Incorrect Date"
             }]
         })
     }
@@ -330,7 +330,6 @@ const handler = (payload, res) => {
                                     color: color,
                                     text: text,
                                     callback_id: "askDialogHandler",
-                                    username: "TESTBOT",
                                     actions: buttons
                                 },
                             ]),
