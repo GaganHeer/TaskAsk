@@ -46,7 +46,7 @@ const handler = (payload, res) => {
                         })
                     } else {
                         let resp = result.rows[0];
-                        build = "You have sent a progress update request to:"+resp.receiver_id;
+                        build = ""
                         res.send('');
                         setButtons(taskNumber, resp.status);
                         sendMessage(false, "Status Update: ", build, col);
