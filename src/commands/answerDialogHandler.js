@@ -118,7 +118,7 @@ const handler = (payload, res) => {
                                                                         .then(result4 => {
                                                                             client4.release();
                                                                             setButtons(taskID);
-                                                                            let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
+                                                                            let taskSum = "*Task ID:* " + taskID+ "\n *Title:* " + jiraSummary + "\n *Recipient:* " + receiverSlackID + " *Owner:* " + senderSlackID;
                                                                             if (dueDate) {  //checking for valid due date, only if due date exists.
                                                                                 if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                                                                                     if(taskDueDate != null){
