@@ -330,7 +330,9 @@ const handler = (payload, res) => {
                                     color: color,
                                     text: text,
                                     callback_id: "askDialogHandler",
-                                    mrkdwn : true,
+                                    "mrkdwn_in": [
+                                        "text"
+                                    ]
                                     actions: buttons
                                 },
                             ]),
