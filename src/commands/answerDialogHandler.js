@@ -32,7 +32,6 @@ const handler = (payload, res) => {
     }
     var currentDate = new Date();
     currentDate.setHours(currentDate.getHours() - 8);
-    console.log("Current Date: "+currentDate);
     var taskID;
     var jiraKey;
     var jiraAssingee;
@@ -89,7 +88,7 @@ const handler = (payload, res) => {
                                                 return client3.query(dbQ4, [receiverSlackID, senderSlackID])
                                                     .then(result3 => {
                                                         client3.release();
-                                                        console.log("Log 1: "+ result3.rows[0].f_name);
+                                                        //console.log("Log 1: "+ result3.rows[0].f_name); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                         for (let i=0; i<result3.rows.length; i++){
                                                             if (result3.rows[i].slack_id == senderSlackID){
                                                                 senderSlackName = result3.rows[i].f_name +' '+ result3.rows[i].l_name;
@@ -112,10 +111,10 @@ const handler = (payload, res) => {
                                                         };
                                                         jira.updateIssue(jiraKey, jiraIssue, function (jiraErr, issueUpdate) {
                                                             if (jiraErr) {
-                                                                console.log(jiraErr);
+                                                                //console.log(jiraErr); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                 return(jiraErr);
                                                             } else {
-                                                                console.log("Jira update was a: "+ JSON.stringify(issueUpdate));
+                                                                //console.log("Jira update was a: "+ JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                 pool.connect().then(client4 => {
                                                                     return client4.query(dbQ5, [dueDate, taskID])
                                                                         .then(result4 => {
@@ -124,15 +123,29 @@ const handler = (payload, res) => {
                                                                             let taskSum = "Task ID: " + taskID+ "\n Title: " + jiraSummary + "\n Recipient: " + receiverSlackID + " Owner: " + senderSlackID;
                                                                             if (dueDate) {  //checking for valid due date, only if due date exists.
                                                                                 if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
-                                                                                    taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                                    if(taskDueDate != null){
+                                                                                        if(taskDueDate - dueDate != 0) {
+                                                                                            taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
+                                                                                        }
+                                                                                    } else {
+                                                                                        taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate   
+                                                                                    }
+                                                                                } else {
+                                                                                    res.send({
+                                                                                        "errors": [{
+                                                                                            "name": "dueDate",
+                                                                                            "error": "Invalid Date!"
+                                                                                        }]
+                                                                                    })
                                                                                 }
                                                                             }
+                                                                        res.send('');
                                                                             let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
                                                                             sendMessage(false, "Question Answered: ", build, GREEN);
                                                                         })
                                                                         .catch(err4 => {
                                                                             client4.release();
-                                                                            console.log(err4.stack);
+                                                                            //console.log(err4.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                                             sendMessage(true, "*** ERROR ***", ""+err4.stack, RED);
                                                                         })
                                                                 })
@@ -142,7 +155,7 @@ const handler = (payload, res) => {
                                                     })
                                                     .catch(err3 => {
                                                         client3.release();
-                                                        console.log(err3.stack);
+                                                        //console.log(err3.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                         sendMessage(true, "*** ERROR ***", ""+err3.stack, RED);
                                                     });
                                             });
@@ -157,7 +170,6 @@ const handler = (payload, res) => {
                                                         if (dueDate) {  //checking for valid due date, only if due date exists.
                                                             if(dateValidator.isValid(payload.submission.dueDate, 'MMM D YYYY H:mm') && (currentDate - dueDate) < 0) {
                                                                 if(taskDueDate != null){
-                                                                    console.log("NEW DATE------------" + taskDueDate - dueDate);
                                                                     if(taskDueDate - dueDate != 0) {
                                                                         taskSum = taskSum + "\n New Due Date: " + payload.submission.dueDate
                                                                     }
@@ -179,7 +191,7 @@ const handler = (payload, res) => {
                                                     })
                                                     .catch(err4 => {
                                                         client4.release();
-                                                        console.log(err4.stack);
+                                                        //console.log(err4.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                         sendMessage(true, "*** ERROR ***", ""+err4.stack, RED);
                                                     })
                                             })
@@ -187,14 +199,14 @@ const handler = (payload, res) => {
                                     })
                                     .catch(err2 => {
                                         client2.release();
-                                        console.log(err2.stack);
+                                        //console.log(err2.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         sendMessage(true, "*** ERROR ***", ""+err2.stack, RED);
                                     })
                             })
                         })
                         .catch(err => {
                             client.release();
-                            console.log(err.stack);
+                            //console.log(err.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             sendMessage(true, "*** ERROR ***", ""+err.stack, RED);
                         });
                 });
@@ -305,7 +317,6 @@ const handler = (payload, res) => {
                 token: config('POST_BOT_TOKEN'),
 
             })).then(function (resp){
-                console.log(resp.data);
                 for(var t = 0; t < resp.data.ims.length; t++){
                     if(targetDM == resp.data.ims[t].user){
                         finalUser = resp.data.ims[t].id;
@@ -322,14 +333,10 @@ const handler = (payload, res) => {
                                     text: text,
                                     callback_id: "askDialogHandler",
                                     actions: buttons
-
                                 },
                             ]),
                         })).then((result) => {
                             console.log('sendConfirmation: ', result.data);
-
-
-
                         }).catch((err) => {
                             console.log('sendConfirmation error: ', err);
                             console.error(err);
