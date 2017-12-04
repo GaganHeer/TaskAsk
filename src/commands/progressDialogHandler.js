@@ -49,7 +49,7 @@ const handler = (payload, res) => {
                         build = ""
                         res.send('');
                         setButtons(taskNumber, resp.status);
-                        sendMessage(false, "Status Update: ", build, col);
+                        sendMessage(false, "Progress Update Requested ", build, col);
 
                         //Dm
 
