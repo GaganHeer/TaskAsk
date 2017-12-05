@@ -184,7 +184,7 @@ const handler = (payload, res) => {
                                                             }
                                                         }
                                                         res.send('');
-                                                        let build = taskSum +"\n Question: "+ question +"\n Answer: "+ answer;
+                                                        let build = taskSum +"\n *Question:* "+ question +"\n *Answer:* "+ answer;
                                                         sendMessage(false, "Question Answered: ", build, GREEN);
                                                     })
                                                     .catch(err4 => {
