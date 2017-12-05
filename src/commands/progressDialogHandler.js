@@ -67,9 +67,9 @@ const handler = (payload, res) => {
                                 if(result.rows[0].due_date != null) {
                                     var stringDate = resp.due_date.toString();
                                     var due = stringDate.slice(4,21)
-                                    text = "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + " Owner: " + resp.sender_id + "\n Description: " + resp.req_desc + "\n Due Date: " + due;
+                                    text = "*Task ID:* " + taskNumber + "\n *Title:* " + resp.title + "\n *Recipient:* " + resp.receiver_id + " *Owner:* " + resp.sender_id + "\n *Description:* " + resp.req_desc + "\n *Due Date:* " + due;
                                 } else {
-                                    text = "Task ID: " + taskNumber + "\n Title: " + resp.title + "\n Recipient: " + resp.receiver_id + " Owner: " + resp.sender_id + "\n Description: " + resp.req_desc;
+                                    text = "*Task ID:* " + taskNumber + "\n *Title:* " + resp.title + "\n *Recipient:* " + resp.receiver_id + " *Owner:* " + resp.sender_id + "\n *Description:* " + resp.req_desc;
                                 }
 
                                 if(targetDM==resp2.data.ims[t].user){
@@ -86,8 +86,10 @@ const handler = (payload, res) => {
                                             text: text,
                                             color: col,
                                             callback_id: "progress_buttons",
+                                            mrkdwn_in: [
+                                                "text"
+                                            ],
                                             actions: buttons
-                                            
                                         },
                                         ]),
                                         

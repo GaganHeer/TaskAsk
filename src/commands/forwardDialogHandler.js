@@ -40,9 +40,9 @@ const handler = (payload, res) => {
                 if(result.rows[0].due_date != null) {
                     var stringDate = result.rows[0].due_date.toString();
                     var due = stringDate.slice(4,21)
-                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + result.rows[0].req_desc + "\n Due Date: " + due;
+                    text = "*Task ID:* " + taskNumber + "\n *Title:* " + result.rows[0].title + "\n *Recipient:* " + result.rows[0].receiver_id +  " *Forwarder:* " + forwarder + " *Owner:* " + result.rows[0].sender_id + "\n *Description:* " + result.rows[0].req_desc + "\n *Due Date:* " + due;
                 } else {
-                    text = "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id + "\n Description: " + result.rows[0].req_desc;
+                    text = "*Task ID:* " + taskNumber + "\n *Title:* " + result.rows[0].title + "\n *Recipient:* " + result.rows[0].receiver_id +  " *Forwarder:* " + forwarder + " *Owner:* " + result.rows[0].sender_id + "\n *Description:* " + result.rows[0].req_desc;
                 }
 
                 //DM to the new receiver of the task
@@ -65,6 +65,9 @@ const handler = (payload, res) => {
                                     color: ORANGE,
                                     text: text,
                                     callback_id: "askDialogHandler",
+                                    mrkdwn_in: [
+                                        "text"
+                                    ],
                                     actions: buttons
                                   },
                                 ]),
@@ -98,7 +101,10 @@ const handler = (payload, res) => {
                                   {
                                     title: "Forwarded",
                                     color: ORANGE,
-                                    text: "Task ID: " + taskNumber + "\n Title: " + result.rows[0].title + "\n Recipient: " + result.rows[0].receiver_id +  " Forwarder: " + forwarder + " Owner: " + result.rows[0].sender_id,
+                                    text: "*Task ID:* " + taskNumber + "\n *Title:* " + result.rows[0].title + "\n *Recipient:* " + result.rows[0].receiver_id +  " *Forwarder:* " + forwarder + " *Owner:* " + result.rows[0].sender_id,
+                                    mrkdwn_in: [
+                                        "text"
+                                    ],
                                   },
                                 ]),
                             })).then((result) => {
