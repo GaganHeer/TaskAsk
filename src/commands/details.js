@@ -107,7 +107,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 				value: attachMsg.serial_id,
 			}]
 		}
-
+        
 		msgAttachment.push({
 			title: "Details",
 			text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Due Date:* " + attachMsg.due_date,
@@ -130,21 +130,32 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 			
 				var sid = parseInt(response.rows[i].question_id);
 				
-				msgAttachment.push(
-					{
-						text: response.rows[i].clar_quest,
-						color: "#afafaf",
-						callback_id: "clarify_answer",
-						actions: [
-							{
-								name: "answer",
-								text: "Answer",
-								type: "button",
-								value: sid,
-							}
-						],
-					}
-				);	
+                if(payload.user.id === response.rows[i].sender_id){
+                    msgAttachment.push(
+                        {
+                            text: response.rows[i].clar_quest,
+                            color: "#afafaf",
+                            callback_id: "clarify_answer",
+                            actions: [
+                                {
+                                    name: "answer",
+                                    text: "Answer",
+                                    type: "button",
+                                    value: sid,
+                                }
+                            ],
+                        }
+				    );    
+                } else {
+                    msgAttachment.push(
+                        {
+                            text: response.rows[i].clar_quest,
+                            color: "#afafaf",
+                            callback_id: "clarify_answer",
+                        }
+				    );
+                }
+					
 			} else {
 				msgAttachment.push(
 					{
