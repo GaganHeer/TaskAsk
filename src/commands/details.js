@@ -110,9 +110,12 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 
 		msgAttachment.push({
 			title: "Details",
-			text: "Task ID: " + attachMsg.serial_id + "\nTitle: " + attachMsg.title + "\nReciever: " + attachMsg.receiver_id + " Owner: " + attachMsg.sender_id + "\nDescription: " + attachMsg.req_desc + "\nDue Date: " + attachMsg.due_date,
+			text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Due Date:* " + attachMsg.due_date,
 			color: "#000000",
 			callback_id: "askDialogHandler",
+            mrkdwn_in: [
+                "text"
+            ],
 			actions: actions,
 		});
 		

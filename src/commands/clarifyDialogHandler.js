@@ -81,8 +81,11 @@ const handler = (payload, res) => {
                                                         {
                                                             title: "Clarification Needed",
                                                             color: PURPLE,
-                                                            text: "Task ID: " + task[0].serial_id + "\n Title: " + task[0].title + "\n Recipient: " + task[0].receiver_id + " Owner: " + task[0].sender_id + "\n Question: " + desc,
+                                                            text: "*Task ID:* " + task[0].serial_id + "\n *Title:* " + task[0].title + "\n *Recipient:* " + task[0].receiver_id + " *Owner:* " + task[0].sender_id + "\n *Question:* " + desc,
                                                             callback_id: "clarify_answer",
+                                                            mrkdwn_in: [
+                                                                "text"
+                                                            ],
                                                             actions: buttons
                                                         }]),
                                                 })).then((result) => {
