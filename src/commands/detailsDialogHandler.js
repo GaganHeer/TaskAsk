@@ -93,21 +93,33 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 			}]
 		}
 		
-		var dueTemp = attachMsg.due_date;
-		if(dueTemp === null) {
-			dueTemp = "None";
-		}
+		if(attachMsg.due_date == null){
+            msgAttachment.push({
+                title: "Details",
+                text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status,
+                color: "#000000",
+                callback_id: "askDialogHandler",
+                mrkdwn_in: [
+                    "text"
+                ],
+                actions: actions,
+		    });
+        } else {
+            var stringDate = attachMsg.due_date.toString();
+            var due = stringDate.slice(4,21) 
+            msgAttachment.push({
+                title: "Details",
+                text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Due Date:* " + due + "\n *Status:* " + attachMsg.status,
+                color: "#000000",
+                callback_id: "askDialogHandler",
+                mrkdwn_in: [
+                    "text"
+                ],
+                actions: actions,
+            });
+        }
 
-		msgAttachment.push({
-			title: "Details",
-			text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Due Date:* " + dueTemp + "\n *Status:* " + attachMsg.status,
-			color: "#000000",
-			callback_id: "askDialogHandler",
-            mrkdwn_in: [
-                "text"
-            ],
-			actions: actions,
-		});
+		
 		
 		for(var i = 0; i < response.rows.length; i++) {
 //			console.log("ANSWER: " + response.rows[i].clar_answer); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
