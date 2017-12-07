@@ -76,10 +76,10 @@ const handler = (payload, res) => {
 	//#####################################################
 	function summaryCMD(payload) {
 		pool.connect().then(client => {
-			return client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1", ["<@" + payload.user.id + ">"])
+			return client.query("SELECT * FROM ASK_TABLE WHERE RECEIVER_ID = $1 ORDER BY SERIAL_ID DESC", ["<@" + payload.user.id + ">"])
 				.then(result => {
 				pool.connect().then(client2 => {
-					return client2.query("SELECT * FROM ASK_TABlE WHERE SENDER_ID = $1", ["<@" + payload.user.id + ">"])
+					return client2.query("SELECT * FROM ASK_TABlE WHERE SENDER_ID = $1 ORDER BY SERIAL_ID DESC", ["<@" + payload.user.id + ">"])
 						.then(resultSend => {
 						client.release();
 						client2.release();
