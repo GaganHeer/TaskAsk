@@ -18,6 +18,7 @@ const ONLY_USER = 'ephemeral';
 
 var pool = new pg.Pool(dbConfig);
 var onlyNumbers = /^[0-9]*$/;   //regEx to test task id.
+var senderID = "";
 
 const handler = (payload, res) => {
 //    var channelName = payload.channel_name; //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
@@ -34,6 +35,7 @@ const handler = (payload, res) => {
 		return client.query('SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1;', [taskNumber])
 		.then(resp => {
 			var taskNumberRow = resp.rows;
+            senderID = taskNumberRow[0].sender_id;
 			if (taskNumberRow.length == 0) {
 				let falseIDMsg = taskNumber + " is not a valid ID#";
 				let falseIDTitle = "*** ERROR ***";
@@ -55,7 +57,6 @@ const handler = (payload, res) => {
 					})
 				})
 				.catch(err2 => {
-					client2.release();
 					console.log(err2.stack);
 					createSendMsg("*** ERROR ***", err2.stack, RED, ONLY_USER, payload)
 				});
@@ -68,7 +69,6 @@ const handler = (payload, res) => {
 		})
 	})
 	.catch(err => {
-		client.release();
 		createSendMsg("*** ERROR ***", err.stack, RED, ONLY_USER, payload);
 	})
 
@@ -120,9 +120,9 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
                 var sid = parseInt(response.rows[i].question_id);
                 
                 console.log("<@" + payload.user.id + ">");
-                console.log(response.rows[i].sender_id);
+                console.log(senderID);
                 
-                if("<@" + payload.user.id + ">" === resp.rows[i].sender_id){
+                if("<@" + payload.user.id + ">" === senderID){
                    msgAttachment.push(
                        {
                            text: "*Question:* " + response.rows[i].clar_quest,
