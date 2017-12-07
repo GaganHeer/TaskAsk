@@ -119,6 +119,9 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
             
                 var sid = parseInt(response.rows[i].question_id);
                 
+                console.log("<@" + payload.user.id + ">");
+                console.log(response.rows[i].sender_id);
+                
                 if("<@" + payload.user.id + ">" == response.rows[i].sender_id){
                    msgAttachment.push(
                        {
