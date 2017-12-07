@@ -115,25 +115,36 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 			var stringManip = response.rows[i].clar_answer;
 			
 			if(((typeof stringManip).toString()) ===  "object") {
-			
-				var sid = parseInt(response.rows[i].question_id);
-				
-				msgAttachment.push(
-					{
-						text: response.rows[i].clar_quest,
-						color: "#afafaf",
-						callback_id: "clarify_answer",
-						actions: [
-							{
-								name: "answer",
-								text: "Answer",
-								type: "button",
-								value: sid,
-							}
-						],
-					}
-				);	
-			} else {
+                console.log("ACTIVATED*************************************8");
+            
+                var sid = parseInt(response.rows[i].question_id);
+                
+                if(payload.user.id === response.rows[i].sender_id){
+                   msgAttachment.push(
+                       {
+                           text: response.rows[i].clar_quest,
+                           color: "#afafaf ",
+                           callback_id: "clarify_answer",
+                           actions: [
+                               {
+                                   name: "answer",
+                                   text: "Answer",
+                                   type: "button",
+                                   value: sid,
+                               }
+                           ],
+                       }
+                    );    
+                } else {
+                   msgAttachment.push(
+                       {
+                           text: response.rows[i].clar_quest,
+                           color: "#afafaf ",
+                           callback_id: "clarify_answer",
+                       }
+                    );
+                }
+            } else {
 				msgAttachment.push(
 					{
 						text: "*Question:* " + response.rows[i].clar_quest,
