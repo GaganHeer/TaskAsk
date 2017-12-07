@@ -54,7 +54,7 @@ const handler = (payload, res) => {
 			]
 		},
 		{
-			title: "FINISHED TASKS",
+			title: "DONE TASKS",
 			color: "#33ccff",
 			callback_id: "ask_buttons",
 			actions: [
@@ -108,7 +108,7 @@ const handler = (payload, res) => {
 			]
 		},
 		{
-			title: "FINISHED TASKS",
+			title: "DONE TASKS",
 			color: "#33ccff",
 			callback_id: "ask_buttons",
 			actions: [
