@@ -94,7 +94,10 @@ const handler = (payload, res) => {
                                             attachments: JSON.stringify([{
                                                 title: "Rejected",
                                                 color: RED,
-                                                text: "Task ID: " + taskNumber + "\n Title: " + result1.rows[0].title + "\n Recipient: " + result1.rows[0].receiver_id + " Owner: " + result1.rows[0].sender_id,
+                                                text: "*Task ID:* " + taskNumber + "\n *Title:* " + result1.rows[0].title + "\n *Recipient:* " + result1.rows[0].receiver_id + " *Owner:* " + result1.rows[0].sender_id,
+                                                mrkdwn_in: [
+                                                    "text"
+                                                ],
                                             }]),
                                         })).then((result) => {
                                             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY

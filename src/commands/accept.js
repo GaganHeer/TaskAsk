@@ -175,7 +175,10 @@ const handler = (payload, res) => {
                                                                                                 attachments: JSON.stringify([{
                                                                                                     title: "Accepted",
                                                                                                     color: GREEN,
-                                                                                                    text: "Task ID: " + taskNumber + "\n Title: " + taskNumberRow[0].title + "\n Recipient: " + taskNumberRow[0].receiver_id + " Owner: " + taskNumberRow[0].sender_id,
+                                                                                                    text: "*Task ID:* " + taskNumber + "\n *Title:* " + taskNumberRow[0].title + "\n *Recipient:* " + taskNumberRow[0].receiver_id + " *Owner:* " + taskNumberRow[0].sender_id,
+                                                                                                    mrkdwn_in: [
+                                                                                                        "text"
+                                                                                                    ],
                                                                                                 }]),
 
                                                                                             })).then((result) => {
