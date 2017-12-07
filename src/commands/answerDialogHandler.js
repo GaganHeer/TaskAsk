@@ -109,7 +109,7 @@ const handler = (payload, res) => {
                                                         };
                                                         jira.updateIssue(jiraKey, jiraIssue, function (jiraErr, issueUpdate) {
                                                             if (jiraErr) {
-                                                                //console.log(jiraErr); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+
                                                                 return(jiraErr);
                                                             } else {
                                                                 //console.log("Jira update was a: "+ JSON.stringify(issueUpdate)); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
@@ -290,9 +290,9 @@ const handler = (payload, res) => {
                     callback_id: "answerDialogHandler",
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+//                console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
+//                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 console.error(err);
             });
         } else {
@@ -337,15 +337,15 @@ const handler = (payload, res) => {
                                 },
                             ]),
                         })).then((result) => {
-                            console.log('sendConfirmation: ', result.data);
+//                            console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         }).catch((err) => {
-                            console.log('sendConfirmation error: ', err);
+//                            console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             console.error(err);
                         });
                     }
                 }
             }).catch(function (err){
-                console.log(err);
+                console.log(err); 
             });
         }
     }

@@ -67,8 +67,8 @@ const handler = (payload, res) => {
                                     })).then(function (resp){
                                         console.log(resp.data);
                                         for(let t = 0; t < resp.data.ims.length; t++){
-                                            console.log(t);
-                                            console.log(resp.data.ims[t].id);
+//                                            console.log(t); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+//                                            console.log(resp.data.ims[t].id); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                             if(targetDM == resp.data.ims[t].user){
                                                 finalUser = resp.data.ims[t].id;
                                                 finalUserId = resp.data.ims[t].user;
@@ -89,9 +89,9 @@ const handler = (payload, res) => {
                                                             actions: buttons
                                                         }]),
                                                 })).then((result) => {
-                                                    console.log('sendConfirmation: ', result.data);
+//                                                    console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                 }).catch((err) => {
-                                                    console.log('sendConfirmation error: ', err);
+//                                                    console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                                     console.error(err);
                                                 });
                                             }
@@ -103,15 +103,18 @@ const handler = (payload, res) => {
                                     sendMessage(false, "Clarification Requested", '', PURPLE);
                                 })
                                 .catch(err2 => {
+									client.release();
                                     sendMessage(true, "*** ERROR ***", ''+err2.stack, RED);
                                 });
                         })
                         .catch(err1 => {
+							client.release();
                             sendMessage(true, "*** ERROR ***", ''+err1.stack, RED);
                         });
                 }
             })
             .catch(err => {
+				client.release();
                 sendMessage(true, "*** ERROR ***", ''+err.stack, RED);
             })
     }).catch(err => {
@@ -143,9 +146,9 @@ const handler = (payload, res) => {
                     actions: buttons
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+//                console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
+//                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 console.error(err);
             });
         } else {
@@ -158,9 +161,9 @@ const handler = (payload, res) => {
                     title: title
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+//                console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
+//                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 console.error(err);
             });
         }

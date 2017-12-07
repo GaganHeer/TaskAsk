@@ -72,15 +72,16 @@ const handler = (payload, res) => {
 
                         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
                             .then((result) => {
-                                console.log('dialog.open: ', result.data);
+//                                console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                 res.send('');
                             }).catch((err) => {
-                            sendMessage("*** ERROR ***", err, RED, channel, receiver);
+//                            sendMessage("*** ERROR ***", err, RED, channel, receiver); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             res.sendStatus(500);
                         });
                     }
                 })
                 .catch(err => {
+				client.release();
                     sendMessage("*** ERROR ***", ""+err.stack, RED, channel, receiver);
                 });
         }).catch(err => {
@@ -103,9 +104,9 @@ const handler = (payload, res) => {
                 callback_id: "askDialogHandler",
             }]),
         })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
+//            console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
+//            console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             console.error(err);
         });
     }

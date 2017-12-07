@@ -21,15 +21,6 @@ const handler = (payload, res) => {
     var col = "";
 
     var build = "";
-
-	if (taskNumber == null) {
-		res.send({
-			"errors": [{
-				"name": "task",
-				"error": "No tasks were found"
-			}]
-		})
-	}
 	
     if (onlyNumbers.test(taskNumber)){
         pool.connect().then(client => {
@@ -95,9 +86,9 @@ const handler = (payload, res) => {
                                         
 
                                     })).then((result) => {
-                                        console.log('sendConfirmation: ', result.data);
+//                                        console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     }).catch((err) => {
-                                        console.log('sendConfirmation error: ', err);
+//                                        console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                         console.error(err);
                                     });
                                 }
@@ -198,9 +189,9 @@ const handler = (payload, res) => {
                     callback_id: "progressDialogHandler",
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+//                console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
+//                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 console.error(err);
             });
         } else {
@@ -215,9 +206,9 @@ const handler = (payload, res) => {
                     
                 }]),
             })).then((result) => {
-                console.log('sendConfirmation: ', result.data);
+//                console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
-                console.log('sendConfirmation error: ', err);
+//                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                 console.error(err);
             });
         }

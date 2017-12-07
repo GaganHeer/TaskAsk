@@ -49,7 +49,7 @@ const handler = (payload, res) => {
                         //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                         res.send('');
                     }).catch((err) => {
-                        //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                        console.log(err);
                         res.sendStatus(500);
                     });
                 } else {
@@ -76,6 +76,7 @@ const handler = (payload, res) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+			console.log(err);
         });
     }
 }

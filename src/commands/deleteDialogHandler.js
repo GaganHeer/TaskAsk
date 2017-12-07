@@ -57,6 +57,7 @@ const handler = (payload, res) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+			console.log(err);
         });
     }
 

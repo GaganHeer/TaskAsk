@@ -26,24 +26,24 @@ const handler = (payload, res) => {
 	//#####################################################
 	//#####################################################
 	if(payload.actions[0].name === "accept") {
-		console.log("ACCEPT COMMAND");
+//		console.log("ACCEPT COMMAND"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		acceptCMD(payload);			
 	}
 	
 	if(payload.actions[0].name === "reject") {
-		console.log("REJECT COMMAND");
+//		console.log("REJECT COMMAND"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		rejectCMD(payload);
 	}
 	
 	if(payload.actions[0].name === 'doneBut') {
-		console.log("DONE COMMAND");
+//		console.log("DONE COMMAND"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		doneCMD(payload);
 	}
 	
 	var summaryActions = ["pend", "rej", "acc", "done", "sendPend", "sendRej", "sendAcc", "sendDone"];
 	
 	if(summaryActions.indexOf(payload.actions[0].name) >= 0) {
-		console.log("SUMMARY COMMAND");
+//		console.log("SUMMARY COMMAND"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 		summaryCMD(payload);
 	}
 	
@@ -122,10 +122,7 @@ const handler = (payload, res) => {
 		}
 		
 		function send(data, sendData) {
-			console.log("MESSAGE: " + util.inspect(payload, {showHidden: false, depth: null}));
-			
-			console.log(data);
-			console.log(sendData);
+//			console.log("MESSAGE: " + util.inspect(payload, {showHidden: false, depth: null})); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 
 			var pend = "";
 			var sendPend = "";
@@ -147,7 +144,7 @@ const handler = (payload, res) => {
 				} else if (stat === "DONE") {
 					done = done + "Task: " + data[i].serial_id + " --> " + data[i].title + "\n";			
 				} else {
-					console.log("ERR AT: " + data[i]);
+//					console.log("ERR AT: " + data[i]); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 				}
 			}
 			for (var i = 0; i < sendData.length; i++) {			
@@ -161,7 +158,7 @@ const handler = (payload, res) => {
 				} else if (stat === "DONE") {
 					sendDone = sendDone + "Task: " + sendData[i].serial_id + " --> " +  sendData[i].title + "\n";		
 				} else {
-					console.log("ERR AT: " + sendData[i]);
+//					console.log("ERR AT: " + sendData[i]); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 				}
 			}
 
@@ -178,11 +175,11 @@ const handler = (payload, res) => {
 
 
 			for (var i = 0; i < ogMsg.length; i++) {			
-				console.log("YEAH");
+//				console.log("YEAH"); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 					if(ogMsg[i].hasOwnProperty('callback_id')) {
-					console.log("MATCH AT: " + ogMsg[i]);
+//					console.log("MATCH AT: " + ogMsg[i]); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 					if(payload.actions[0].name === ogMsg[i].actions[0].name) {
-						console.log("MATCH2 AT: " + ogMsg[i].actions[0].name);
+//						console.log("MATCH2 AT: " + ogMsg[i].actions[0].name); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 
 						var items = {
 							"pend": pend,

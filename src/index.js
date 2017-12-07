@@ -11,14 +11,7 @@ const axios = require('axios');
 
 const config = require('./config');
 const commands = require('./commands');
-const askCommand = require('./commands/ask');
 const sumCommand = require('./commands/summary');
-const accCommand = require('./commands/accept');
-const donCommand = require('./commands/done');
-const rejCommand = require('./commands/reject');
-const proCommand = require('./commands/progress');
-const forCommand = require('./commands/forward');
-const clarCommand = require('./commands/clarify');
 const buttonHandler = require('./commands/buttonHandler');
 const deleteDialog = require('./commands/deleteDialog');
 const deleteDialogHandler = require('./commands/deleteDialogHandler');
@@ -36,7 +29,7 @@ const rejectDialog = require('./commands/rejectDialog');
 const rejectDialogHandler = require('./commands/rejectDialogHandler');
 const acceptDialog = require('./commands/acceptDialog');
 const acceptDialogHandler = require('./commands/acceptDialogHandler');
-const detCommand = require('./commands/details');
+const detCommand = require('./commands/detailsDialogHandler');
 const answerDialog = require('./commands/answerDialog');
 const answerDialogHandler = require('./commands/answerDialogHandler');
 const detailsDialog = require('./commands/detailsDialog');
@@ -57,12 +50,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => { res.send('\n 👋 🌍 \n') });
 
-app.post('/commands/boneypants/interactiveComponent', (req, res) => {
+app.post('/commands/interactiveComponent', (req, res) => {
     let payload = JSON.parse(req.body.payload);
     
     if(payload.callback_id === 'askDialog'){
-        //console.log("ITS HERE-------------" + util.inspect(payload.actions, {showHidden: false, depth: null}));
-        //console.log(payload.submission.title);
         var cmd = askDialogHandler;
     } else if (payload.callback_id === 'askDialogHandler'){
         payload.original_message.text = payload.actions[0].value;
@@ -118,180 +109,11 @@ app.post('/commands/boneypants/interactiveComponent', (req, res) => {
     cmd.handler(payload, res)
 }); 
 
-app.post('/commands/boneypants/askdialog', (req, res) => {
-    let payload = req.body
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?'
-        console.log(err)
-        res.status(401).end(err)
-        return
-    }
-    let cmd = askDialog;
-    cmd.handler(payload, res)
-});
-
-app.post('/commands/boneypants/details', (req, res) => {
-    let payload = req.body
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?'
-        console.log(err)
-        res.status(401).end(err)
-        return
-    }
-    let cmd = detailsDialog;
-    cmd.handler(payload, res)
-})
-
-app.post('/commands/boneypants/rejectdialog', (req, res) => {
-    let payload = req.body
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?'
-        console.log(err)
-        res.status(401).end(err)
-        return
-    }
-    let cmd = rejectDialog;
-    cmd.handler(payload, res)
-})
-
-app.post('/commands/boneypants/acceptdialog', (req, res) => {
-    let payload = req.body
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?'
-        console.log(err)
-        res.status(401).end(err)
-        return
-    }
-    let cmd = acceptDialog;
-    cmd.handler(payload, res)
-})
-
-app.post('/commands/boneypants/forwarddialog', (req, res) => {
-    let payload = req.body
-    
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = '✋  Star—what? An invalid slash token was provided\n' +
-              '   Is your Slack slash token correctly configured?'
-    console.log(err)
-    res.status(401).end(err)
-    return
-    }
-    let cmd = forwardDialog;
-	cmd.handler(payload, res)
-})
-
-app.post('/commands/boneypants/donedialog', (req, res) => {
-    let payload = req.body
-    
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = '✋  Star—what? An invalid slash token was provided\n' +
-              '   Is your Slack slash token correctly configured?'
-    console.log(err)
-    res.status(401).end(err)
-    return
-    }
-    let cmd = doneDialog;
-	cmd.handler(payload, res)
-})
-
-app.post('/commands/boneypants/clarifydialog', (req, res) => {
-    let payload = req.body
-    
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = '✋  Star—what? An invalid slash token was provided\n' +
-              '   Is your Slack slash token correctly configured?'
-    console.log(err)
-    res.status(401).end(err)
-    return
-    }
-    let cmd = clarifyDialog;
-	cmd.handler(payload, res)
-})
-
-app.post('/commands/boneypants/deletedialog', (req, res) => {
-    let payload = req.body;
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?';
-        console.log(err);
-        res.status(401).end(err);
-        return
-    }
-    let cmd = deleteDialog;
-    cmd.handler(payload, res);
-});
-
-app.post('/commands/boneypants/progressdialog', (req, res) => {
-    let payload = req.body;
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?';
-        console.log(err);
-        res.status(401).end(err);
-        return
-    }
-    let cmd = progressDialog;
-    cmd.handler(payload, res);
-});
-
-app.post('/commands/boneypants/answer', (req, res) => {
-    let payload = req.body;
-
-    if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-        let err = '✋  Star—what? An invalid slash token was provided\n' +
-            '   Is your Slack slash token correctly configured?';
-        console.log(err);
-        res.status(401).end(err);
-        return
-    }
-    let cmd = answerDialog;
-    cmd.handler(payload, res);
-});
-
-app.post('/commands/boneypants/ask', (req, res) => {
+app.post('/commands/summary', (req, res) => {
   let payload = req.body;
 
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-
-  let cmd = askCommand;
-  cmd.handler(payload, res)
-});
-
-app.post('/commands/boneypants/clarify', (req, res) => {
-  let payload = req.body;
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-
-  let cmd = clarCommand;
-  cmd.handler(payload, res)
-});
-
-
-app.post('/commands/boneypants/summary', (req, res) => {
-  let payload = req.body;
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
+  if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+    let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
     console.log(err);
     res.status(401).end(err);
     return
@@ -300,102 +122,142 @@ app.post('/commands/boneypants/summary', (req, res) => {
   let cmd = sumCommand;
   cmd.handler(payload, res)
 });
+app.post('/commands/ask', (req, res) => {
+    let payload = req.body
 
-app.post('/commands/boneypants/accept', (req, res) => {
-  let payload = req.body;
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-
-  let cmd = accCommand;
-  cmd.handler(payload, res)
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err)
+        res.status(401).end(err)
+        return
+    }
+    let cmd = askDialog;
+    cmd.handler(payload, res)
 });
 
-app.post('/commands/boneypants/done', (req, res) => {
-  let payload = req.body;
+app.post('/commands/details', (req, res) => {
+    let payload = req.body
 
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-
-  let cmd = donCommand;
-  cmd.handler(payload, res)
-});
-
-app.post('/commands/boneypants/reject', (req, res) => {
-  let payload = req.body;
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-	
-  let cmd = rejCommand;
-  cmd.handler(payload, res)
-});
-
-app.post('/commands/boneypants/progress', (req, res) => {
-  let payload = req.body;
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-
-  let cmd = proCommand;
-  cmd.handler(payload, res)
-});
-
-app.post('/commands/boneypants/forward', (req, res) => {
-  let payload = req.body;
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = 'BONES IS OUTTA CALCIUM';
-    console.log(err);
-    res.status(401).end(err);
-    return
-  }
-
-  let cmd = forCommand;
-  cmd.handler(payload, res)
-});
-
-app.post('/commands/boneypants/reject', (req, res) => {
-  let payload = req.body
-
-  if (!payload || payload.token !== config('STARBOT_COMMAND_TOKEN')) {
-    let err = '✋  Star—what? An invalid slash token was provided\n' +
-              '   Is your Slack slash token correctly configured?'
-    console.log(err)
-    res.status(401).end(err)
-    return
-  }
-
-  let cmd = _.reduce(commands, (a, cmd) => {
-    return payload.text.match(cmd.pattern) ? cmd : a
-  }, rejCommand)
-
-  cmd.handler(payload, res)
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err)
+        res.status(401).end(err)
+        return
+    }
+    let cmd = detailsDialog;
+    cmd.handler(payload, res)
 })
+
+app.post('/commands/reject', (req, res) => {
+    let payload = req.body
+
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err)
+        res.status(401).end(err)
+        return
+    }
+    let cmd = rejectDialog;
+    cmd.handler(payload, res)
+})
+
+app.post('/commands/accept', (req, res) => {
+    let payload = req.body
+
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err)
+        res.status(401).end(err)
+        return
+    }
+    let cmd = acceptDialog;
+    cmd.handler(payload, res)
+})
+
+app.post('/commands/forward', (req, res) => {
+    let payload = req.body
+    
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+		let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+		console.log(err)
+		res.status(401).end(err)
+		return
+    }
+    let cmd = forwardDialog;
+	cmd.handler(payload, res)
+})
+
+app.post('/commands/done', (req, res) => {
+    let payload = req.body
+    
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+		let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+		console.log(err)
+		res.status(401).end(err)
+		return
+    }
+    let cmd = doneDialog;
+	cmd.handler(payload, res)
+})
+
+app.post('/commands/clarify', (req, res) => {
+    let payload = req.body
+    
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+		let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+		console.log(err)
+		res.status(401).end(err)
+		return
+    }
+    let cmd = clarifyDialog;
+	cmd.handler(payload, res)
+})
+
+app.post('/commands/delete', (req, res) => {
+    let payload = req.body;
+
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err);
+        res.status(401).end(err);
+        return
+    }
+    let cmd = deleteDialog;
+    cmd.handler(payload, res);
+});
+
+app.post('/commands/progress', (req, res) => {
+    let payload = req.body;
+
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err);
+        res.status(401).end(err);
+        return
+    }
+    let cmd = progressDialog;
+    cmd.handler(payload, res);
+});
+
+app.post('/commands/answer', (req, res) => {
+    let payload = req.body;
+
+    if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
+        let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
+        console.log(err);
+        res.status(401).end(err);
+        return
+    }
+    let cmd = answerDialog;
+    cmd.handler(payload, res);
+});
 
 app.listen(config('PORT'), (err) => {
   if (err) throw err;
 
-  console.log(`\n🚀  Starbot LIVES on PORT ${config('PORT')} 🚀`);
+  console.log(`\n Bot opened on port: ${config('PORT')}`);
 
   if (config('SLACK_TOKEN')) {
-    console.log(`🤖  beep boop: @starbot is real-time\n`);
     bot.listen({ token: config('SLACK_TOKEN') })
   }
 });

@@ -152,7 +152,7 @@ const handler = (payload, res) => {
                                                                                     }
                                                                                 }
                                                                             }).catch(function (err){
-                                                                                //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                                                                console.log(err);
                                                                             });
                                                                         })
                                                                         .catch(err1 => {
@@ -171,6 +171,7 @@ const handler = (payload, res) => {
                                         });
                                     }).catch(e => {
                                         client2.release();
+										sendMessage("*** ERROR ***", "" + e, RED);
                                         //console.log(e.stack); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                                     });
                             });
@@ -204,6 +205,7 @@ const handler = (payload, res) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+			console.log(err);
         });
     }
 }

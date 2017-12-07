@@ -131,7 +131,7 @@ const handler = (payload, res) => {
                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
                 //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                console.error(err);
             });
         } else {
             axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
@@ -146,7 +146,7 @@ const handler = (payload, res) => {
                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             }).catch((err) => {
                 //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                console.error(err);
             });
 
             axios.post('https://slack.com/api/im.list', qs.stringify({
@@ -181,12 +181,12 @@ const handler = (payload, res) => {
                                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                               }).catch((err) => {
                                 //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                //console.error(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                console.error(err);
                             });
                     }
                 }
             }).catch(function (err){
-                //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                console.log(err);
             });
         }
     }

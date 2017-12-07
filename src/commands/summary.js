@@ -12,9 +12,6 @@ const handler = (payload, res) => {
 
 	let attachments2 = [
 		{
-			title: "Bones here!",
-		},
-		{
 			pretext: "Current Pending Requests sent by your peers:"
 		},
 		{

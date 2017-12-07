@@ -53,11 +53,13 @@ const handler = (payload, res) => {
                                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             }).catch((err) => {
                                 //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+								console.log(err);
                             });
                         }
                     }
                 }).catch(function (err){
                     //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+					console.log(err);
                 });
 
                 sendMessage("Rejected", "", RED);
@@ -84,6 +86,7 @@ const handler = (payload, res) => {
             //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
             //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+			console.log(err);
         });
     }
 }

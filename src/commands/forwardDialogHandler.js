@@ -75,11 +75,12 @@ const handler = (payload, res) => {
                                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             }).catch((err) => {
                                 //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+								console.log(err);
                             });
                         }
                     }
                 }).catch(function (err){
-                    //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                    console.log(err); 
                 });
 
                 //DM to the owner of the task
@@ -111,14 +112,19 @@ const handler = (payload, res) => {
                                 //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                             }).catch((err) => {
                                 //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+								console.log(err);
                             });
                         }
                     }
                 }).catch(function (err){
-                    //console.log(err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                    console.log(err);
                 });
                 sendMessage("Forwarded", "", ORANGE);
-        });
+        })
+		.catch((e) => {
+			client.release();
+			sendMessage("*** ERROR ***", "" + err, RED);
+		});
     }).catch((err) => {
         sendMessage("*** ERROR ***", "" + err, RED);
     });

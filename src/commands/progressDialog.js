@@ -35,10 +35,12 @@ const handler = (payload, res) => {
                         }
                     }
                     if (tasks.length == 0) {
-                        tasks.push({label:'No tasks found.', value: "null"});
+                        sendMessage("*** ERROR ***", "No tasks assigned by or to you.", RED, payload.channel_id, payload.user_id);
+                    	res.send('');
                     }
                 } else {
-                    tasks.push({label:'No tasks found.', value: "null"});
+                    sendMessage("*** ERROR ***", "No tasks assigned by or to you.", RED, payload.channel_id, payload.user_id);
+                    res.send('');
                 }
 
                 const dialog = {
@@ -67,11 +69,15 @@ const handler = (payload, res) => {
 //                    console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                     res.sendStatus(500);
                 });
-                // console.log('sendConfirmation: ', result.data);
+                // console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
 
             })
+			.catch((e) => {
+				client.release();
+				sendMessage("*** ERROR ***", ""+e.stack, RED, payload.channel.id, payload.user.id);
+			});
     }).catch((err) => {
-        console.log('sendConfirmation error: ', err);
+//        console.log('sendConfirmation error: ', err);//#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         sendMessage("*** ERROR ***", ""+err.stack, RED, payload.channel.id, payload.user.id);
     });
 
@@ -87,9 +93,9 @@ const handler = (payload, res) => {
                 callback_id: "askDialogHandler",
             }]),
         })).then((result) => {
-            console.log('sendConfirmation: ', result.data);
+//            console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
         }).catch((err) => {
-            console.log('sendConfirmation error: ', err);
+//            console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
             console.error(err);
         });
     }

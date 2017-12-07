@@ -19,8 +19,7 @@ bot.message((msg) => {
     token: config('SLACK_TOKEN'),
     icon_emoji: config('ICON_EMOJI'),
     channel: msg.channel,
-    username: 'MrBoneyPantsGuy',
-    text: `***Bones Rattled****"`
+    username: 'AyogoTaskAsk',
   }, (err, data) => {
     if (err) throw err
 
