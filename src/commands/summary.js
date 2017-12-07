@@ -128,8 +128,8 @@ const handler = (payload, res) => {
     
     axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
         token: config('OAUTH_TOKEN'),
-        user: payload.user.id,
-        channel: payload.channel.id,
+        user: payload.user_id,
+        channel: payload.channel_id,
         attachments: JSON.stringify([{
             title: "Summary sent! Please check your DM's with the bot"
         }]),
