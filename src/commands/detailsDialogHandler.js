@@ -119,10 +119,10 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
             
                 var sid = parseInt(response.rows[i].question_id);
                 
-                if(payload.user.id === response.rows[i].sender_id){
+                if(payload.user.id == response.rows[i].sender_id){
                    msgAttachment.push(
                        {
-                           text: "*Question:*" + response.rows[i].clar_quest,
+                           text: "*Question:* " + response.rows[i].clar_quest,
                            color: "#afafaf",
                            callback_id: "clarify_answer",
                            actions: [
@@ -141,7 +141,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
                 } else {
                    msgAttachment.push(
                        {
-                           text: "*Question:*" + response.rows[i].clar_quest,
+                           text: "*Question:* " + response.rows[i].clar_quest,
                            color: "#afafaf",
                            callback_id: "clarify_answer",
                            mrkdwn_in: [
