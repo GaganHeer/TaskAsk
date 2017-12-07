@@ -16,7 +16,6 @@ const handler = (payload, res) => {
             mrkdwn_in: [
                 "pretext"
             ],
-            
 		},
 		{
 			title: "PENDING TASKS",
@@ -28,10 +27,7 @@ const handler = (payload, res) => {
 					text: "Expand",
 					type: "button"
 				}
-			],
-            mrkdwn_in: [
-                "pretext"
-            ],
+			]
 		},
 		{
 			title: "ACCEPTED TASKS",
@@ -70,7 +66,10 @@ const handler = (payload, res) => {
 			]
 		},
 		{
-			pretext: "*SENT REQUESTS*"
+			pretext: "*SENT REQUESTS*",
+            mrkdwn_in: [
+                "pretext"
+            ],
 		},
 		{
 			title: "PENDING TASKS",
