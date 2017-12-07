@@ -13,6 +13,7 @@ const handler = (payload, res) => {
 	let attachments2 = [
 		{
 			pretext: "*RECEIVED REQUESTS*",
+            mrkdwn: true
 		},
 		{
 			title: "PENDING TASKS",
