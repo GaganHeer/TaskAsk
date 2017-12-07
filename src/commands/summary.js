@@ -13,7 +13,6 @@ const handler = (payload, res) => {
 	let attachments2 = [
 		{
 			pretext: "*RECEIVED REQUESTS*",
-            mrkdwn: true
 		},
 		{
 			title: "PENDING TASKS",
@@ -25,7 +24,10 @@ const handler = (payload, res) => {
 					text: "Expand",
 					type: "button"
 				}
-			]
+			],
+            mrkdwn_in: [
+                "pretext"
+            ],
 		},
 		{
 			title: "ACCEPTED TASKS",
