@@ -133,7 +133,6 @@ const handler = (payload, res) => {
     var finalUserId;
     var targetDM = payload.user_id;
 
-
     axios.post('https://slack.com/api/im.list', qs.stringify({
         token: config('POST_BOT_TOKEN'),
 
@@ -166,6 +165,19 @@ const handler = (payload, res) => {
     });
 
     //End of DM
+    axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
+        token: config('OAUTH_TOKEN'),
+        user: payload.user.id,
+        channel: payload.channel.id,
+        attachments: JSON.stringify([{
+            title: "Summary sent! Please check your DM's with the bot"
+        }]),
+    })).then((result) => {
+        //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+    }).catch((err) => {
+        //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+        console.error(err);
+    });
 	return
 }
 

@@ -28,8 +28,6 @@ const handler = (payload, res) => {
 	var taskNumber = parseInt(payload.submission.task);;
 	var isButton = false;
 	
-	console.log("ERRORS: " + taskNumber);
-	
 	res.send('');
 	pool.connect().then(client => {
 		return client.query('SELECT * FROM ASK_TABLE WHERE SERIAL_ID = $1;', [taskNumber])
@@ -127,7 +125,6 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 			var stringManip = response.rows[i].clar_answer;
 			
 			if(((typeof stringManip).toString()) ===  "object") {
-                console.log("ACTIVATED*************************************8");
             
                 var sid = parseInt(response.rows[i].question_id);
                 
@@ -206,7 +203,6 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 			console.error(err);
 		});
 	} else {
-		console.log("WORKNIGAJDSKLJDLKS")
 		axios.post('https://slack.com/api/chat.postEphemeral', qs.stringify({
 			token: config('OAUTH_TOKEN'),
 			user: payload.user.id,
