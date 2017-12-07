@@ -100,7 +100,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 
 		msgAttachment.push({
 			title: "Details",
-			text: "*Task ID:* " + attachMsg.serial_id + " *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Due Date:* " + dueTemp + "\n *Status:* " + attachMsg.status,
+			text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Due Date:* " + dueTemp + "\n *Status:* " + attachMsg.status,
 			color: "#000000",
 			callback_id: "askDialogHandler",
             mrkdwn_in: [
@@ -122,8 +122,8 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
                 if(payload.user.id === response.rows[i].sender_id){
                    msgAttachment.push(
                        {
-                           text: response.rows[i].clar_quest,
-                           color: "#afafaf ",
+                           text: "*Question:*" + response.rows[i].clar_quest,
+                           color: "#afafaf",
                            callback_id: "clarify_answer",
                            actions: [
                                {
@@ -133,14 +133,20 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
                                    value: sid,
                                }
                            ],
+                           mrkdwn_in: [
+				                "text"
+						   ],
                        }
                     );    
                 } else {
                    msgAttachment.push(
                        {
-                           text: response.rows[i].clar_quest,
-                           color: "#afafaf ",
+                           text: "*Question:*" + response.rows[i].clar_quest,
+                           color: "#afafaf",
                            callback_id: "clarify_answer",
+                           mrkdwn_in: [
+				                "text"
+						   ],
                        }
                     );
                 }
