@@ -122,7 +122,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
                 console.log("<@" + payload.user.id + ">");
                 console.log(response.rows[i].sender_id);
                 
-                if("<@" + payload.user.id + ">" == response.rows[i].sender_id){
+                if("<@" + payload.user.id + ">" === resp.rows[i].sender_id){
                    msgAttachment.push(
                        {
                            text: "*Question:* " + response.rows[i].clar_quest,
