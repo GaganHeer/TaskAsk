@@ -96,7 +96,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 		if(attachMsg.due_date == null){
             msgAttachment.push({
                 title: "Details",
-                text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status,
+                text: "*Task ID:* " + attachMsg.serial_id + " *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status,
                 color: "#000000",
                 callback_id: "askDialogHandler",
                 mrkdwn_in: [
@@ -109,7 +109,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
             var due = stringDate.slice(4,21) 
             msgAttachment.push({
                 title: "Details",
-                text: "*Task ID:* " + attachMsg.serial_id + "\n *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status + " *Due Date:* " + due,
+                text: "*Task ID:* " + attachMsg.serial_id + " *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status + "\n *Due Date:* " + due,
                 color: "#000000",
                 callback_id: "askDialogHandler",
                 mrkdwn_in: [
