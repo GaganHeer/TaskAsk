@@ -12,7 +12,8 @@ const handler = (payload, res) => {
 
 	let attachments2 = [
 		{
-			pretext: "Current Pending Requests sent by your peers:"
+			pretext: "*RECEIVED REQUESTS*",
+            mrkdwn: true
 		},
 		{
 			title: "PENDING TASKS",
@@ -63,7 +64,7 @@ const handler = (payload, res) => {
 			]
 		},
 		{
-			pretext: "Current Pending Requests that you have made:"
+			pretext: "*SENT REQUESTS*"
 		},
 		{
 			title: "PENDING TASKS",
