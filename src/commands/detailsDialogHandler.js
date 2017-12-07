@@ -144,7 +144,7 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
                 } else {
                    msgAttachment.push(
                        {
-                           text: "*Question:* " + response.rows[i].clar_quest,
+                           text: "*Question:* " + response.rows[i].clar_quest + "\n ---NO ANSWER---",
                            color: "#afafaf",
                            callback_id: "clarify_answer",
                            mrkdwn_in: [
