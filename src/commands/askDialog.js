@@ -73,7 +73,7 @@ const handler = (payload, res) => {
         axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
             .then((result) => {
                 //console.log('dialog.open: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                console.log(payload.channel_id);
+                console.log("CHANNEL ID AND NAME----------- " + payload.channel_id + " " + payload.channel_name);
                 res.send('');
             }).catch((err) => {
                 //console.log('dialog.open call failed: %o', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
