@@ -34,8 +34,6 @@ const answerDialog = require('./commands/answerDialog');
 const answerDialogHandler = require('./commands/answerDialogHandler');
 const detailsDialog = require('./commands/detailsDialog');
 
-let bot = require('./bot');
-
 let app = express();
 
 
@@ -256,8 +254,4 @@ app.listen(config('PORT'), (err) => {
   if (err) throw err;
 
   console.log(`\n Bot opened on port: ${config('PORT')}`);
-
-  if (config('SLACK_TOKEN')) {
-    bot.listen({ token: config('SLACK_TOKEN') })
-  }
 });

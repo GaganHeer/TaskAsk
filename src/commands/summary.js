@@ -140,8 +140,7 @@ const handler = (payload, res) => {
         console.error(err);
     });
 
-    //Dm
-
+    //Dm	
     var finalUser;
     var finalUserId;
     var targetDM = payload.user_id;

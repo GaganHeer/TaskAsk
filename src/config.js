@@ -8,7 +8,6 @@ if (ENV === 'development') dotenv.load();
 const config = {
   ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
-  PROXY_URI: process.env.PROXY_URI,
   WEBHOOK_URL: process.env.WEBHOOK_URL,
   BOT_COMMAND_TOKEN: process.env.BOT_COMMAND_TOKEN,
   OAUTH_TOKEN: process.env.OAUTH_TOKEN,

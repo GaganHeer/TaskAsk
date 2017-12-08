@@ -6,6 +6,7 @@
 //const forCommand = require('./commands/forward');
 //const clarCommand = require('./commands/clarify');
 
+//let bot = require('./bot');
 
 
 //app.post('/commands/boneypants/ask', (req, res) => {
@@ -125,3 +126,9 @@
 //
 //  cmd.handler(payload, res)
 //})
+
+
+//part of final post
+//  if (config('SLACK_TOKEN')) {
+//    bot.listen({ token: config('SLACK_TOKEN') })
+//  }

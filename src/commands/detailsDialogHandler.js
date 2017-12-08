@@ -91,32 +91,32 @@ function createSendMsg(attachTitle, attachMsg, attachColor, respType, payload,  
 			}]
 		}
 		
-		if(attachMsg.due_date == null){
-            msgAttachment.push({
-                title: "Details",
-                text: "*Task ID:* " + attachMsg.serial_id + " *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status,
-                color: "#000000",
-                callback_id: "askDialogHandler",
-                mrkdwn_in: [
-                    "text"
-                ],
-                actions: actions,
-		    });
-        } else {
-            var stringDate = attachMsg.due_date.toString();
-            var due = stringDate.slice(4,21) 
-            msgAttachment.push({
-                title: "Details",
-                text: "*Task ID:* " + attachMsg.serial_id + " *Title:* " + attachMsg.title + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status + "\n *Due Date:* " + due,
-                color: "#000000",
-                callback_id: "askDialogHandler",
-                mrkdwn_in: [
-                    "text"
-                ],
-                actions: actions,
-            });
-        }
-
+		var dueDate = attachMsg.due_date;
+		if(dueDate == null) {
+			dueDate = "";
+		} else {
+			dueDate = dueDate.toString();
+			dueDate = dueDate.slice(4,21);
+			dueDate = "\n *Due Date:* " + dueDate;
+		}
+		
+		var jiraID = attachMsg.jira_id;
+		if(jiraID == null) {
+			jiraID = "";
+		} else {
+			jiraID = " *Jira ID:* " + jiraID;
+		}
+		
+		msgAttachment.push({
+			title: "Details",
+			text: "*Task ID:* " + attachMsg.serial_id + " *Title:* " + attachMsg.title + jiraID + "\n *Reciever:* " + attachMsg.receiver_id + " *Owner:* " + attachMsg.sender_id + "\n *Description:* " + attachMsg.req_desc + "\n *Status:* " + attachMsg.status + dueDate,
+			color: "#000000",
+			callback_id: "askDialogHandler",
+			mrkdwn_in: [
+				"text"
+			],
+			actions: actions,
+		});
 		
 		
 		for(var i = 0; i < response.rows.length; i++) {

@@ -3,7 +3,6 @@
 const _ = require('lodash');
 const config = require('../config');
 const util = require('util');
-const moment = require('moment');
 const pg = require('pg');
 const JiraApi = require('jira').JiraApi;
 var onlyNumbers = /^[0-9]*$/;
