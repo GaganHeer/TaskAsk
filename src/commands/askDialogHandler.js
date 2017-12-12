@@ -150,7 +150,7 @@ const handler = (payload, res) => {
             });
 
             axios.post('https://slack.com/api/im.list', qs.stringify({
-                token: config('POST_BOT_TOKEN'),
+                token: config('OAUTH_TOKEN'),
                 
             })).then(function (resp){
                 //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
