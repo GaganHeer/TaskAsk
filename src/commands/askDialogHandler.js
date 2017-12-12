@@ -161,7 +161,7 @@ const handler = (payload, res) => {
                         finalUser = resp.data.ims[t].id;
                         finalUserId = resp.data.ims[t].user;
                         axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-                            token: config('POST_BOT_TOKEN'),
+                            token: config('OAUTH_TOKEN'),
                             channel: finalUser,
                             user:finalUserId,
                             as_user:true,
