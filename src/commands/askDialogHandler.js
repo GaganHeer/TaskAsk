@@ -150,7 +150,7 @@ const handler = (payload, res) => {
             });
 
             axios.post('https://slack.com/api/im.list', qs.stringify({
-                token: config('OAUTH_TOKEN'),
+                token: config('POST_BOT_TOKEN'),
                 
             })).then(function (resp){
                 //console.log(resp.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
@@ -161,8 +161,8 @@ const handler = (payload, res) => {
                         finalUser = resp.data.ims[t].id;
                         finalUserId = resp.data.ims[t].user;
                         axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
-                            token: config('OAUTH_TOKEN'),
-                            channel: finalUser,
+                            token: config('POST_BOT_TOKEN'),
+                            channel: 'USLACKBOT',
                             user:finalUserId,
                             as_user:true,
                             attachments: JSON.stringify([
