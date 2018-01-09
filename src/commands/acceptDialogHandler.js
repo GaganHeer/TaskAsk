@@ -65,7 +65,7 @@ const handler = (payload, res) => {
 					console.log(err);
                 });
 
-                sendMessage("ACCEPTED", "", GREEN);
+                sendMessage("Accepted", "", GREEN);
                 sendMessage("Sent to JIRA", "", BLACK);
                 res.send('')
         }).catch(e => {

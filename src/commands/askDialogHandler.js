@@ -163,7 +163,7 @@ const handler = (payload, res) => {
                         console.log(finalUser);
                         axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
-                            channel: 'finalUser',
+                            channel: finalUser,
                             user:finalUserId,
                             as_user:true,
                             attachments: JSON.stringify([

@@ -64,7 +64,7 @@ const handler = (payload, res) => {
 					console.log(err);
                 });
 
-                sendMessage("DONE", "", BLUE);
+                sendMessage("Done", "", BLUE);
                 sendMessage("Updated in JIRA", "", BLACK);
                 res.send('')
         }).catch(e => {
