@@ -122,17 +122,13 @@ app.post('/commands/summary', (req, res) => {
 });
 app.post('/commands/ask', (req, res) => {
     let payload = req.body
-    
-    console.log("FIRST");
-    
+
     if (!payload || payload.token !== config('BOT_COMMAND_TOKEN')) {
         let err = '*** ERROR *** \n error in summary post. This is usually caused by a incorrect parameter but this should never be seen. If you do see this, please report this to IT Support.';
         console.log(err)
         res.status(401).end(err)
         return
     }
-    console.log("SECOND");
-    
     let cmd = askDialog;
     cmd.handler(payload, res)
 });

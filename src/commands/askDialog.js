@@ -12,8 +12,6 @@ var dbURL = process.env.ELEPHANTSQL_URL
 
 const handler = (payload, res) => {
     
-    console.log("THREE");
-    
     const { token, text, trigger_id } = payload;
     
     axios.post('https://slack.com/api/users.list', qs.stringify({
@@ -31,7 +29,7 @@ const handler = (payload, res) => {
                 userListIndex++;
             }
 		}
-        console.log("FOUR");
+        
         const dialog = {
           token: config('OAUTH_TOKEN'),
           trigger_id,
