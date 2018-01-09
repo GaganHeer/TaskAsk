@@ -16,8 +16,9 @@ It is based on Starbot.
 
 ### Slack Commands
 
-#### /Ask
-
+#### /ask
+![AskDialog](https://i.imgur.com/S2jpEob.png "Ask Dialog")
+![AskDM](https://imgur.com/cYIeNvj "Ask DM")
 
 ### Installation and Operation
 
