@@ -160,7 +160,6 @@ const handler = (payload, res) => {
                     if(targetDM==resp.data.ims[t].user){
                         finalUser = resp.data.ims[t].id;
                         finalUserId = resp.data.ims[t].user;
-                        console.log(finalUser);
                         axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
                             channel: finalUser,
@@ -179,10 +178,10 @@ const handler = (payload, res) => {
                               },
                             ]),
                           })).then((result) => {
-                                console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                //console.log('sendConfirmation: ', result.data); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
                               }).catch((err) => {
-                                console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
-                                console.error(err);
+                                //console.log('sendConfirmation error: ', err); //#DEBUG CODE: UNCOMMENT FOR DEBUGGING PURPOSES ONLY
+                                //console.error(err);
                             });
                     }
                 }
