@@ -14,6 +14,11 @@ It is based on Starbot.
 * Gagandeep Heer: [gagandeeph29@gmail.com](gagandeeph29@gmail.com)
 * Dylan Chew: [dylan.t.chew@gmail.com](dylan.t.chew@gmail.com)
 
+### Slack Commands
+
+#### /Ask
+
+
 ### Installation and Operation
 
 We recommend running Node 8.9.0 or higher.  Run `npm install` to install all relevant node modules.
