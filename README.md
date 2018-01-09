@@ -23,14 +23,14 @@ Also before running you must setup your App in the Slack API and create a Postgr
 Once all of this is complete you can run the app through `node ./src/index.js`.
 
 ### Postgres SQL Tables
-# Ask Table
+#### Ask Table
 create table ask_table (serial_id serial not null primary key, sender_id varchar(20) not null, receiver_id varchar(20) not null, 
 status varchar(10) default 'PENDING', jira_id varchar(10), title varchar(35), req_desc varchar(300), req_date timestamp default now(), fin_date timestamp, due_date timestamp);
 
-# Clarify Table
+#### Clarify Table
 create table clarify_table (serial_id serial not null references ask_table (serial_id) on delete cascade, 
 clar_quest varchar(150), question_id serial primary key, clar_answer varchar(150), q_date timestamp);
 
-# User Table
+#### User Table
 create table user_table (f_name varchar(25), l_name varchar(25), slack_id varchar(25), email varchar(30), 
 jira_name varchar(50));
