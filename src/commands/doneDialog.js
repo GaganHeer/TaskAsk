@@ -25,7 +25,7 @@ const handler = (payload, res) => {
                 client.release();
                 if (result.rows.length > 0){
                     for (var i = 0; i < result.rows.length; i++) {
-                        acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].jira_id};
+                        acceptedList[i] = {label: "ID# " + result.rows[i].serial_id + ": " + result.rows[i].title, value: result.rows[i].serial_id};
                     }
                     const dialog = {
                         token: config('OAUTH_TOKEN'),
