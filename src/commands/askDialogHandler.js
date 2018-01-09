@@ -160,6 +160,7 @@ const handler = (payload, res) => {
                     if(targetDM==resp.data.ims[t].user){
                         finalUser = resp.data.ims[t].id;
                         finalUserId = resp.data.ims[t].user;
+                        console.log(finalUser);
                         axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
                             token: config('POST_BOT_TOKEN'),
                             channel: 'finalUser',
