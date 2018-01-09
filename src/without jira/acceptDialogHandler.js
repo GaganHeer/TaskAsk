@@ -43,7 +43,7 @@ const handler = (payload, res) => {
                                 user:finalUserId,
                                 as_user:true,
                                 attachments: JSON.stringify([{
-                                    title: "ACCEPTED",
+                                    title: "Accepted",
                                     color: GREEN,
                                     text: "*Task ID:* " + sid + "\n *Title:* " + result.rows[0].title + "\n *Recipient:* " + result.rows[0].receiver_id + " *Owner:* " + result.rows[0].sender_id,
                                     mrkdwn_in: [
