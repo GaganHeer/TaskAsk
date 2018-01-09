@@ -65,7 +65,7 @@ const handler = (payload, res) => {
                 });
 
                 sendMessage("ACCEPTED", "", GREEN);
-                sendMessage("Sent to JIRA" "", BLACK);
+                sendMessage("Sent to JIRA", "", BLACK);
                 res.send('')
         }).catch(e => {
             client.release();
