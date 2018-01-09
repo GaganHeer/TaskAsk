@@ -24,7 +24,7 @@ const handler = (payload, res) => {
         var userListIndex = 0;
         
         for (var i = 0; i < resultList.length; i++) {
-            if(resultList[i].is_bot == false){
+            if(resultList[i].is_bot == false && resultList[i].deleted == false){
                 userList[userListIndex] = {label: resultList[i].real_name, value: resultList[i].id};
                 userListIndex++;
             }

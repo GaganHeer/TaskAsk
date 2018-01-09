@@ -37,7 +37,7 @@ const handler = (payload, res) => {
 		channelName = payload.channel.name;
 		isButton = true;
 	} else if(!onlyNumbers.test(payload.text)){
-        var wrongParamMsg = "Please enter the correct format /accept [ID#] \n ex) /accept 24"
+        var wrongParamMsg = "Please enter the correct format /reject [ID#] \n ex) /accept 24"
         var wrongParamTitle = "*** ERROR ***"
         createSendMsg(wrongParamTitle, wrongParamMsg, RED, ONLY_USER);
 	} else {
