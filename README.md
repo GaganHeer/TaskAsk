@@ -21,7 +21,21 @@ It is based on Starbot.
 #### /accept
 ![AcceptCommand](https://i.imgur.com/iS3rIsMh.png "Accept Command")
 #### /reject
-![AcceptCommand](https://i.imgur.com/KpOm0FQh.png "Reject Command")
+![RejectCommand](https://i.imgur.com/KpOm0FQh.png "Reject Command")
+#### /forward
+![ForwardCommand](https://i.imgur.com/2Rzz1wyh.png "Forward Command")
+#### /clarify
+![ClarifyCommand](https://i.imgur.com/UWI7pOkh.png "Clarify Command")
+#### /answer
+![AnswerCommand](https://i.imgur.com/SlnQu6ih.png "Answer Command")
+#### /done
+![DoneCommand](https://i.imgur.com/hcLwPWAh.png "Done Command")
+#### /details
+![DetailsCommand](https://i.imgur.com/GtWKMaxh.png "Details Command")
+#### /delete
+![DeleteCommand](https://i.imgur.com/6Hzb7pAh.png "Delete Command")
+#### /summary
+![SummaryCommand](https://i.imgur.com/QQhZdHbh.png "Summary Command")
 
 ### Installation and Operation
 
