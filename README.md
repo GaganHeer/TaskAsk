@@ -20,6 +20,8 @@ It is based on Starbot.
 ![AskCommand](https://i.imgur.com/Hj24LyDh.png "Ask Command")
 #### /accept
 ![AcceptCommand](https://i.imgur.com/iS3rIsMh.png "Accept Command")
+#### /reject
+![AcceptCommand](https://i.imgur.com/KpOm0FQh.png "Reject Command")
 
 ### Installation and Operation
 
