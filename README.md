@@ -33,9 +33,9 @@ It is based on Starbot.
 #### /details
 ![DetailsCommand](https://i.imgur.com/GtWKMaxh.png "Details Command")
 #### /delete
-![DeleteCommand](https://i.imgur.com/6Hzb7pAh.png "Delete Command")
+![DeleteCommand](https://i.imgur.com/6Hzb7pAl.png "Delete Command")
 #### /summary
-![SummaryCommand](https://i.imgur.com/QQhZdHbh.png "Summary Command")
+![SummaryCommand](https://i.imgur.com/QQhZdHbl.png "Summary Command")
 
 ### Installation and Operation
 
